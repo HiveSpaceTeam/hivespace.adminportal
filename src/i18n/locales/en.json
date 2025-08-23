@@ -1,0 +1,40 @@
+{
+  "common": {
+    "menu": "Menu",
+    "accounts": "Accounts",
+    "accountList": "Account List",
+    "addAccount": "Add Account",
+    "actions": "Actions",
+    "delete": "Delete",
+    "activate": "Activate",
+    "deactivate": "Deactivate",
+    "yes": "Yes",
+    "no": "No",
+    "active": "Active",
+    "inactive": "Inactive"
+  },
+  "table": {
+    "username": "Username",
+    "fullName": "Full Name",
+    "email": "Email",
+    "seller": "Seller",
+    "status": "Status",
+    "createdDate": "Created Date",
+    "lastLoginDate": "Last Login Date"
+  },
+  "header": {
+    "search": "Search...",
+    "notifications": "Notifications",
+    "profile": "Profile",
+    "settings": "Settings",
+    "logout": "Logout"
+  },
+  "sidebar": {
+    "dashboard": "Dashboard",
+    "analytics": "Analytics",
+    "reports": "Reports",
+    "users": "Users",
+    "management": "Management"
+  }
+}
+
