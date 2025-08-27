@@ -3,7 +3,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, provide, onMounted, watch, computed } from 'vue'
+import { ref, provide, onMounted, watch, computed, nextTick } from 'vue'
 
 type Theme = 'light' | 'dark'
 
@@ -13,7 +13,9 @@ const isInitialized = ref(false)
 const isDarkMode = computed(() => theme.value === 'dark')
 
 const toggleTheme = () => {
+  console.log('Current theme before toggle:', theme.value)
   theme.value = theme.value === 'light' ? 'dark' : 'light'
+  console.log('New theme after toggle:', theme.value)
 }
 
 onMounted(() => {
@@ -24,31 +26,27 @@ onMounted(() => {
   isInitialized.value = true
 })
 
-watch([theme, isInitialized], ([newTheme, newIsInitialized]: [Theme, boolean]) => {
+watch([theme, isInitialized], async ([newTheme, newIsInitialized]: [Theme, boolean]) => {
   if (newIsInitialized) {
+    console.log('Theme changed to:', newTheme)
     localStorage.setItem('theme', newTheme)
+
+    await nextTick()
+
     if (newTheme === 'dark') {
       document.documentElement.classList.add('dark')
+      console.log('Added dark class to document')
     } else {
       document.documentElement.classList.remove('dark')
+      console.log('Removed dark class from document')
     }
+    console.log('Current document classes:', document.documentElement.classList.toString())
   }
 })
 
+// Provide theme context to child components
 provide('theme', {
   isDarkMode,
   toggleTheme,
 })
-</script>
-
-<script lang="ts">
-import { inject } from 'vue'
-
-export function useTheme() {
-  const theme = inject('theme')
-  if (!theme) {
-    throw new Error('useTheme must be used within a ThemeProvider')
-  }
-  return theme
-}
 </script>

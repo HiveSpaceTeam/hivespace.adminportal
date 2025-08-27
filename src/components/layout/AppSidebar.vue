@@ -113,7 +113,7 @@
                                 ),
                               },
                             ]">
-                              new
+                              {{ $t('sidebar.badge.new') }}
                             </span>
                             <span v-if="subItem.pro" :class="[
                               'menu-dropdown-badge',
@@ -126,7 +126,7 @@
                                 ),
                               },
                             ]">
-                              pro
+                              {{ $t('sidebar.badge.pro') }}
                             </span>
                           </span>
                         </router-link>
@@ -176,8 +176,8 @@ const menuGroups = computed(() => [
         name: t('sidebar.accounts'),
         icon: TableIcon,
         subItems: [
-          { name: t('sidebar.accountList'), path: "/management-accounts", pro: false },
-          { name: t('sidebar.addAccount'), path: "/management-accounts/add" },
+          { name: t('sidebar.accountList'), path: "/management-users", pro: false },
+          { name: t('sidebar.adminList'), path: "/management-admin", pro: false },
         ],
       },
     ],

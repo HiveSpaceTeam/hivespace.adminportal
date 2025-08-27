@@ -1,6 +1,45 @@
 <template>
   <div class="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
-    <div class="max-w-full overflow-x-auto custom-scrollbar">
+    <!-- Search and Filter Controls -->
+    <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+      <div class="flex flex-col sm:flex-row gap-4">
+        <!-- Search Input -->
+        <div class="flex-1">
+          <input type="text" :value="searchQuery" @input="handleSearchInput"
+            :placeholder="$t('table.searchPlaceholder')"
+            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
+        </div>
+
+        <!-- Status Filter -->
+        <div class="sm:w-32">
+          <select :value="statusFilter" @change="handleStatusFilterChange"
+            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+            <option value="all">{{ $t('table.filter.allStatus') }}</option>
+            <option value="active">{{ $t('table.filter.active') }}</option>
+            <option value="inactive">{{ $t('table.filter.inactive') }}</option>
+          </select>
+        </div>
+
+        <!-- Seller Filter -->
+        <div class="sm:w-32">
+          <select :value="sellerFilter" @change="handleSellerFilterChange"
+            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+            <option value="all">{{ $t('table.filter.allUsers') }}</option>
+            <option value="seller">{{ $t('table.filter.sellersOnly') }}</option>
+            <option value="non-seller">{{ $t('table.filter.nonSellers') }}</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    <div v-if="loading" class="p-8 text-center">
+      <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+      <p class="mt-2 text-gray-600 dark:text-gray-400">{{ $t('table.loading') }}</p>
+    </div>
+
+    <!-- Table -->
+    <div v-else class="max-w-full overflow-x-auto custom-scrollbar">
       <table class="min-w-full">
         <thead>
           <tr class="border-b border-gray-200 dark:border-gray-700">
@@ -31,7 +70,8 @@
           </tr>
         </thead>
         <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-          <tr v-for="(user, index) in users" :key="index" class="border-t border-gray-100 dark:border-gray-800">
+          <tr v-for="(user, index) in filteredUsers" :key="user.id"
+            class="border-t border-gray-100 dark:border-gray-800">
             <td class="px-5 py-4 sm:px-6">
               <div class="flex items-center gap-3">
                 <div class="w-10 h-10 overflow-hidden rounded-full">
@@ -130,9 +170,44 @@
   </div>
 </template>
 
-<script setup>
-import { ref, onMounted, onUnmounted, computed } from 'vue'
+<script setup lang="ts">
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
+
+// Props
+interface Props {
+  users: Array<{
+    id: number;
+    username: string;
+    fullName: string;
+    email: string;
+    hasSeller: boolean;
+    status: string;
+    createdDate: string;
+    lastLoginDate: string;
+    avatar: string;
+  }>;
+  loading?: boolean;
+  searchQuery?: string;
+  statusFilter?: string;
+  sellerFilter?: string;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  loading: false,
+  searchQuery: '',
+  statusFilter: 'all',
+  sellerFilter: 'all'
+});
+
+// Emits
+const emit = defineEmits<{
+  'delete-user': [userId: number];
+  'toggle-status': [userId: number];
+  'search': [query: string];
+  'filter-status': [status: string];
+  'filter-seller': [seller: string];
+}>();
 
 const { t } = useI18n()
 
@@ -150,139 +225,73 @@ const actionText = computed(() => ({
   deactivate: t('table.deactivate')
 }))
 
-const users = ref([
-  {
-    username: 'johndoe',
-    fullName: 'John Doe',
-    email: 'john.doe@example.com',
-    hasSeller: true,
-    status: 'Active',
-    createdDate: '2024-01-15',
-    lastLoginDate: '2024-03-20',
-    avatar: '/images/user/user-01.jpg'
-  },
-  {
-    username: 'janesmith',
-    fullName: 'Jane Smith',
-    email: 'jane.smith@example.com',
-    hasSeller: false,
-    status: 'Active',
-    createdDate: '2024-02-03',
-    lastLoginDate: '2024-03-19',
-    avatar: '/images/user/user-02.jpg'
-  },
-  {
-    username: 'mikebrown',
-    fullName: 'Mike Brown',
-    email: 'mike.brown@example.com',
-    hasSeller: true,
-    status: 'Inactive',
-    createdDate: '2023-12-10',
-    lastLoginDate: '2024-02-28',
-    avatar: '/images/user/user-03.jpg'
-  },
-  {
-    username: 'sarahwilson',
-    fullName: 'Sarah Wilson',
-    email: 'sarah.wilson@example.com',
-    hasSeller: true,
-    status: 'Active',
-    createdDate: '2024-01-28',
-    lastLoginDate: '2024-03-21',
-    avatar: '/images/user/user-04.jpg'
-  },
-  {
-    username: 'davidlee',
-    fullName: 'David Lee',
-    email: 'david.lee@example.com',
-    hasSeller: false,
-    status: 'Active',
-    createdDate: '2024-02-14',
-    lastLoginDate: '2024-03-18',
-    avatar: '/images/user/user-05.jpg'
-  },
-  {
-    username: 'emilydavis',
-    fullName: 'Emily Davis',
-    email: 'emily.davis@example.com',
-    hasSeller: true,
-    status: 'Active',
-    createdDate: '2024-01-05',
-    lastLoginDate: '2024-03-22',
-    avatar: '/images/user/user-06.jpg'
-  },
-  {
-    username: 'robertgarcia',
-    fullName: 'Robert Garcia',
-    email: 'robert.garcia@example.com',
-    hasSeller: false,
-    status: 'Inactive',
-    createdDate: '2023-11-20',
-    lastLoginDate: '2024-01-15',
-    avatar: '/images/user/user-07.jpg'
-  },
-  {
-    username: 'lisamartinez',
-    fullName: 'Lisa Martinez',
-    email: 'lisa.martinez@example.com',
-    hasSeller: true,
-    status: 'Active',
-    createdDate: '2024-02-22',
-    lastLoginDate: '2024-03-20',
-    avatar: '/images/user/user-08.jpg'
-  },
-  {
-    username: 'thomasanderson',
-    fullName: 'Thomas Anderson',
-    email: 'thomas.anderson@example.com',
-    hasSeller: true,
-    status: 'Active',
-    createdDate: '2024-01-10',
-    lastLoginDate: '2024-03-21',
-    avatar: '/images/user/user-09.jpg'
-  },
-  {
-    username: 'amandawhite',
-    fullName: 'Amanda White',
-    email: 'amanda.white@example.com',
-    hasSeller: false,
-    status: 'Active',
-    createdDate: '2024-03-01',
-    lastLoginDate: '2024-03-22',
-    avatar: '/images/user/user-10.jpg'
+// Filtered users based on search and filters
+const filteredUsers = computed(() => {
+  let filtered = props.users;
+
+  // Search filter
+  if (props.searchQuery) {
+    const query = props.searchQuery.toLowerCase();
+    filtered = filtered.filter(user =>
+      user.username.toLowerCase().includes(query) ||
+      user.fullName.toLowerCase().includes(query) ||
+      user.email.toLowerCase().includes(query)
+    );
   }
-])
 
-const openActionMenu = ref(null)
+  // Status filter
+  if (props.statusFilter !== 'all') {
+    const status = props.statusFilter === 'active' ? 'Active' : 'Inactive';
+    filtered = filtered.filter(user => user.status === status);
+  }
 
-const toggleActionMenu = (index) => {
+  // Seller filter
+  if (props.sellerFilter !== 'all') {
+    const isSeller = props.sellerFilter === 'seller';
+    filtered = filtered.filter(user => user.hasSeller === isSeller);
+  }
+
+  return filtered;
+});
+
+const openActionMenu = ref<number | null>(null)
+
+const toggleActionMenu = (index: number) => {
   openActionMenu.value = openActionMenu.value === index ? null : index
 }
 
-const handleDelete = (user) => {
-  // Remove user from the users array
-  const userIndex = users.value.findIndex(u => u.username === user.username)
-  if (userIndex !== -1) {
-    users.value.splice(userIndex, 1)
-    console.log('User deleted:', user.username)
-  }
-  // Close the action menu
-  openActionMenu.value = null
+const handleDelete = (user: any) => {
+  emit('delete-user', user.id);
+  openActionMenu.value = null;
 }
 
-const handleToggleStatus = (user) => {
-  // Implement status toggle logic
-  console.log('Toggling status for user:', user)
-  user.status = user.status === 'Active' ? 'Inactive' : 'Active'
-  openActionMenu.value = null
+const handleToggleStatus = (user: any) => {
+  emit('toggle-status', user.id);
+  openActionMenu.value = null;
 }
 
-const handleClickOutside = (event) => {
+const handleSearchInput = (event: Event) => {
+  const target = event.target as HTMLInputElement;
+  emit('search', target.value);
+}
+
+const handleStatusFilterChange = (event: Event) => {
+  const target = event.target as HTMLSelectElement;
+  emit('filter-status', target.value);
+}
+
+const handleSellerFilterChange = (event: Event) => {
+  const target = event.target as HTMLSelectElement;
+  emit('filter-seller', target.value);
+}
+
+const handleClickOutside = (event: Event) => {
   // Close action menu if clicking outside
   if (openActionMenu.value !== null) {
     // Check if click is outside the action button and popover
-    const actionButton = event.target.closest('button[data-action="toggle"]')
-    const popover = event.target.closest('[data-action="popover"]')
+    const target = event.target as Element
+    const actionButton = target.closest('button[data-action="toggle"]')
+    const popover = target.closest('[data-action="popover"]')
 
     if (!actionButton && !popover) {
       openActionMenu.value = null

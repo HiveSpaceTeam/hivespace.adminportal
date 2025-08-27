@@ -39,11 +39,19 @@ const router = createRouter({
       },
     },
     {
-      path: '/management-accounts',
-      name: 'Accounts management',
-      component: () => import('../views/Tables/BasicTables.vue'),
+      path: '/management-users',
+      name: 'Users management',
+      component: () => import('../views/UsersManagement.vue'),
       meta: {
-        title: 'Accounts management',
+        title: 'Users management',
+      },
+    },
+    {
+      path: '/management-admin',
+      name: 'Admin management',
+      component: () => import('../views/AdminManagement.vue'),
+      meta: {
+        title: 'Admin management',
       },
     },
     {
