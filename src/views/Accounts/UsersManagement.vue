@@ -43,6 +43,8 @@
         </BasicTables>
       </ComponentCard>
     </div>
+
+
   </AdminLayout>
 </template>
 
@@ -65,6 +67,8 @@ const searchQuery = ref('');
 const statusFilter = ref('all');
 const sellerFilter = ref('all');
 const lastUpdated = ref('');
+
+
 
 // Sample users data - in real app this would come from API
 const users = ref([
@@ -151,6 +155,8 @@ const filteredUsersCount = computed(() => {
   return filtered.length;
 });
 
+
+
 // Event handlers
 const handleDeleteUser = (userId: number) => {
   loading.value = true;
@@ -205,6 +211,8 @@ const refreshUsers = () => {
 const updateLastUpdated = () => {
   lastUpdated.value = new Date().toLocaleString();
 };
+
+
 
 // Lifecycle
 onMounted(() => {

@@ -41,7 +41,7 @@ const router = createRouter({
     {
       path: '/management-users',
       name: 'Users management',
-      component: () => import('../views/UsersManagement.vue'),
+      component: () => import('../views/Accounts/UsersManagement.vue'),
       meta: {
         title: 'Users management',
       },
@@ -49,7 +49,7 @@ const router = createRouter({
     {
       path: '/management-admin',
       name: 'Admin management',
-      component: () => import('../views/AdminManagement.vue'),
+      component: () => import('../views/Accounts/AdminManagement.vue'),
       meta: {
         title: 'Admin management',
       },

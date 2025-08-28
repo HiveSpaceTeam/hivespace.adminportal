@@ -93,8 +93,8 @@
               <div class="relative">
                 <input id="adminPassword" v-model="newAdmin.password" :type="showPassword ? 'text' : 'password'"
                   required :class="['mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white pr-10',
-                    formErrors.password ? 'border-red-500' : '']"
-                  :placeholder="$t('admins.passwordPlaceholder')" @input="validatePassword" />
+                    formErrors.password ? 'border-red-500' : '']" :placeholder="$t('admins.passwordPlaceholder')"
+                  @input="validatePassword" />
                 <button type="button" @click="showPassword = !showPassword"
                   class="absolute inset-y-0 right-0 flex items-center pr-3">
                   <svg v-if="showPassword" class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor"
@@ -139,14 +139,13 @@
 
             <!-- Admin Type Field (only for System Admins) -->
             <div v-if="currentUser.isSystemAdmin">
-              <label for="adminType" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                {{ $t('admins.adminType') }} <span class="text-red-500">*</span>
-              </label>
-              <select id="adminType" v-model="newAdmin.adminType" required
-                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                <option value="Regular Admin">{{ $t('admins.regularAdmin') }}</option>
-                <option value="System Admin">{{ $t('admins.systemAdmin') }}</option>
-              </select>
+              <div class="flex items-start">
+                <input id="is-system-admin" v-model="newAdmin.isSystemAdmin" type="checkbox"
+                  class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded dark:border-gray-600 dark:bg-gray-700 mt-0.5">
+                <label for="is-system-admin" class="ml-3 block text-sm text-gray-700 dark:text-gray-300">
+                  <span class="font-medium">{{ $t('admins.systemAdmin') }}</span>
+                </label>
+              </div>
             </div>
 
             <!-- Form Actions -->
@@ -203,7 +202,7 @@ const newAdmin = ref({
   email: '',
   password: '',
   confirmPassword: '',
-  adminType: 'Regular Admin',
+  isSystemAdmin: false,
   status: 'Active'
 });
 
@@ -225,6 +224,7 @@ const admins = ref([
   {
     id: 1,
     email: 'admin.system@hivespace.com',
+    fullName: 'System Administrator',
     adminType: 'System Admin',
     status: 'Active',
     isSystemAdmin: true,
@@ -236,6 +236,7 @@ const admins = ref([
   {
     id: 2,
     email: 'john.admin@hivespace.com',
+    fullName: 'John Anderson',
     adminType: 'Regular Admin',
     status: 'Active',
     isSystemAdmin: false,
@@ -247,6 +248,7 @@ const admins = ref([
   {
     id: 3,
     email: 'sarah.manager@hivespace.com',
+    fullName: 'Sarah Johnson',
     adminType: 'Regular Admin',
     status: 'Active',
     isSystemAdmin: false,
@@ -258,6 +260,7 @@ const admins = ref([
   {
     id: 4,
     email: 'mike.supervisor@hivespace.com',
+    fullName: 'Mike Thompson',
     adminType: 'System Admin',
     status: 'Active',
     isSystemAdmin: true,
@@ -269,6 +272,7 @@ const admins = ref([
   {
     id: 5,
     email: 'lisa.admin@hivespace.com',
+    fullName: 'Lisa Wilson',
     adminType: 'Regular Admin',
     status: 'Inactive',
     isSystemAdmin: false,
@@ -280,6 +284,7 @@ const admins = ref([
   {
     id: 6,
     email: 'david.tech@hivespace.com',
+    fullName: 'David Rodriguez',
     adminType: 'System Admin',
     status: 'Active',
     isSystemAdmin: true,
@@ -291,6 +296,7 @@ const admins = ref([
   {
     id: 7,
     email: 'emma.support@hivespace.com',
+    fullName: 'Emma Davis',
     adminType: 'Regular Admin',
     status: 'Active',
     isSystemAdmin: false,
@@ -506,7 +512,7 @@ const resetForm = () => {
     email: '',
     password: '',
     confirmPassword: '',
-    adminType: 'Regular Admin',
+    isSystemAdmin: false,
     status: 'Active'
   };
   formErrors.value = {
@@ -537,9 +543,10 @@ const createAdmin = async () => {
     const newAdminData = {
       id: admins.value.length + 1,
       email: newAdmin.value.email,
-      adminType: currentUser.value.isSystemAdmin ? newAdmin.value.adminType : 'Regular Admin',
+      fullName: newAdmin.value.email.split('@')[0].replace('.', ' ').replace(/\b\w/g, l => l.toUpperCase()),
+      adminType: newAdmin.value.isSystemAdmin ? 'System Admin' : 'Regular Admin',
       status: 'Active',
-      isSystemAdmin: newAdmin.value.adminType === 'System Admin',
+      isSystemAdmin: newAdmin.value.isSystemAdmin,
       createdDate: new Date().toISOString().split('T')[0],
       lastLoginDate: 'Never',
       lastUpdatedDate: new Date().toISOString().split('T')[0],

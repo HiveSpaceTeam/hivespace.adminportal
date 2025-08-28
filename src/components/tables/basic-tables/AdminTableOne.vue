@@ -43,37 +43,37 @@
             <table class="min-w-full">
                 <thead>
                     <tr class="border-b border-gray-200 dark:border-gray-700">
-                        <th class="px-5 py-3 text-left w-1/7 sm:px-6">
+                        <th class="px-5 py-3 text-left w-1/8 sm:px-6">
                             <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">{{
                                 $t('table.emailAddress') }}</p>
                         </th>
-                        <th class="px-5 py-3 text-left w-1/7 sm:px-6">
+                        <th class="px-5 py-3 text-left w-1/8 sm:px-6">
                             <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">{{
-                                $t('table.adminType') }}</p>
+                                $t('table.fullName') }}</p>
                         </th>
-                        <th class="px-5 py-3 text-left w-1/7 sm:px-6">
+                        <th class="px-5 py-3 text-left w-1/8 sm:px-6">
                             <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">{{ $t('table.status')
-                                }}</p>
+                            }}</p>
                         </th>
-                        <th class="px-5 py-3 text-left w-1/7 sm:px-6">
+                        <th class="px-5 py-3 text-left w-1/8 sm:px-6">
                             <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">{{
                                 $t('table.isSystemAdmin') }}</p>
                         </th>
-                        <th class="px-5 py-3 text-left w-1/7 sm:px-6">
+                        <th class="px-5 py-3 text-left w-1/8 sm:px-6">
                             <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">{{
                                 $t('table.createdDate') }}</p>
                         </th>
-                        <th class="px-5 py-3 text-left w-1/7 sm:px-6">
+                        <th class="px-5 py-3 text-left w-1/8 sm:px-6">
                             <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">{{
                                 $t('table.lastLoginDate') }}</p>
                         </th>
-                        <th class="px-5 py-3 text-left w-1/7 sm:px-6">
+                        <th class="px-5 py-3 text-left w-1/8 sm:px-6">
                             <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">{{
                                 $t('table.lastUpdatedDate') }}</p>
                         </th>
-                        <th class="px-5 py-3 text-left w-1/7 sm:px-6">
+                        <th class="px-5 py-3 text-center w-1/8 sm:px-6">
                             <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">{{ $t('table.actions')
-                                }}</p>
+                            }}</p>
                         </th>
                     </tr>
                 </thead>
@@ -95,14 +95,9 @@
                             </div>
                         </td>
 
-                        <!-- Admin Type -->
+                        <!-- Full Name -->
                         <td class="px-5 py-4 sm:px-6">
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
-                                :class="admin.adminType === 'System Admin'
-                                    ? 'bg-purple-100 text-purple-800 dark:bg-purple-900/20 dark:text-purple-300'
-                                    : 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-300'">
-                                {{ admin.adminType }}
-                            </span>
+                            <div class="text-sm text-gray-900 dark:text-white">{{ admin.fullName }}</div>
                         </td>
 
                         <!-- Status -->
@@ -117,23 +112,13 @@
 
                         <!-- Is System Admin -->
                         <td class="px-5 py-4 sm:px-6">
-                            <div class="flex items-center">
-                                <span v-if="admin.isSystemAdmin" class="inline-flex items-center">
-                                    <svg class="w-4 h-4 text-green-500 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd"
-                                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                            clip-rule="evenodd"></path>
-                                    </svg>
-                                    <span class="text-sm text-gray-900 dark:text-white">{{ $t('table.yes') }}</span>
-                                </span>
-                                <span v-else class="inline-flex items-center">
-                                    <svg class="w-4 h-4 text-gray-400 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd"
-                                            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                                            clip-rule="evenodd"></path>
-                                    </svg>
-                                    <span class="text-sm text-gray-500 dark:text-gray-400">{{ $t('table.no') }}</span>
-                                </span>
+                            <div class="flex items-center justify-center">
+                                <svg v-if="admin.isSystemAdmin" class="w-5 h-5 text-green-500" fill="currentColor"
+                                    viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd"
+                                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                        clip-rule="evenodd"></path>
+                                </svg>
                             </div>
                         </td>
 
@@ -153,8 +138,8 @@
                         </td>
 
                         <!-- Actions -->
-                        <td class="px-5 py-4 sm:px-6">
-                            <div class="relative inline-block text-left">
+                        <td class="px-5 py-4 sm:px-6 text-center">
+                            <div class="relative inline-block">
                                 <button @click="toggleActionMenu(index)" type="button"
                                     class="inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-600">
                                     <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
@@ -220,6 +205,7 @@ interface Props {
     admins: Array<{
         id: number;
         email: string;
+        fullName: string;
         adminType: string;
         status: string;
         isSystemAdmin: boolean;
