@@ -3,51 +3,184 @@
     <PageBreadcrumb :pageTitle="currentPageTitle" />
     <div class="space-y-5 sm:space-y-6">
       <ComponentCard :title="$t('pages.listOfAdmins')">
-        <BasicTables :title="$t('pages.adminManagement')" :description="$t('admins.description')" :showControls="true"
-          :showFooter="true">
-          <!-- Controls Left -->
-          <template #controls-left>
-            <div class="flex items-center gap-2">
-              <span class="text-sm text-gray-600 dark:text-gray-400">
-                {{ $t('admins.totalAdmins') }} {{ admins.length }}
-              </span>
-            </div>
-          </template>
+        <!-- Table Content -->
+        <div
+          class="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+          <!-- Search and Filter Controls -->
+          <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+            <div class="flex flex-col sm:flex-row gap-4 items-center justify-between">
+              <!-- Search Input -->
+              <div class="flex items-center justify-end gap-2">
+                <div class="w-full sm:w-64">
+                  <input type="text" :value="searchQuery" @input="tableHandleSearchInput"
+                    :placeholder="$t('table.searchPlaceholder')"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
+                </div>
 
-          <!-- Controls Right -->
-          <template #controls-right>
-            <div class="flex items-center gap-2">
-              <button @click="showAddAdminModal = true"
-                class="px-3 py-2 text-sm bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                </svg>
-                {{ $t('admins.addNewAdmin') }}
-              </button>
-              <button @click="refreshAdmins" :disabled="loading"
-                class="px-3 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                </svg>
-                {{ $t('admins.refresh') }}
-              </button>
-            </div>
-          </template>
+                <!-- Status Filter -->
+                <div class="sm:w-48">
+                  <BaseSelect v-model="statusFilter" :options="statusOptions"
+                    :buttonClass="'w-full text-left px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white flex justify-between items-center'" />
+                </div>
 
-          <!-- Table Content -->
-          <AdminTableOne :admins="admins" :loading="loading" :searchQuery="searchQuery" :statusFilter="statusFilter"
-            :adminTypeFilter="adminTypeFilter" @delete-admin="handleDeleteAdmin" @toggle-status="handleToggleStatus"
-            @search="handleSearch" @filter-status="handleFilterStatus" @filter-admin-type="handleFilterAdminType" />
+                <!-- Admin Type Filter -->
+                <div class="sm:w-48">
+                  <BaseSelect v-model="adminTypeFilter" :options="adminTypeOptions"
+                    :buttonClass="'w-full text-left px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white flex justify-between items-center'" />
+                </div>
+              </div>
 
-          <!-- Footer -->
-          <template #footer>
-            <div class="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400">
-              <span>{{ $t('admins.showingResults', { count: filteredAdminsCount, total: admins.length }) }}</span>
-              <span>{{ $t('admins.lastUpdated') }} {{ lastUpdated }}</span>
+              <div class="flex items-center justify-end">
+                <div class="flex items-center gap-2">
+                  <Button :onClick="() => (showAddAdminModal = true)" :startIcon="BigPlusIcon" size="sm"
+                    variant="primary">
+                    {{ $t('admins.addNewAdmin') }}
+                  </Button>
+                  <Button :startIcon="RefreshIcon" size="sm" variant="outline" @click="refreshAdmins">
+                    {{ $t('actions.refresh') }}
+                  </Button>
+                </div>
+              </div>
+
             </div>
-          </template>
-        </BasicTables>
+          </div>
+
+          <!-- Loading State -->
+          <div v-if="loading" class="p-8 text-center">
+            <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+            <p class="mt-2 text-gray-600 dark:text-gray-400">{{ $t('table.loading') }}</p>
+          </div>
+
+          <!-- Table -->
+          <div v-else class="max-w-full overflow-x-auto custom-scrollbar">
+            <table class="min-w-full">
+              <thead>
+                <tr class="border-b border-gray-200 dark:border-gray-700">
+                  <th class="px-5 py-3 text-left w-1/8 sm:px-6">
+                    <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">{{ $t('table.emailAddress')
+                      }}</p>
+                  </th>
+                  <th class="px-5 py-3 text-left w-1/8 sm:px-6">
+                    <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">{{ $t('table.fullName') }}
+                    </p>
+                  </th>
+                  <th class="px-5 py-3 text-left w-1/8 sm:px-6">
+                    <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">{{ $t('table.status') }}</p>
+                  </th>
+                  <th class="px-5 py-3 text-center w-1/8 sm:px-6">
+                    <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">{{ $t('table.isSystemAdmin')
+                      }}</p>
+                  </th>
+                  <th class="px-5 py-3 text-left w-1/8 sm:px-6">
+                    <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">{{ $t('table.createdDate')
+                      }}</p>
+                  </th>
+                  <th class="px-5 py-3 text-left w-1/8 sm:px-6">
+                    <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">{{ $t('table.lastLoginDate')
+                      }}</p>
+                  </th>
+                  <th class="px-5 py-3 text-left w-1/8 sm:px-6">
+                    <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">{{
+                      $t('table.lastUpdatedDate') }}</p>
+                  </th>
+                  <th class="px-5 py-3 text-center w-1/8 sm:px-6">
+                    <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">{{ $t('table.actions') }}
+                    </p>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="admin in filteredAdmins" :key="admin.id"
+                  class="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-white/[0.05]">
+                  <!-- Email Address -->
+                  <td class="px-5 py-4 sm:px-6">
+                    <div class="flex items-center">
+                      <div class="flex-shrink-0 h-10 w-10">
+                        <img class="h-10 w-10 rounded-full object-cover"
+                          :src="admin.avatar || '/images/user/default-avatar.jpg'" :alt="admin.email" />
+                      </div>
+                      <div class="ml-4">
+                        <div class="text-sm font-medium text-gray-900 dark:text-white">{{ admin.email }}</div>
+                      </div>
+                    </div>
+                  </td>
+
+                  <!-- Full Name -->
+                  <td class="px-5 py-4 sm:px-6">
+                    <div class="text-sm text-gray-900 dark:text-white">{{ admin.fullName }}</div>
+                  </td>
+
+                  <!-- Status -->
+                  <td class="px-5 py-4 sm:px-6">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium" :class="admin.status === 'Active'
+                      ? 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300'
+                      : 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-300'">{{ admin.status }}</span>
+                  </td>
+
+                  <!-- Is System Admin -->
+                  <td class="px-5 py-4 sm:px-6">
+                    <div class="flex items-center justify-center">
+                      <svg v-if="admin.isSystemAdmin" class="w-5 h-5 text-green-500" fill="currentColor"
+                        viewBox="0 0 20 20">
+                        <path fill-rule="evenodd"
+                          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                          clip-rule="evenodd"></path>
+                      </svg>
+                    </div>
+                  </td>
+
+                  <!-- Created Date -->
+                  <td class="px-5 py-4 sm:px-6">
+                    <div class="text-sm text-gray-900 dark:text-white">{{ admin.createdDate }}</div>
+                  </td>
+
+                  <!-- Last Login Date -->
+                  <td class="px-5 py-4 sm:px-6">
+                    <div class="text-sm text-gray-900 dark:text-white">{{ admin.lastLoginDate }}</div>
+                  </td>
+
+                  <!-- Last Updated Date -->
+                  <td class="px-5 py-4 sm:px-6">
+                    <div class="text-sm text-gray-900 dark:text-white">{{ admin.lastUpdatedDate }}</div>
+                  </td>
+
+                  <!-- Actions -->
+                  <td class="px-5 py-4 sm:px-6 text-center">
+                    <DropdownMenu :menuItems="[]" buttonClass="text-gray-500 dark:text-gray-400"
+                      menuClass="absolute right-0 z-40 w-40 p-2 space-y-1 bg-white top-full rounded-2xl shadow-lg dark:bg-gray-dark"
+                      itemClass="flex w-full px-3 py-2 font-medium text-left text-gray-500 rounded-lg text-theme-xs hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300">
+                      <template #icon>
+                        <HorizontalDots />
+                      </template>
+
+                      <template #menu>
+                        <button @click="tableHandleDelete(admin)"
+                          class="flex items-center w-full px-3 py-2 text-sm text-red-700 hover:bg-gray-50 dark:text-red-400 dark:hover:bg-gray-600">
+                          <TrashRedIcon />
+                          {{ actionText.delete }}
+                        </button>
+
+                        <button @click="tableHandleToggleStatus(admin)"
+                          class="flex items-center w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-700">
+                          <ToggleOffIcon v-if="admin.status === 'Active'" />
+                          <ToggleOnIcon v-else />
+                          {{ admin.status === 'Active' ? actionText.deactivate : actionText.activate }}
+                        </button>
+                      </template>
+                    </DropdownMenu>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <!-- Footer -->
+        <template #footer>
+          <div class="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400">
+            <span>{{ $t('admins.showingResults', { count: filteredAdminsCount, total: admins.length }) }}</span>
+            <span>{{ $t('admins.lastUpdated') }} {{ lastUpdated }}</span>
+          </div>
+        </template>
       </ComponentCard>
     </div>
 
@@ -178,12 +311,28 @@ import { useI18n } from "vue-i18n";
 import PageBreadcrumb from "@/components/common/PageBreadcrumb.vue";
 import AdminLayout from "@/components/layout/AdminLayout.vue";
 import ComponentCard from "@/components/common/ComponentCard.vue";
-import BasicTables from "@/components/tables/BasicTables.vue";
-import AdminTableOne from "@/components/tables/basic-tables/AdminTableOne.vue";
-
+import Button from "@/components/ui/Button.vue";
+import BigPlusIcon from "@/icons/BigPlusIcon.vue";
+import RefreshIcon from "@/icons/RefreshIcon.vue";
+import BaseSelect from "@/components/common/BaseSelect.vue";
+import DropdownMenu from "@/components/common/DropdownMenu.vue";
+import { HorizontalDots, TrashRedIcon, ToggleOffIcon, ToggleOnIcon } from '@/icons'
 const { t } = useI18n();
 
 const currentPageTitle = computed(() => t('pages.adminManagement'));
+
+// Options for the filter selects (i18n-backed)
+const statusOptions = computed(() => [
+  { value: 'all', label: t('table.filter.allStatus') },
+  { value: 'active', label: t('table.filter.active') },
+  { value: 'inactive', label: t('table.filter.inactive') }
+]);
+
+const adminTypeOptions = computed(() => [
+  { value: 'all', label: t('table.filter.allAdmins') },
+  { value: 'regular', label: t('table.filter.regularAdmin') },
+  { value: 'system', label: t('table.filter.systemAdmin') }
+]);
 
 // State management
 const loading = ref(false);
@@ -378,6 +527,70 @@ const isFormValid = computed(() => {
     passwordStrength.value >= 60;
 });
 
+// Table: filtered list + local menu state
+const filteredAdmins = computed(() => {
+  let filtered = admins.value
+
+  // Search filter
+  if (searchQuery.value) {
+    const query = searchQuery.value.toLowerCase()
+    filtered = filtered.filter(admin =>
+      admin.email.toLowerCase().includes(query)
+    )
+  }
+
+  // Status filter
+  if (statusFilter.value !== 'all') {
+    const status = statusFilter.value === 'active' ? 'Active' : 'Inactive'
+    filtered = filtered.filter(admin => admin.status === status)
+  }
+
+  // Admin type filter
+  if (adminTypeFilter.value !== 'all') {
+    const adminType = adminTypeFilter.value === 'system' ? 'System Admin' : 'Regular Admin'
+    filtered = filtered.filter(admin => admin.adminType === adminType)
+  }
+
+  return filtered
+})
+
+
+const actionText = {
+  delete: t('table.delete'),
+  activate: t('table.activate'),
+  deactivate: t('table.deactivate')
+}
+
+// lightweight Admin type for handlers
+type Admin = {
+  id: number;
+  email: string;
+  fullName?: string;
+  adminType?: string;
+  status?: string;
+  isSystemAdmin?: boolean;
+  createdDate?: string;
+  lastLoginDate?: string;
+  lastUpdatedDate?: string;
+  avatar?: string;
+}
+
+const tableHandleDelete = (admin: Admin) => {
+  handleDeleteAdmin(admin.id)
+}
+
+const tableHandleToggleStatus = (admin: Admin) => {
+  handleToggleStatus(admin.id)
+}
+
+const tableHandleSearchInput = (event: Event) => {
+  const target = event.target as HTMLInputElement
+  handleSearch(target.value)
+}
+
+
+// Dropdown menu is handled by DropdownMenu component which manages its own outside clicks
+
 // Event handlers
 const handleDeleteAdmin = (adminId: number) => {
   loading.value = true;
@@ -410,15 +623,7 @@ const handleSearch = (query: string) => {
   console.log('Search query:', query);
 };
 
-const handleFilterStatus = (status: string) => {
-  statusFilter.value = status;
-  console.log('Status filter:', status);
-};
-
-const handleFilterAdminType = (adminType: string) => {
-  adminTypeFilter.value = adminType;
-  console.log('Admin type filter:', adminType);
-};
+// Filters are bound via v-model on BaseSelect; no manual handlers required here.
 
 const refreshAdmins = () => {
   loading.value = true;

@@ -19,6 +19,12 @@
     "confirm": "Confirm",
     "close": "Close"
   },
+  "actions": {
+    "delete": "Delete",
+    "activate": "Activate",
+    "deactivate": "Deactivate",
+    "refresh": "Refresh"
+  },
   "table": {
     "username": "Username",
     "fullName": "Full Name",
@@ -27,7 +33,7 @@
     "adminType": "Admin Type",
     "regularAdmin": "Regular Admin",
     "systemAdmin": "System Admin",
-    "isSystemAdmin": "Is System Admin",
+    "isSystemAdmin": "System Admin",
     "seller": "Seller",
     "status": "Status",
     "createdDate": "Created Date",
@@ -64,8 +70,10 @@
     "notifications": "Notifications",
     "profile": "Profile",
     "settings": "Settings",
-    "logout": "Logout",
-    "language": "Language"
+  "logout": "Logout",
+  "language": "Language",
+  "language_vi": "Tiếng Việt",
+  "language_en": "English"
   },
   "sidebar": {
     "menu": "Menu",

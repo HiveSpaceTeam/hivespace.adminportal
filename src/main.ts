@@ -6,10 +6,10 @@ import 'swiper/css/pagination'
 import 'jsvectormap/dist/jsvectormap.css'
 import 'flatpickr/dist/flatpickr.css'
 
-import { createApp } from 'vue'
-import App from './App.vue'
-import router from './router'
 import i18n from './i18n'
+import { createApp } from 'vue'
+import App from '@/App.vue'
+import router from '@/router'
 import VueApexCharts from 'vue3-apexcharts'
 
 const app = createApp(App)
