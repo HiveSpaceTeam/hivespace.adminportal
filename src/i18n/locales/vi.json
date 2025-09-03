@@ -19,6 +19,12 @@
     "confirm": "Xác nhận",
     "close": "Đóng"
   },
+  "actions": {
+    "delete": "Xóa",
+    "activate": "Kích hoạt",
+    "deactivate": "Vô hiệu hóa",
+    "refresh": "Làm mới"
+  },
   "table": {
     "username": "Tên đăng nhập",
     "fullName": "Họ và tên",
@@ -27,7 +33,7 @@
     "adminType": "Loại Admin",
     "regularAdmin": "Admin thường",
     "systemAdmin": "Admin hệ thống",
-    "isSystemAdmin": "Là Admin hệ thống",
+    "isSystemAdmin": "Admin hệ thống",
     "seller": "Người bán",
     "status": "Trạng thái",
     "createdDate": "Ngày tạo",
@@ -64,8 +70,10 @@
     "notifications": "Thông báo",
     "profile": "Hồ sơ",
     "settings": "Cài đặt",
-    "logout": "Đăng xuất",
-    "language": "Ngôn ngữ"
+  "logout": "Đăng xuất",
+  "language": "Ngôn ngữ",
+  "language_vi": "Tiếng Việt",
+  "language_en": "English"
   },
   "sidebar": {
     "menu": "Menu",

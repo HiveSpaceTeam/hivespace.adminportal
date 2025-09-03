@@ -13,7 +13,7 @@
       'py-8 flex',
       !isExpanded && !isHovered ? 'lg:justify-center' : 'justify-start',
     ]">
-      <router-link to="/">
+      <router-link to="/demo">
         <img v-if="isExpanded || isHovered || isMobileOpen" class="dark:hidden" src="/images/logo/logo.svg" alt="Logo"
           width="150" height="40" />
         <img v-if="isExpanded || isHovered || isMobileOpen" class="hidden dark:block" src="/images/logo/logo-dark.svg"
@@ -113,7 +113,7 @@
                                 ),
                               },
                             ]">
-                              {{ $t('sidebar.badge.new') }}
+                              new
                             </span>
                             <span v-if="subItem.pro" :class="[
                               'menu-dropdown-badge',
@@ -126,7 +126,7 @@
                                 ),
                               },
                             ]">
-                              {{ $t('sidebar.badge.pro') }}
+                              pro
                             </span>
                           </span>
                         </router-link>
@@ -139,54 +139,93 @@
           </div>
         </div>
       </nav>
+      <SidebarWidget v-if="isExpanded || isHovered || isMobileOpen" />
     </div>
   </aside>
 </template>
 
-<script setup>
-import { ref, computed } from "vue";
+<script setup lang="ts">
+import { computed } from "vue";
 import { useRoute } from "vue-router";
 import { useI18n } from "vue-i18n";
-
 import {
   GridIcon,
-  CalenderIcon,
-  UserCircleIcon,
-  PieChartIcon,
   ChevronDownIcon,
   HorizontalDots,
-  PageIcon,
-  TableIcon,
-  ListIcon,
-  PlugInIcon,
-} from "../../icons";
-import BoxCubeIcon from "@/icons/BoxCubeIcon.vue";
+  TableIcon
+} from "@/icons";
+import SidebarWidget from "@/components/layout/SidebarWidget.vue";
 import { useSidebar } from "@/composables/useSidebar";
+
+interface SubMenuItem {
+  name: string;
+  path: string;
+  pro: boolean;
+  new?: boolean;
+}
+
+interface MenuItem {
+  icon: typeof GridIcon;
+  name: string;
+  path?: string;
+  subItems?: SubMenuItem[];
+}
+
+interface MenuGroup {
+  title: string;
+  items: MenuItem[];
+}
 
 const route = useRoute();
 const { t } = useI18n();
 
 const { isExpanded, isMobileOpen, isHovered, openSubmenu } = useSidebar();
 
-const menuGroups = computed(() => [
-  {
+const isDevelopment = import.meta.env.DEV;
+
+const menuGroups = computed<MenuGroup[]>(() => [
+  ...(isDevelopment ? [{
     title: t('sidebar.menu'),
     items: [
       {
         name: t('sidebar.accounts'),
         icon: TableIcon,
         subItems: [
-          { name: t('sidebar.accountList'), path: "/management-users", pro: false },
-          { name: t('sidebar.adminList'), path: "/management-admin", pro: false },
+          { name: t('sidebar.accountList'), path: "/account/user-management", pro: false },
+          { name: t('sidebar.adminList'), path: "/account/admin-management", pro: false },
         ],
       },
+      {
+        icon: GridIcon,
+        name: 'Demo',
+        subItems: [
+          { name: "Ecommerce", path: "/demo" },
+          { name: "Calendar", path: "/demo/calendar" },
+          { name: "User Profile", path: "/demo/profile" },
+          { name: "Form Elements", path: "/demo/form-elements" },
+          { name: "Basic Tables", path: "/demo/basic-tables" },
+          { name: "Black Page", path: "/demo/blank" },
+          { name: "404 Page", path: "/demo/error-404" },
+          { name: "Line Chart", path: "/demo/line-chart" },
+          { name: "Bar Chart", path: "/demo/bar-chart" },
+          { name: "Alerts", path: "/demo/alerts" },
+          { name: "Avatars", path: "/demo/avatars" },
+          { name: "Badge", path: "/demo/badge" },
+          { name: "Buttons", path: "/demo/buttons" },
+          { name: "Images", path: "/demo/images" },
+          { name: "Videos", path: "/demo/videos" },
+          { name: "Signin", path: "/demo/signin" },
+          { name: "Signup", path: "/demo/signup" },
+          { name: "Icons", path: "/demo/icons" },
+        ] as SubMenuItem[],
+      }
     ],
-  },
+  }] : []),
 ]);
 
-const isActive = (path) => route.path === path;
+const isActive = (path: string) => route.path === path;
 
-const toggleSubmenu = (groupIndex, itemIndex) => {
+const toggleSubmenu = (groupIndex: number, itemIndex: number) => {
   const key = `${groupIndex}-${itemIndex}`;
   openSubmenu.value = openSubmenu.value === key ? null : key;
 };
@@ -200,7 +239,7 @@ const isAnySubmenuRouteActive = computed(() => {
   );
 });
 
-const isSubmenuOpen = (groupIndex, itemIndex) => {
+const isSubmenuOpen = (groupIndex: number, itemIndex: number) => {
   const key = `${groupIndex}-${itemIndex}`;
   return (
     openSubmenu.value === key ||
@@ -211,15 +250,17 @@ const isSubmenuOpen = (groupIndex, itemIndex) => {
   );
 };
 
-const startTransition = (el) => {
-  el.style.height = "auto";
-  const height = el.scrollHeight;
-  el.style.height = "0px";
-  el.offsetHeight; // force reflow
-  el.style.height = height + "px";
+const startTransition = (el: Element) => {
+  const htmlEl = el as HTMLElement;
+  htmlEl.style.height = "auto";
+  const height = htmlEl.scrollHeight;
+  htmlEl.style.height = "0px";
+  void htmlEl.offsetHeight; // force reflow
+  htmlEl.style.height = height + "px";
 };
 
-const endTransition = (el) => {
-  el.style.height = "";
+const endTransition = (el: Element) => {
+  const htmlEl = el as HTMLElement;
+  htmlEl.style.height = "";
 };
 </script>
