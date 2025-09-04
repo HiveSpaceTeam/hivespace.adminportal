@@ -6,16 +6,17 @@
 <script setup>
 import { onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import userManager from '@/auth/user-manager';
+import { handleLoginCallback } from '@/auth/user-manager';
 
 const router = useRouter();
 
 onMounted(async () => {
   try {
-    debugger;
-    const result = await userManager.signinRedirectCallback();
+    const result = await handleLoginCallback();
     let returnToUrl = '/';
-    if (result.state !== undefined) { returnToUrl = result.state; }
+    if (result.state !== undefined) {
+      returnToUrl = result.state;
+    }
     router.push({ path: returnToUrl });
   } catch (error) {
     // Handle error, e.g., redirect to error page or show message
