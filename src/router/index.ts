@@ -1,5 +1,4 @@
-import { oAuthSignin } from '@/auth/oauth-helper';
-import userManager from '@/auth/user-manager';
+import userManager, { login } from '@/auth/user-manager';
 import { createRouter, createWebHistory } from 'vue-router'
 import demoRoutes from './demoRoutes'
 
@@ -47,12 +46,15 @@ export default router
 
 router.beforeEach(async(to, from, next) => {
   document.title = `${to.meta.title}`
-
-  // const user = await userManager.getUser();
-  // if (!user) {
-  //   await oAuthSignin();
-  //   return;
-  // }
+  if (to.path === '/callback') {
+    next();
+    return;
+  }
+  const user = await userManager.getUser();
+  if (!user) {
+    login();
+    return;
+  }
 
   next()
 })

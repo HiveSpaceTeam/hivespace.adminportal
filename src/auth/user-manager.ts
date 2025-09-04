@@ -1,4 +1,4 @@
-import { UserManager, WebStorageStateStore } from 'oidc-client-ts';
+import { User, UserManager, WebStorageStateStore } from 'oidc-client-ts';
 import appConfig from '@/config/appConfig';
 
 const oidcSettings = {
@@ -16,4 +16,21 @@ const oidcSettings = {
 
 const userManager = new UserManager(oidcSettings);
 
+export const login = (): Promise<void> => {
+  return userManager.signinRedirect();
+};
+
+export const logout = (): Promise<void> => {
+  return userManager.signoutRedirect();
+};
+
+export const getUser = (): Promise<User | null> => {
+  return userManager.getUser();
+};
+
+export const handleLoginCallback = (): Promise<User> => {
+  return userManager.signinRedirectCallback();
+};
+
+// Export the userManager if you need to access it directly
 export default userManager;
