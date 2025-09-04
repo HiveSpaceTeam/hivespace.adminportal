@@ -21,7 +21,6 @@ onMounted(async () => {
   } catch (error) {
     // Handle error, e.g., redirect to error page or show message
     console.error('Callback error:', error);
-    router.push({ path: '/login' });
   }
 });
 </script>
