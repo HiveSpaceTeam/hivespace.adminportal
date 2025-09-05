@@ -12,20 +12,24 @@
               <!-- Search Input -->
               <div class="flex items-center justify-end gap-2">
                 <div class="w-full sm:w-64">
-                  <input type="text" :value="searchQuery" @input="tableHandleSearchInput"
+                  <Input
+                    type="text"
+                    :value="searchQuery"
+                    @input="tableHandleSearchInput"
                     :placeholder="$t('table.searchPlaceholder')"
-                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
+                    autocomplete="off"
+                  />
                 </div>
 
                 <!-- Status Filter -->
                 <div class="sm:w-48">
-                  <BaseSelect v-model="statusFilter" :options="statusOptions"
+                  <Select v-model="statusFilter" :options="statusOptions"
                     :buttonClass="'w-full text-left px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white flex justify-between items-center'" />
                 </div>
 
                 <!-- Admin Type Filter -->
                 <div class="sm:w-48">
-                  <BaseSelect v-model="adminTypeFilter" :options="adminTypeOptions"
+                  <Select v-model="adminTypeFilter" :options="adminTypeOptions"
                     :buttonClass="'w-full text-left px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white flex justify-between items-center'" />
                 </div>
               </div>
@@ -309,12 +313,12 @@ import { useI18n } from "vue-i18n";
 import PageBreadcrumb from "@/components/common/PageBreadcrumb.vue";
 import AdminLayout from "@/components/layout/AdminLayout.vue";
 import ComponentCard from "@/components/common/ComponentCard.vue";
-import Button from "@/components/ui/Button.vue";
-import BigPlusIcon from "@/icons/BigPlusIcon.vue";
-import RefreshIcon from "@/icons/RefreshIcon.vue";
-import BaseSelect from "@/components/common/BaseSelect.vue";
+import Button from "@/components/common/Button.vue";
+import Select from "@/components/common/Select.vue";
 import DropdownMenu from "@/components/common/DropdownMenu.vue";
-import { HorizontalDots, TrashRedIcon, ToggleOffIcon, ToggleOnIcon } from '@/icons'
+import Input from '@/components/common/Input.vue';
+
+import { HorizontalDots, TrashRedIcon, ToggleOffIcon, ToggleOnIcon, BigPlusIcon, RefreshIcon } from '@/icons'
 const { t } = useI18n();
 
 const currentPageTitle = computed(() => t('pages.adminManagement'));
@@ -621,7 +625,7 @@ const handleSearch = (query: string) => {
   console.log('Search query:', query);
 };
 
-// Filters are bound via v-model on BaseSelect; no manual handlers required here.
+// Filters are bound via v-model on Select; no manual handlers required here.
 
 const refreshAdmins = () => {
   loading.value = true;

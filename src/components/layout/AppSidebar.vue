@@ -191,8 +191,8 @@ const menuGroups = computed<MenuGroup[]>(() => [
         name: t('sidebar.accounts'),
         icon: TableIcon,
         subItems: [
-          { name: t('sidebar.accountList'), path: "/account/user-management", pro: false },
-          { name: t('sidebar.adminList'), path: "/account/admin-management", pro: false },
+          { name: t('pages.userManagement'), path: "/account/user-management", pro: false },
+          { name: t('pages.adminManagement'), path: "/account/admin-management", pro: false },
         ],
       },
       {

@@ -92,10 +92,10 @@
     }
   },
   "pages": {
-    "usersManagement": "Users Management",
+    "userManagement": "User Management",
     "adminManagement": "Admin Management",
-    "listOfUsers": "List of users",
-    "listOfAdmins": "List of admins"
+    "listOfUsers": "List of user",
+    "listOfAdmins": "List of admin"
   },
   "admins": {
     "totalAdmins": "Total Admins:",

@@ -135,7 +135,7 @@
 <script setup>
 
 import { ref } from 'vue'
-import Modal from './Modal.vue'
+import Modal from '@/components/common/Modal.vue'
 import EditIcon from '@/icons/EditIcon.vue'
 import CloseIcon from '@/icons/CloseIcon.vue'
 

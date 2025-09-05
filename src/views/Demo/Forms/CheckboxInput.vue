@@ -3,17 +3,17 @@
     <div class="flex flex-wrap items-center gap-8">
       <!-- Default Checkbox -->
       <div>
-        <BaseCheckbox v-model="checkboxOne">Default</BaseCheckbox>
+        <Checkbox v-model="checkboxOne">Default</Checkbox>
       </div>
 
       <!-- Checked Checkbox -->
       <div>
-        <BaseCheckbox v-model="checkboxTwo">Checked</BaseCheckbox>
+        <Checkbox v-model="checkboxTwo">Checked</Checkbox>
       </div>
 
       <!-- Disabled Checkbox -->
       <div>
-        <BaseCheckbox v-model="checkboxThree" :disabled="true">Disabled</BaseCheckbox>
+        <Checkbox v-model="checkboxThree" :disabled="true">Disabled</Checkbox>
       </div>
     </div>
   </div>
@@ -26,5 +26,5 @@ const checkboxOne = ref(false)
 const checkboxTwo = ref(true)
 const checkboxThree = ref(true)
 
-import BaseCheckbox from '@/components/common/BaseCheckbox.vue'
+import Checkbox from '@/components/common/Checkbox.vue'
 </script>

@@ -23,8 +23,14 @@
         <ComponentCard title="File Input">
           <FileInput />
         </ComponentCard>
-        <ComponentCard title="Checkboxes">
+        <ComponentCard title="Check box">
           <CheckboxInput />
+        </ComponentCard>
+        <ComponentCard title="Radio Buttons">
+          <RadioGroups />
+        </ComponentCard>
+        <ComponentCard title="Toggle Switch">
+          <ToggleSwitches />
         </ComponentCard>
         <ComponentCard title="Dropzone">
           <Dropzone />
@@ -38,15 +44,17 @@
 import { ref } from 'vue';
 import PageBreadcrumb from '@/components/common/PageBreadcrumb.vue';
 import AdminLayout from '@/components/layout/AdminLayout.vue';
-import DefaultInputs from '@/components/forms/FormElements/DefaultInputs.vue';
+import DefaultInputs from '@/views/Demo/Forms/DefaultInputs.vue';
 import ComponentCard from '@/components/common/ComponentCard.vue';
-import SelectInput from '@/components/forms/FormElements/SelectInput.vue';
-import InputState from '@/components/forms/FormElements/InputState.vue';
-import TextArea from '@/components/forms/FormElements/TextArea.vue';
-import InputGroup from '@/components/forms/FormElements/InputGroup.vue';
+import SelectInput from '@/views/Demo/Forms/SelectInput.vue';
+import InputState from '@/views/Demo/Forms/InputState.vue';
+import TextArea from '@/views/Demo/Forms/TextArea.vue';
+import InputGroup from '@/views/Demo/Forms/InputGroup.vue';
 import Dropzone from '@/components/common/Dropzone.vue';
 import FileInput from '@/components/common/FileInput.vue';
-import CheckboxInput from '@/components/forms/FormElements/CheckboxInput.vue';
+import ToggleSwitches from '@/views/Demo/Forms/ToggleSwitches.vue';
+import CheckboxInput from './CheckboxInput.vue';
+import RadioGroups from './RadioGroups.vue'; // New import
 
 const currentPageTitle = ref('Form Elements');
 </script>

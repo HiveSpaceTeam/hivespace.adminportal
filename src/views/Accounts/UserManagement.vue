@@ -10,20 +10,24 @@
             <div class="flex flex-col sm:flex-row gap-4 items-center">
               <!-- Search Input -->
               <div class="w-full sm:w-64">
-                <input type="text" :value="searchQuery" @input="handleSearchInput"
+                <Input
+                  type="text"
+                  :value="searchQuery"
+                  @input="handleSearchInput"
                   :placeholder="$t('table.searchPlaceholder')"
-                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
+                  autocomplete="off"
+                />
               </div>
 
               <!-- Status Filter -->
               <div class="sm:w-48">
-                <BaseSelect v-model="statusFilter" :options="statusOptions"
+                <Select v-model="statusFilter" :options="statusOptions"
                   :buttonClass="'w-full text-left px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white flex justify-between items-center'" />
               </div>
 
               <!-- Seller Filter -->
               <div class="sm:w-48">
-                <BaseSelect v-model="sellerFilter" :options="sellerOptions"
+                <Select v-model="sellerFilter" :options="sellerOptions"
                   :buttonClass="'w-full text-left px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white flex justify-between items-center'" />
               </div>
               <!-- Refresh Button -->
@@ -174,9 +178,10 @@ import PageBreadcrumb from "@/components/common/PageBreadcrumb.vue";
 import AdminLayout from "@/components/layout/AdminLayout.vue";
 import ComponentCard from "@/components/common/ComponentCard.vue";
 import DropdownMenu from "@/components/common/DropdownMenu.vue";
-import BaseSelect from "@/components/common/BaseSelect.vue";
-import Button from '@/components/ui/Button.vue'
-import Badge from '@/components/ui/Badge.vue'
+import Select from "@/components/common/Select.vue";
+import Button from '@/components/common/Button.vue'
+import Badge from '@/components/common/Badge.vue'
+import Input from '@/components/common/Input.vue';
 import { RefreshIcon, CheckGreenIcon, ToggleOffIcon, ToggleOnIcon, TrashRedIcon, HorizontalDots } from '@/icons'
 
 // Options for the filter selects (i18n-backed)
@@ -194,7 +199,7 @@ const sellerOptions = computed(() => [
 
 const { t } = useI18n();
 
-const currentPageTitle = computed(() => t('pages.usersManagement'));
+const currentPageTitle = computed(() => t('pages.userManagement'));
 
 // State management
 const loading = ref(false);
@@ -340,7 +345,7 @@ function handleSearchInput(e: Event) {
   handleSearch(v)
 }
 
-// Filters are bound via v-model on BaseSelect; no manual handlers required here.
+// Filters are bound via v-model on Select; no manual handlers required here.
 
 const refreshUsers = () => {
   loading.value = true;

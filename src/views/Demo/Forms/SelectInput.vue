@@ -1,30 +1,30 @@
 <template>
   <div class="space-y-6">
-    <!-- Single Select Input using BaseSelect -->
+    <!-- Single Select Input using Select -->
     <div>
       <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
         Select Input
       </label>
       <div class="">
-        <BaseSelect v-model="singleSelect" :options="options"
-          :buttonClass="'h-11 w-full text-left px-4 py-2.5 border border-gray-300 rounded-lg bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-white flex justify-between items-center'"
+        <Select v-model="singleSelect" :options="options"
+          :buttonClass="'h-11 w-full text-left px-4 py-2.5 border rounded-lg bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-white flex justify-between items-center'"
           placeholder="Select Option" />
       </div>
     </div>
 
     <!-- Multiple Select Input -->
     <div>
-      <MultipleSelect v-model="selectedItems" :options="options" class="w-full" />
+      <MultipleSelect v-model="selectedItems" :options="options" class="w-full" label="Multi select"/>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import MultipleSelect from './MultipleSelect.vue'
+import MultipleSelect from '@/components/common/MultipleSelect.vue'
 
 // ...existing code...
-import BaseSelect from '@/components/common/BaseSelect.vue'
+import Select from '@/components/common/Select.vue'
 
 const options = [
   { value: 'apple', label: 'Apple' },
