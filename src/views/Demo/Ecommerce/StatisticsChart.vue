@@ -11,20 +11,9 @@
       </div>
 
       <div class="relative">
-        <div class="inline-flex items-center gap-0.5 rounded-lg bg-gray-100 p-0.5 dark:bg-gray-900">
-          <button
-            v-for="option in options"
-            :key="option.value"
-            @click="selected = option.value"
-            :class="[
-              selected === option.value
-                ? 'shadow-theme-xs text-gray-900 dark:text-white bg-white dark:bg-gray-800'
-                : 'text-gray-500 dark:text-gray-400',
-              'px-3 py-2 font-medium rounded-md text-theme-sm hover:text-gray-900 hover:shadow-theme-xs dark:hover:bg-gray-800 dark:hover:text-white',
-            ]"
-          >
-            {{ option.label }}
-          </button>
+        <div class="flex items-center gap-6">
+          <BaseTab :options="options" v-model="selected" />
+          <BaseTab :options="options" v-model="selected" variant="pills"/>
         </div>
       </div>
     </div>
@@ -37,27 +26,44 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
+import BaseTab from '@/components/common/BaseTab.vue'
 
 const options = [
-  { value: 'optionOne', label: 'Monthly' },
-  { value: 'optionTwo', label: 'Quarterly' },
-  { value: 'optionThree', label: 'Annually' },
+  { value: 'monthly', label: 'Monthly' },
+  { value: 'quarterly', label: 'Quarterly' },
+  { value: 'annually', label: 'Annually' },
 ]
 
-const selected = ref('optionOne')
+const selected = ref('monthly')
 import VueApexCharts from 'vue3-apexcharts'
 
-const series = ref([
-  {
-    name: 'Sales',
-    data: [180, 190, 170, 160, 175, 165, 170, 205, 230, 210, 240, 235],
-  },
-  {
-    name: 'Revenue',
-    data: [40, 30, 50, 40, 55, 40, 70, 100, 110, 120, 150, 140],
-  },
-])
+const monthlyData = [
+  { name: 'Sales', data: [180, 190, 170, 160, 175, 165, 170, 205, 230, 210, 240, 235] },
+  { name: 'Revenue', data: [40, 30, 50, 40, 55, 40, 70, 100, 110, 120, 150, 140] },
+]
+
+const quarterlyData = [
+  { name: 'Sales', data: [200, 220, 210, 230] },
+  { name: 'Revenue', data: [60, 70, 65, 80] },
+]
+
+const annuallyData = [
+  { name: 'Sales', data: [1500, 1800] },
+  { name: 'Revenue', data: [500, 600] },
+]
+
+const series = ref(monthlyData)
+
+watch(selected, (newValue) => {
+  if (newValue === 'monthly') {
+    series.value = monthlyData
+  } else if (newValue === 'quarterly') {
+    series.value = quarterlyData
+  } else if (newValue === 'annually') {
+    series.value = annuallyData
+  }
+})
 
 const chartOptions = ref({
   legend: {

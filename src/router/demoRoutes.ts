@@ -7,7 +7,7 @@ export const demoRoutes = import.meta.env.DEV ? [
       {
         path: '',
         name: 'Ecommerce',
-        component: () => import('@/views/Demo/Ecommerce.vue'),
+        component: () => import('@/views/Demo/Ecommerce/Ecommerce.vue'),
         meta: { title: 'eCommerce Dashboard' },
       },
       {

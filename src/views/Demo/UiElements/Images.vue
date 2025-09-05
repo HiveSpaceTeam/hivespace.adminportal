@@ -20,9 +20,9 @@ import { ref } from 'vue'
 import PageBreadcrumb from '@/components/common/PageBreadcrumb.vue'
 import AdminLayout from '@/components/layout/AdminLayout.vue'
 import ComponentCard from '@/components/common/ComponentCard.vue'
-import ResponsiveImage from '@/components/ui/images/ResponsiveImage.vue'
-import TwoColumnImageGrid from '@/components/ui/images/TwoColumnImageGrid.vue'
-import ThreeColumnImageGrid from '@/components/ui/images/ThreeColumnImageGrid.vue'
+import ResponsiveImage from '@/components/common/images/ResponsiveImage.vue'
+import TwoColumnImageGrid from '@/components/common/images/TwoColumnImageGrid.vue'
+import ThreeColumnImageGrid from '@/components/common/images/ThreeColumnImageGrid.vue'
 const currentPageTitle = ref('Images')
 </script>
 
