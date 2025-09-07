@@ -228,7 +228,7 @@ import FullCalendar from '@fullcalendar/vue3'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
-import Modal from '@/components/profile/Modal.vue'
+import Modal from '@/components/common/Modal.vue'
 
 const calendarRef = ref(null)
 const isOpen = ref(false)
