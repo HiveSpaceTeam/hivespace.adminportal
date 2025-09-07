@@ -88,7 +88,7 @@
 <script setup>
 
 import { ref } from 'vue'
-import Button from '@/components/ui/Button.vue'
+import Button from '@/components/common/Button.vue'
 import FilterIcon from '@/icons/FilterIcon.vue'
 
 const products = ref([
