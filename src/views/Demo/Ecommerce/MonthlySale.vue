@@ -43,7 +43,7 @@ const series = ref([
 const chartOptions = ref({
   colors: ['#465fff'],
   chart: {
-    fontFamily: 'Outfit, sans-serif',
+    fontFamily: 'Inter, sans-serif',
     type: 'bar',
     toolbar: {
       show: false,
@@ -91,7 +91,7 @@ const chartOptions = ref({
     show: true,
     position: 'top',
     horizontalAlign: 'left',
-    fontFamily: 'Outfit',
+    fontFamily: 'Inter',
     markers: {
       radius: 99,
     },
