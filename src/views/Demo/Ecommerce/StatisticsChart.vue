@@ -27,7 +27,7 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue'
-import BaseTab from '@/components/common/BaseTab.vue'
+import BaseTab from '@/components/common/Tab.vue'
 
 const options = [
   { value: 'monthly', label: 'Monthly' },

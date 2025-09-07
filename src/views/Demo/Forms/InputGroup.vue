@@ -82,7 +82,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 
-import BaseInput from '@/components/common/BaseInput.vue'
+import BaseInput from '@/components/common/Input.vue'
 import MailIcon from '@/icons/MailIcon.vue'
 import ChevronDownIcon from '@/icons/ChevronDownIcon.vue'
 import CopyIcon from '@/icons/CopyIcon.vue'
