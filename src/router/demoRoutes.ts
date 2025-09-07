@@ -29,6 +29,12 @@ export const demoRoutes = import.meta.env.DEV ? [
         meta: { title: 'Form Elements' },
       },
       {
+        path: 'quill',
+        name: 'Quill',
+        component: () => import('@/views/Demo/Forms/Quill.vue'),
+        meta: { title: 'Quill' },
+      },
+      {
         path: 'basic-tables',
         name: 'Basic Tables',
         component: () => import('@/views/Demo/Tables/BasicTables.vue'),
