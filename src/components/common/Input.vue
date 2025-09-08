@@ -1,17 +1,22 @@
 <template>
   <div>
-    <label v-if="label" :for="id" class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+    <label v-if="label" :for="id" :class="[
+      'mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400',
+      required ? 'required-label' : ''
+    ]">
       {{ label }}
     </label>
     <div class="relative">
       <slot name="prepend" />
 
-      <input :id="id" :type="type" :placeholder="placeholder" :value="modelValue" :disabled="disabled" @input="onInput"
-        @focus="(e) => emit('focus', e)" @blur="(e) => emit('blur', e)" :class="computedClass" v-bind="attrs" />
+      <input :id="id" :type="type" :placeholder="placeholder" :value="modelValue" :disabled="disabled"
+        :required="required" @input="onInput" @focus="(e) => emit('focus', e)" @blur="(e) => emit('blur', e)"
+        :class="computedClass" v-bind="attrs" />
 
       <slot name="append" />
     </div>
   </div>
+
 </template>
 
 <script setup lang="ts">
@@ -28,6 +33,7 @@ const props = withDefaults(defineProps<{
   placeholder?: string
   disabled?: boolean
   inputClass?: string
+  required?: boolean
 }>(), {
   modelValue: '',
   label: '',
@@ -36,6 +42,7 @@ const props = withDefaults(defineProps<{
   placeholder: '',
   disabled: false,
   inputClass: '',
+  required: false,
 })
 
 const emit = defineEmits<{
