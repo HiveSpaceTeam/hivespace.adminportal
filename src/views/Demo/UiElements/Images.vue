@@ -3,13 +3,7 @@
     <PageBreadcrumb :pageTitle="currentPageTitle" />
     <div class="space-y-5 sm:space-y-6">
       <ComponentCard title="Responsive Image">
-        <ResponsiveImage />
-      </ComponentCard>
-      <ComponentCard title="Image in 2 Grid">
-        <TwoColumnImageGrid />
-      </ComponentCard>
-      <ComponentCard title="Image in 3 Grid">
-        <ThreeColumnImageGrid />
+        <ResponsiveImage src="/images/cards/card-01.jpg" alt="Sample image" />
       </ComponentCard>
     </div>
   </AdminLayout>

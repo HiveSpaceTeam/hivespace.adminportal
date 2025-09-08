@@ -203,6 +203,7 @@ const menuGroups = computed<MenuGroup[]>(() => [
           { name: "Calendar", path: "/demo/calendar" },
           { name: "User Profile", path: "/demo/profile" },
           { name: "Form Elements", path: "/demo/form-elements" },
+          { name: "Quill", path: "/demo/quill" },
           { name: "Basic Tables", path: "/demo/basic-tables" },
           { name: "Black Page", path: "/demo/blank" },
           { name: "404 Page", path: "/demo/error-404" },
