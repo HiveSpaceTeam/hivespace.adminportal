@@ -73,6 +73,8 @@ import XIcon from "./XIcon.vue";
 import EyeIcon from "./EyeIcon.vue";
 import EyeOffIcon from "./EyeOffIcon.vue";
 import PaymentIcon from "./PaymentIcon.vue";
+import ShowPasswordIcon from "./ShowPasswordIcon.vue";
+import HidePasswordIcon from "./HidePasswordIcon.vue";
 
 export {
   BarChartIcon,
@@ -123,6 +125,8 @@ export {
   XIcon,
   EyeIcon,
   EyeOffIcon,
+  ShowPasswordIcon,
+  HidePasswordIcon,
   PaymentIcon,
   TableIcon,
   ListIcon,

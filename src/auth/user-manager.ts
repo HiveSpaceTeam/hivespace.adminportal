@@ -1,4 +1,6 @@
 import { User, UserManager, WebStorageStateStore } from 'oidc-client-ts';
+import type { AppUser } from '@/types/app-user'
+import { toAppUser } from '@/types/app-user'
 import appConfig from '@/config/appConfig';
 
 const oidcSettings = {
@@ -16,6 +18,11 @@ const oidcSettings = {
 
 const userManager = new UserManager(oidcSettings);
 
+export const getCurrentUser = async (): Promise<AppUser | null> => {
+  const user = await userManager.getUser();
+  return toAppUser(user)
+}
+
 export const login = (): Promise<void> => {
   return userManager.signinRedirect();
 };
@@ -24,8 +31,9 @@ export const logout = (): Promise<void> => {
   return userManager.signoutRedirect();
 };
 
-export const getUser = (): Promise<User | null> => {
-  return userManager.getUser();
+export const getUser = async (): Promise<AppUser | null> => {
+  const user = await userManager.getUser();
+  return toAppUser(user)
 };
 
 export const handleLoginCallback = (): Promise<User> => {

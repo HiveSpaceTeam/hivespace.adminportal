@@ -2,17 +2,15 @@
   <div class="relative" ref="rootRef" :style="{ '--menu-width': menuWidthPx + 'px' }">
     <label v-if="props.label" class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">{{ props.label
     }}</label>
-    
+
     <div @click="toggleDropdown" @keydown.enter.prevent="toggleDropdown" @keydown.space.prevent="toggleDropdown"
-      role="button" tabindex="0"
-      :class="[
+      role="button" tabindex="0" :class="[
         'h-11 flex items-center w-full appearance-none rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800',
         disabled ? 'cursor-not-allowed opacity-75' : 'cursor-pointer',
       ]">
       <span v-if="!selectedLabel" class="text-gray-400">{{ placeholder }}</span>
       <span v-else class="truncate">{{ selectedLabel }}</span>
-      <ChevronDownIcon class="ml-auto text-gray-400 transition-transform"
-        :class="{ 'rotate-180': isOpen }" />
+      <ChevronDownIcon class="ml-auto text-gray-400 transition-transform" :class="{ 'rotate-180': isOpen }" />
     </div>
 
     <transition enter-active-class="transition duration-100 ease-out" enter-from-class="transform scale-95 opacity-0"
@@ -37,7 +35,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, onMounted, onBeforeUnmount, nextTick, watch } from 'vue'
+import { computed, ref, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import ChevronDownIcon from '@/icons/ChevronDownIcon.vue'
 import CheckLargeIcon from '@/icons/CheckLargeIcon.vue' // New import
 
@@ -97,10 +95,11 @@ onBeforeUnmount(() => {
   document.removeEventListener('click', handleClickOutside)
 })
 
-const options = props.options || []
+// Make options reactive to prop changes (important for i18n label updates)
+const options = computed(() => props.options ?? [])
 
 const selectedLabel = computed(() => {
-  const found = options.find(o => o.value === props.modelValue)
+  const found = options.value.find(o => o.value === props.modelValue)
   return found ? found.label : ''
 })
 

@@ -1,24 +1,10 @@
 <template>
   <div class="flex flex-col gap-5">
-    <RadioGroup
-      v-model="selectedRadio1"
-      :options="radioOptions1"
-      name="radioGroupExample1"
-      direction="horizontal"
-    />
-    <RadioGroup
-      v-model="selectedRadio2"
-      :options="radioOptions2"
-      name="radioGroupExample2"
-      direction="vertical"
-    />
-    <!-- New single BaseRadio for demo -->
+    <RadioGroup v-model="selectedRadio1" :options="radioOptions1" name="radioGroupExample1" direction="horizontal" />
+    <RadioGroup v-model="selectedRadio2" :options="radioOptions2" name="radioGroupExample2" direction="vertical" />
+    <!-- New single Radio for demo -->
     <div>
-      <Radio
-        v-model="selectedSingleRadio"
-        value="single"
-        name="singleRadioExample"
-      >
+      <Radio v-model="selectedSingleRadio" value="single" name="singleRadioExample">
         Single Radio
       </Radio>
     </div>
@@ -28,7 +14,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import RadioGroup from '@/components/common/RadioGroup.vue'
-import Radio from '@/components/common/Radio.vue' // Added import for BaseRadio
+import Radio from '@/components/common/Radio.vue' // Added import for Radio
 
 const selectedRadio1 = ref('default')
 const radioOptions1 = [

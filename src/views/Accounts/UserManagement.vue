@@ -10,13 +10,8 @@
             <div class="flex flex-col sm:flex-row gap-4 items-center">
               <!-- Search Input -->
               <div class="w-full sm:w-64">
-                <Input
-                  type="text"
-                  :value="searchQuery"
-                  @input="handleSearchInput"
-                  :placeholder="$t('table.searchPlaceholder')"
-                  autocomplete="off"
-                />
+                <Input type="text" :value="searchQuery" @input="handleSearchInput"
+                  :placeholder="$t('table.searchPlaceholder')" autocomplete="off" />
               </div>
 
               <!-- Status Filter -->
@@ -32,9 +27,11 @@
               </div>
               <!-- Refresh Button -->
               <div class="sm:ml-auto">
-                <Button :startIcon="RefreshIcon" variant="outline" size="sm" @click="refreshUsers">{{
-                  $t('actions.refresh')
-                }}</Button>
+                <Button :startIcon="RefreshIcon" variant="outline" @click="refreshUsers">
+                  {{
+                    $t('actions.refresh')
+                  }}
+                </Button>
               </div>
             </div>
           </div>

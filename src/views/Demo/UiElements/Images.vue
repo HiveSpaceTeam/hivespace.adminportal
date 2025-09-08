@@ -1,7 +1,7 @@
 <template>
   <AdminLayout>
     <PageBreadcrumb :pageTitle="currentPageTitle" />
-    <div className="space-y-5 sm:space-y-6">
+    <div class="space-y-5 sm:space-y-6">
       <ComponentCard title="Responsive Image">
         <ResponsiveImage />
       </ComponentCard>
@@ -16,14 +16,14 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import PageBreadcrumb from '@/components/common/PageBreadcrumb.vue'
-import AdminLayout from '@/components/layout/AdminLayout.vue'
-import ComponentCard from '@/components/common/ComponentCard.vue'
-import ResponsiveImage from '@/components/common/images/ResponsiveImage.vue'
-import TwoColumnImageGrid from '@/components/common/images/TwoColumnImageGrid.vue'
-import ThreeColumnImageGrid from '@/components/common/images/ThreeColumnImageGrid.vue'
-const currentPageTitle = ref('Images')
+import { ref } from 'vue';
+import PageBreadcrumb from '@/components/common/PageBreadcrumb.vue';
+import AdminLayout from '@/components/layout/AdminLayout.vue';
+import ComponentCard from '@/components/common/ComponentCard.vue';
+import ResponsiveImage from '@/components/common/ResponsiveImage.vue';
+import TwoColumnImageGrid from '@/components/common/TwoColumnImageGrid.vue';
+import ThreeColumnImageGrid from '@/components/common/ThreeColumnImageGrid.vue';
+const currentPageTitle = ref('Images');
 </script>
 
 <style></style>

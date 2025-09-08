@@ -50,11 +50,11 @@ router.beforeEach(async(to, from, next) => {
     next();
     return;
   }
-  // const user = await userManager.getUser();
-  // if (!user) {
-  //   login();
-  //   return;
-  // }
+  const user = await userManager.getUser();
+  if (!user) {
+    login();
+    return;
+  }
 
   next()
 })
