@@ -15,12 +15,14 @@ HiveSpace Admin Portal cung cấp hệ thống Modal đầy đủ tính năng v�
 - **Save/Discard Dialog** - 3 buttons: Save/Cancel/Discard
 - **Loading Modal** - Async operations với loading state
 - **Custom Content Modal** - Form hoặc custom content
+- **Auto-sized Modal** - Tự động điều chỉnh kích thước theo nội dung
 
 ### Visual Features
-- ✅ **Centered positioning** tại top-center của màn hình
+- ✅ **Flexible positioning** - có thể đặt ở vị trí bất kỳ
+- ✅ **Vertical layout** - buttons nằm dưới content
 - ✅ **Transparent backdrop** với subtle overlay
 - ✅ **Smooth animations** (fade in/out, scale effects)
-- ✅ **Icon variants** cho từng loại modal
+- ✅ **Icon variants** với rounded styling cho từng loại modal
 - ✅ **Color coding** theo semantic meaning
 - ✅ **Multiple sizes** (sm, md, lg, xl)
 - ✅ **Dark mode support** đầy đủ
@@ -340,7 +342,7 @@ const resetCustomForm = () => {
 | `modelValue` | `boolean` | - | ✅ | Show/hide modal state |
 | `variant` | `ModalVariant` | `'confirm'` | ❌ | Modal type and styling |
 | `size` | `ModalSize` | `'md'` | ❌ | Modal size |
-| `title` | `string` | - | ✅ | Modal header title |
+| `title` | `string` | - | ❌ | Modal header title (optional) |
 | `message` | `string` | - | ❌ | Modal body message |
 | `showIcon` | `boolean` | `true` | ❌ | Show/hide variant icon |
 | `confirmText` | `string` | `'Confirm'` | ❌ | Confirm button text |
@@ -350,6 +352,7 @@ const resetCustomForm = () => {
 | `thirdVariant` | `ButtonVariant` | `'secondary'` | ❌ | Third button style |
 | `loading` | `boolean` | `false` | ❌ | Loading state |
 | `closeOnBackdrop` | `boolean` | `true` | ❌ | Allow backdrop click to close |
+| `autoSize` | `boolean` | `false` | ❌ | Auto-size modal based on content |
 
 ### Types
 
@@ -390,12 +393,12 @@ export type ButtonVariant = 'primary' | 'secondary' | 'danger' | 'warning' | 'su
 
 ### Modal Sizes
 
-| Size | Max Width | Use Case |
+| Size | Min Width | Use Case |
 |------|-----------|----------|
-| `sm` | `384px` | Simple confirmations |
-| `md` | `512px` | Standard dialogs |
-| `lg` | `672px` | Forms and detailed content |
-| `xl` | `896px` | Complex forms or data |
+| `sm` | `280px` | Simple confirmations |
+| `md` | `320px` | Standard dialogs |
+| `lg` | `480px` | Forms and detailed content |
+| `xl` | `640px` | Complex forms or data |
 
 ### Button Variants
 
@@ -445,6 +448,7 @@ export type ButtonVariant = 'primary' | 'secondary' | 'danger' | 'warning' | 'su
 3. **Poor error handling** - Handle network errors gracefully
 4. **Inconsistent button text** - Use consistent language
 5. **Too many modals** - Consider inline alternatives
+6. **Hard-coded positioning** - Sử dụng layout system để quản lý positioning
 
 ### ✅ Best approach:
 
@@ -453,6 +457,8 @@ export type ButtonVariant = 'primary' | 'secondary' | 'danger' | 'warning' | 'su
 3. **Loading states** - Show progress cho async operations
 4. **Consistent UX** - Same patterns across app
 5. **Alternative patterns** - Consider Toast cho simple confirmations
+6. **Flexible layout** - Tận dụng vertical layout cho nội dung phức tạp
+7. **Auto-sizing** - Sử dụng `autoSize` property khi nội dung thay đổi động
 
 ## 📱 Responsive Behavior
 
