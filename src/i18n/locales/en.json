@@ -130,7 +130,25 @@
     "passwordGood": "Good",
     "passwordStrong": "Strong",
     "adminCreatedSuccess": "Admin {email} created successfully!",
-    "adminCreatedError": "Failed to create admin. Please try again."
+    "adminCreatedError": "Failed to create admin. Please try again.",
+    "alerts": {
+      "success": {
+        "title": "Success!",
+        "message": "Admin {email} has been created successfully and can now access the system."
+      },
+      "error": {
+        "title": "Creation Failed",
+        "message": "Unable to create admin account. Please check the information and try again."
+      },
+      "validation": {
+        "title": "Validation Error",
+        "message": "Please correct the highlighted fields and try again."
+      },
+      "network": {
+        "title": "Connection Error",
+        "message": "Unable to connect to server. Please check your connection and try again."
+      }
+    }
   },
   "users": {
     "totalUsers": "Total Users:",

@@ -44,7 +44,7 @@
           </div>
 
           <!-- Loading State -->
-          <div v-if="loading" class="p-8 text-center">
+          <div v-if="loading || appStore.isLoading" class="p-8 text-center">
             <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
             <p class="mt-2 text-gray-600 dark:text-gray-400">{{ $t('table.loading') }}</p>
           </div>
@@ -56,7 +56,7 @@
                 <tr class="border-b border-gray-200 dark:border-gray-700">
                   <th class="px-5 py-3 text-left w-1/8 sm:px-6">
                     <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">{{ $t('table.emailAddress')
-                      }}</p>
+                    }}</p>
                   </th>
                   <th class="px-5 py-3 text-left w-1/8 sm:px-6">
                     <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">{{ $t('table.fullName') }}
@@ -67,7 +67,7 @@
                   </th>
                   <th class="px-5 py-3 text-center w-1/8 sm:px-6" v-if="currentUser?.isSystemAdmin()">
                     <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">{{ $t('table.isSystemAdmin')
-                      }}</p>
+                    }}</p>
                   </th>
                   <th class="px-5 py-3 text-left w-1/8 sm:px-6">
                     <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">{{ $t('table.createdDate')
@@ -195,12 +195,15 @@ import Select from "@/components/common/Select.vue";
 import DropdownMenu from "@/components/common/DropdownMenu.vue";
 import Input from '@/components/common/Input.vue';
 import { useModal } from '@/composables/useModal'
+import { useConfirmModal } from '@/composables/useConfirmModal'
+import { useAppStore } from '@/stores/app'
 import AdminDetailModal from './Popups/AdminDetailModal.vue'
 
 import { HorizontalDots, TrashRedIcon, ToggleOffIcon, ToggleOnIcon, BigPlusIcon, RefreshIcon } from '@/icons'
 import { getCurrentUser } from "@/auth/user-manager";
 import type { AppUser } from "@/types/app-user";
 const { t } = useI18n();
+const appStore = useAppStore();
 
 const currentPageTitle = computed(() => t('pages.adminManagement'));
 
@@ -224,8 +227,9 @@ const statusFilter = ref('all');
 const adminTypeFilter = ref('all');
 const lastUpdated = ref('');
 
-// Global modal handler
+// Global modal handlers
 const { openModal } = useModal()
+const { deleteConfirm } = useConfirmModal()
 
 // Current User (simulate current admin user)
 const currentUser = ref<AppUser | null>(null);
@@ -393,8 +397,15 @@ type Admin = {
   avatar?: string;
 }
 
-const tableHandleDelete = (admin: Admin) => {
-  handleDeleteAdmin(admin.id)
+const tableHandleDelete = async (admin: Admin) => {
+  const confirmed = await deleteConfirm(
+    'Delete Admin',
+    `Are you sure you want to delete admin "${admin.email}"? This action cannot be undone.`
+  )
+
+  if (confirmed) {
+    handleDeleteAdmin(admin.id)
+  }
 }
 
 const tableHandleToggleStatus = (admin: Admin) => {
@@ -414,10 +425,24 @@ const handleDeleteAdmin = (adminId: number) => {
   loading.value = true;
   // Simulate API call
   setTimeout(() => {
-    admins.value = admins.value.filter(admin => admin.id !== adminId);
-    loading.value = false;
-    updateLastUpdated();
-    console.log('Admin deleted:', adminId);
+    try {
+      const admin = admins.value.find(a => a.id === adminId);
+      admins.value = admins.value.filter(admin => admin.id !== adminId);
+      loading.value = false;
+      updateLastUpdated();
+
+      appStore.notifySuccess(
+        'Deleted Successfully',
+        `Admin ${admin?.email || 'user'} has been deleted successfully.`
+      );
+    } catch (err) {
+      loading.value = false;
+      console.error('Delete error:', err);
+      appStore.notifyError(
+        'Delete Failed',
+        'Unable to delete admin. Please try again.'
+      );
+    }
   }, 500);
 };
 
@@ -425,14 +450,28 @@ const handleToggleStatus = (adminId: number) => {
   loading.value = true;
   // Simulate API call
   setTimeout(() => {
-    const admin = admins.value.find(a => a.id === adminId);
-    if (admin) {
-      admin.status = admin.status === 'Active' ? 'Inactive' : 'Active';
-      admin.lastUpdatedDate = new Date().toISOString().split('T')[0];
+    try {
+      const admin = admins.value.find(a => a.id === adminId);
+      if (admin) {
+        const newStatus = admin.status === 'Active' ? 'Inactive' : 'Active';
+        admin.status = newStatus;
+        admin.lastUpdatedDate = new Date().toISOString().split('T')[0];
+
+        appStore.notifySuccess(
+          'Status Updated',
+          `Admin ${admin.email} has been ${newStatus.toLowerCase()}.`
+        );
+      }
+      loading.value = false;
+      updateLastUpdated();
+    } catch (err) {
+      loading.value = false;
+      console.error('Status update error:', err);
+      appStore.notifyError(
+        'Update Failed',
+        'Unable to update admin status. Please try again.'
+      );
     }
-    loading.value = false;
-    updateLastUpdated();
-    console.log('Status toggled for admin:', adminId);
   }, 500);
 };
 
@@ -460,30 +499,63 @@ const updateLastUpdated = () => {
 // Open global AdminDetail modal and handle result
 type AdminModalResult = { action?: 'create' | 'cancel', data?: { email: string, isSystemAdmin: boolean } } | undefined
 const openAddAdminModal = async () => {
-  const existing = admins.value.map(a => a.email)
-  const result = await openModal(AdminDetailModal, {
-    title: t('admins.addNewAdmin'),
-    currentUserIsSystemAdmin: currentUser.value?.isSystemAdmin(),
-    existingEmails: existing
-  }) as AdminModalResult
-  if (result?.action === 'create' && result.data) {
-    const email = result.data.email
-    const isSystem = !!result.data.isSystemAdmin
-    const newAdminData = {
-      id: admins.value.length + 1,
-      email,
-      fullName: email.split('@')[0].replace('.', ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()),
-      adminType: isSystem ? 'System Admin' : 'Regular Admin',
-      status: 'Active',
-      isSystemAdmin: isSystem,
-      createdDate: new Date().toISOString().split('T')[0],
-      lastLoginDate: 'Never',
-      lastUpdatedDate: new Date().toISOString().split('T')[0],
-      avatar: '/images/user/user-default.jpg'
+  try {
+    const existing = admins.value.map(a => a.email)
+    const result = await openModal(AdminDetailModal, {
+      title: t('admins.addNewAdmin'),
+      currentUserIsSystemAdmin: currentUser.value?.isSystemAdmin(),
+      existingEmails: existing
+    }) as AdminModalResult
+
+    if (result?.action === 'create' && result.data) {
+      const email = result.data.email
+      const isSystem = !!result.data.isSystemAdmin
+
+      // Here you would make actual API call
+      // For now, simulate API call with timeout
+      appStore.setLoading(true)
+
+      setTimeout(() => {
+        try {
+          const newAdminData = {
+            id: admins.value.length + 1,
+            email,
+            fullName: email.split('@')[0].replace('.', ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()),
+            adminType: isSystem ? 'System Admin' : 'Regular Admin',
+            status: 'Active',
+            isSystemAdmin: isSystem,
+            createdDate: new Date().toISOString().split('T')[0],
+            lastLoginDate: 'Never',
+            lastUpdatedDate: new Date().toISOString().split('T')[0],
+            avatar: '/images/user/user-default.jpg'
+          }
+
+          admins.value.unshift(newAdminData)
+          updateLastUpdated()
+
+          // Show success alert
+          appStore.notifySuccess(
+            t('admins.alerts.success.title'),
+            t('admins.alerts.success.message', { email: newAdminData.email })
+          )
+
+        } catch (err) {
+          console.error('Error creating admin:', err)
+          appStore.notifyError(
+            t('admins.alerts.error.title'),
+            t('admins.alerts.error.message')
+          )
+        } finally {
+          appStore.setLoading(false)
+        }
+      }, 1000) // Simulate API delay
     }
-    admins.value.unshift(newAdminData)
-    updateLastUpdated()
-    alert(t('admins.adminCreatedSuccess', { email: newAdminData.email }))
+  } catch (err) {
+    console.error('Error opening modal:', err)
+    appStore.notifyError(
+      t('admins.alerts.network.title'),
+      t('admins.alerts.network.message')
+    )
   }
 }
 

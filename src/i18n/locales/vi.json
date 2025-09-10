@@ -130,7 +130,25 @@
     "passwordGood": "Tốt",
     "passwordStrong": "Mạnh",
     "adminCreatedSuccess": "Admin {email} đã được tạo thành công!",
-    "adminCreatedError": "Không thể tạo admin. Vui lòng thử lại."
+    "adminCreatedError": "Không thể tạo admin. Vui lòng thử lại.",
+    "alerts": {
+      "success": {
+        "title": "Thành công!",
+        "message": "Admin {email} đã được tạo thành công và có thể truy cập hệ thống."
+      },
+      "error": {
+        "title": "Tạo thất bại",
+        "message": "Không thể tạo tài khoản admin. Vui lòng kiểm tra thông tin và thử lại."
+      },
+      "validation": {
+        "title": "Lỗi xác thực",
+        "message": "Vui lòng sửa các trường được đánh dấu và thử lại."
+      },
+      "network": {
+        "title": "Lỗi kết nối",
+        "message": "Không thể kết nối với máy chủ. Vui lòng kiểm tra kết nối và thử lại."
+      }
+    }
   },
   "users": {
     "totalUsers": "Tổng số người dùng:",

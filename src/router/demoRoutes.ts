@@ -11,6 +11,12 @@ export const demoRoutes = import.meta.env.DEV ? [
         meta: { title: 'eCommerce Dashboard' },
       },
       {
+        path: 'components',
+        name: 'Components',
+        component: () => import('@/views/Demo/ComponentsIndex.vue'),
+        meta: { title: 'Component Library' },
+      },
+      {
         path: 'calendar',
         name: 'Calendar',
         component: () => import('@/views/Demo/Others/Calendar.vue'),
@@ -55,6 +61,18 @@ export const demoRoutes = import.meta.env.DEV ? [
         name: 'Alerts',
         component: () => import('@/views/Demo/UiElements/Alerts.vue'),
         meta: { title: 'Alerts' },
+      },
+      {
+        path: 'toast',
+        name: 'Toast',
+        component: () => import('@/views/Demo/Toast/ToastDemo.vue'),
+        meta: { title: 'Toast Notifications' },
+      },
+      {
+        path: 'modal',
+        name: 'Modal',
+        component: () => import('@/views/Demo/Modal/ModalDemo.vue'),
+        meta: { title: 'Modal Popups' },
       },
       {
         path: 'avatars',
