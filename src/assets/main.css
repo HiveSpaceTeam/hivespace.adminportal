@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap')
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400&subset=latin,vietnamese&display=swap')
 layer(base);
 
 @import 'tailwindcss';
@@ -7,7 +7,7 @@ layer(base);
 
 @theme {
   --font-*: initial;
-  --font-outfit: 'Inter', sans-serif;
+  --font-outfit: 'Montserrat', 'Inter', 'Roboto', 'Noto Sans Vietnamese', 'Segoe UI', system-ui, -apple-system, sans-serif;
 
   --breakpoint-*: initial;
   --breakpoint-2xsm: 375px;
@@ -185,6 +185,8 @@ layer(base);
   }
   body {
     @apply relative font-normal font-outfit z-1 bg-gray-50;
+    /* Using Montserrat Regular 400 with Vietnamese support and fallback fonts */
+    font-family: 'Montserrat', 'Inter', 'Roboto', 'Noto Sans Vietnamese', 'Segoe UI', system-ui, -apple-system, sans-serif;
   }
 }
 
