@@ -148,6 +148,46 @@
         "title": "Connection Error",
         "message": "Unable to connect to server. Please check your connection and try again."
       }
+    },
+    "actions": {
+      "deleteAdmin": {
+        "title": "Delete Admin",
+        "message": "Are you sure you want to delete admin \"{email}\"? This action cannot be undone."
+      }
+    },
+    "notifications": {
+      "deleteSuccess": {
+        "title": "Deleted Successfully",
+        "message": "Admin {email} has been deleted successfully."
+      },
+      "deleteFailed": {
+        "title": "Delete Failed", 
+        "message": "Unable to delete admin. Please try again."
+      },
+      "statusUpdateSuccess": {
+        "title": "Status Updated",
+        "message": "Admin {email} has been {status}."
+      },
+      "statusUpdateFailed": {
+        "title": "Update Failed",
+        "message": "Unable to update admin status. Please try again."
+      }
+    },
+    "values": {
+      "status": {
+        "active": "Active",
+        "inactive": "Inactive",
+        "activated": "activated",
+        "deactivated": "deactivated"
+      },
+      "type": {
+        "system": "System Admin",
+        "regular": "Regular Admin"
+      },
+      "lastLogin": {
+        "never": "Never"
+      },
+      "user": "user"
     }
   },
   "users": {

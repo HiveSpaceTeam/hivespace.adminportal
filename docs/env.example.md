@@ -8,7 +8,7 @@ VITE_API_BASE_URL=https://localhost:7001/api
 VITE_API_TIMEOUT=30000
 
 # Authentication
-VITE_AUTH_CALLBACK_URL=http://localhost:5173/auth/callback
+VITE_AUTH_CALLBACK_URL=http://localhost:5173/callback
 
 # Application
 VITE_APP_NAME=HiveSpace Admin Portal

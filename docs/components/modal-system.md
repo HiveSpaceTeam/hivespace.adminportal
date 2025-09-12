@@ -2,47 +2,69 @@
 
 ## Tổng quan
 
-HiveSpace Admin Portal cung cấp hệ thống Modal đầy đủ tính năng với component `ConfirmModal.vue` - một giải pháp linh hoạt cho các tình huống cần confirmation, alert, và user interaction.
+HiveSpace Admin Portal cung cấp hệ thống Modal toàn diện với hai thành phần chính:
+
+- **ConfirmModal.vue** - Component modal đơn giản cho confirmations
+- **Modal System** - Hệ thống modal toàn cục với `useModal` + `ModalManager` + `ModalWrapper`
+- **useConfirmModal** - Composable cung cấp API dễ sử dụng cho tất cả modal patterns
+
+## 🏗️ Kiến trúc hệ thống
+
+### 1. ConfirmModal Component
+
+Component standalone cho các confirmation dialogs đơn giản với layout tối ưu:
+
+- Icon + message layout ngang
+- Buttons căn phải (confirm trước, cancel sau)
+- Emit system với payload result
+
+### 2. Modal Infrastructure
+
+- **useModal** - Global modal state management
+- **ModalManager** - Dynamic component rendering
+- **ModalWrapper** - Base modal với vue-final-modal
+- **useConfirmModal** - High-level API cho common patterns
 
 ## 🎯 Tính năng chính
 
 ### Modal Types
-- **Confirm Dialog** - Xác nhận hành động với OK/Cancel
-- **Alert Dialog** - Thông báo với single OK button
-- **Warning Dialog** - Cảnh báo với proceed/cancel options
-- **Delete Confirmation** - Xác nhận xóa với Delete/Keep buttons
-- **Yes/No Dialog** - Lựa chọn binary với Yes/No
+
+- **Confirm Dialog** - Xác nhận hành động với Confirm/Cancel
+- **Alert Dialog** - Thông báo với single OK button  
+- **Warning Dialog** - Cảnh báo với Continue/Cancel options
+- **Delete Confirmation** - Xác nhận xóa với Delete/Cancel buttons
 - **Save/Discard Dialog** - 3 buttons: Save/Cancel/Discard
 - **Loading Modal** - Async operations với loading state
-- **Custom Content Modal** - Form hoặc custom content
-- **Auto-sized Modal** - Tự động điều chỉnh kích thước theo nội dung
+- **Custom Content Modal** - Form hoặc custom content trong ModalWrapper
 
 ### Visual Features
-- ✅ **Flexible positioning** - có thể đặt ở vị trí bất kỳ
-- ✅ **Vertical layout** - buttons nằm dưới content
-- ✅ **Transparent backdrop** với subtle overlay
-- ✅ **Smooth animations** (fade in/out, scale effects)
-- ✅ **Icon variants** với rounded styling cho từng loại modal
-- ✅ **Color coding** theo semantic meaning
-- ✅ **Multiple sizes** (sm, md, lg, xl)
+
+- ✅ **Centered positioning** với backdrop overlay
+- ✅ **Horizontal icon+content layout** trong ConfirmModal
+- ✅ **Reverse button order** (confirm trước, cancel sau)
+- ✅ **Smooth animations** (fade transitions)
+- ✅ **Icon variants** với semantic coloring cho từng loại modal
+- ✅ **Multiple sizes** (sm: 280px, md: 320px, lg: 480px, xl: 640px)
 - ✅ **Dark mode support** đầy đủ
+- ✅ **vue-final-modal integration** cho complex modals
 
 ### Technical Features
+
 - ✅ **Teleport to body** level rendering
-- ✅ **v-model binding** cho show/hide control
+- ✅ **Promise-based API** với async/await support
 - ✅ **Loading states** với disabled buttons
-- ✅ **Backdrop click** control (có thể tắt)
+- ✅ **Backdrop click** và ESC key support (ModalWrapper)
 - ✅ **Custom slots** cho advanced content
 - ✅ **TypeScript support** với full type definitions
-- ✅ **Accessibility** ready với proper focus management
+- ✅ **Global state management** tránh modal stacking
 
 ## 📚 Cách sử dụng
 
-### Import Component
+### Import Composable
 
 ```vue
 <script setup lang="ts">
-import ConfirmModal from '@/components/common/ConfirmModal.vue'
+import { useConfirmModal } from '@/composables/useConfirmModal'
 </script>
 ```
 
@@ -53,33 +75,27 @@ import ConfirmModal from '@/components/common/ConfirmModal.vue'
 ```vue
 <template>
   <div>
-    <Button @click="showConfirmModal = true">Show Confirm</Button>
-    
-    <ConfirmModal
-      v-model="showConfirmModal"
-      title="Confirm Action"
-      message="Are you sure you want to proceed with this action?"
-      confirm-text="Yes, Proceed"
-      cancel-text="Cancel"
-      @confirm="handleConfirm"
-      @cancel="handleCancel"
-    />
+    <Button @click="handleAction">Confirm Action</Button>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { useConfirmModal } from '@/composables/useConfirmModal'
+import { useAppStore } from '@/stores/app'
 
-const showConfirmModal = ref(false)
+const { confirm } = useConfirmModal()
+const appStore = useAppStore()
 
-const handleConfirm = () => {
-  // Handle confirm logic
-  console.log('User confirmed')
-}
+const handleAction = async () => {
+  const confirmed = await confirm(
+    'Confirm Action',
+    'Are you sure you want to proceed with this action?'
+  )
 
-const handleCancel = () => {
-  // Handle cancel logic
-  console.log('User cancelled')
+  if (confirmed) {
+    // Handle confirmation
+    appStore.notifySuccess('Success!', 'Action completed successfully.')
+  }
 }
 </script>
 ```
@@ -88,29 +104,32 @@ const handleCancel = () => {
 
 ```vue
 <template>
-  <ConfirmModal
-    v-model="showDeleteModal"
-    variant="danger"
-    title="Delete Item"
-    message="This action cannot be undone. Are you sure you want to delete this item?"
-    confirm-text="Delete"
-    cancel-text="Keep"
-    confirm-variant="danger"
-    @confirm="deleteItem"
-    @cancel="() => console.log('Delete cancelled')"
-  />
+  <Button @click="handleDelete" variant="danger">Delete Item</Button>
 </template>
 
 <script setup lang="ts">
-const deleteItem = async () => {
-  try {
-    // API call to delete item
-    await apiClient.delete(`/items/${itemId}`)
-    
-    // Show success notification
-    appStore.notifySuccess('Deleted!', 'Item has been deleted successfully.')
-  } catch (error) {
-    appStore.notifyError('Delete Failed', 'Unable to delete item.')
+import { useConfirmModal } from '@/composables/useConfirmModal'
+import { useAppStore } from '@/stores/app'
+
+const { deleteConfirm } = useConfirmModal()
+const appStore = useAppStore()
+
+const handleDelete = async () => {
+  const confirmed = await deleteConfirm(
+    'Delete Item',
+    'This action cannot be undone. Are you sure you want to delete this item?'
+  )
+
+  if (confirmed) {
+    try {
+      // API call to delete item
+      await apiClient.delete(`/items/${itemId}`)
+      
+      // Show success notification
+      appStore.notifySuccess('Deleted!', 'Item has been deleted successfully.')
+    } catch (error) {
+      appStore.notifyError('Delete Failed', 'Unable to delete item.')
+    }
   }
 }
 </script>
@@ -120,43 +139,44 @@ const deleteItem = async () => {
 
 ```vue
 <template>
-  <ConfirmModal
-    v-model="showSaveModal"
-    variant="warning"
-    title="Unsaved Changes"
-    message="You have unsaved changes that will be lost if you navigate away."
-    confirm-text="Save"
-    cancel-text="Cancel"
-    third-text="Discard"
-    confirm-variant="primary"
-    third-variant="danger"
-    @confirm="saveChanges"
-    @third="discardChanges"
-    @cancel="() => console.log('Stay on page')"
-  />
+  <Button @click="handleUnsavedChanges">Exit Form</Button>
 </template>
 
 <script setup lang="ts">
-const saveChanges = async () => {
-  try {
-    // Save form data
-    await saveFormData()
-    appStore.notifySuccess('Saved!', 'Changes saved successfully.')
+import { useConfirmModal } from '@/composables/useConfirmModal'
+import { useAppStore } from '@/stores/app'
+import { useRouter } from 'vue-router'
+
+const { saveChanges } = useConfirmModal()
+const appStore = useAppStore()
+const router = useRouter()
+
+const handleUnsavedChanges = async () => {
+  const result = await saveChanges(
+    'Unsaved Changes',
+    'You have unsaved changes that will be lost if you navigate away.'
+  )
+
+  if (result === 'save') {
+    try {
+      // Save form data
+      await saveFormData()
+      appStore.notifySuccess('Saved!', 'Changes saved successfully.')
+      
+      // Navigate away
+      router.push('/next-page')
+    } catch (error) {
+      appStore.notifyError('Save Failed', 'Unable to save changes.')
+    }
+  } else if (result === 'discard') {
+    // Clear form or reset
+    resetForm()
+    appStore.notifyInfo('Discarded', 'Changes have been discarded.')
     
     // Navigate away
     router.push('/next-page')
-  } catch (error) {
-    appStore.notifyError('Save Failed', 'Unable to save changes.')
   }
-}
-
-const discardChanges = () => {
-  // Clear form or reset
-  resetForm()
-  appStore.notifyInfo('Discarded', 'Changes have been discarded.')
-  
-  // Navigate away
-  router.push('/next-page')
+  // result === 'cancel' means stay on page
 }
 </script>
 ```
@@ -165,107 +185,121 @@ const discardChanges = () => {
 
 ```vue
 <template>
-  <ConfirmModal
-    v-model="showProcessingModal"
-    variant="info"
-    title="Processing Data"
-    message="Please wait while we process your request. This may take a few moments."
-    confirm-text="Processing..."
-    :cancel-text="null"
-    :loading="isProcessing"
-    :close-on-backdrop="false"
-    @confirm="startProcessing"
-  />
+  <Button @click="handleProcessData">Process Data</Button>
 </template>
 
 <script setup lang="ts">
-const isProcessing = ref(false)
-const showProcessingModal = ref(false)
+import { useConfirmModal } from '@/composables/useConfirmModal'
+import { useAppStore } from '@/stores/app'
 
-const startProcessing = async () => {
-  isProcessing.value = true
-  
-  try {
-    // Simulate long-running process
-    await processLargeDataset()
-    
-    // Close modal and show success
-    showProcessingModal.value = false
-    appStore.notifySuccess('Complete!', 'Data processed successfully.')
-  } catch (error) {
-    appStore.notifyError('Processing Failed', error.message)
-  } finally {
-    isProcessing.value = false
+const { openConfirmModal } = useConfirmModal()
+const appStore = useAppStore()
+
+const handleProcessData = async () => {
+  // First confirm the action
+  const confirmed = await openConfirmModal({
+    title: 'Process Data?',
+    message: 'This will take approximately 30 seconds to complete.',
+    confirmText: 'Start Processing',
+    variant: 'confirm'
+  })
+
+  if (confirmed === 'confirm') {
+    // Show loading modal (no way to cancel once started)
+    const processing = openConfirmModal({
+      title: 'Processing Data...',
+      message: 'Please wait while we process your request.',
+      confirmText: 'Processing...',
+      cancelText: undefined,
+      loading: true,
+      variant: 'info'
+    })
+
+    try {
+      // Simulate long-running process
+      await processLargeDataset()
+      
+      // Success notification
+      appStore.notifySuccess('Complete!', 'Data processed successfully.')
+    } catch (error) {
+      appStore.notifyError('Processing Failed', error.message)
+    }
   }
 }
 </script>
 ```
 
-#### 5. Custom Content Modal
+#### 5. Custom Content Modal với useModal
 
 ```vue
+<!-- UserFormModal.vue -->
 <template>
-  <ConfirmModal
-    v-model="showCustomModal"
-    variant="info"
-    size="lg"
-    title="User Information"
-    confirm-text="Save"
-    cancel-text="Cancel"
-    @confirm="handleCustomSave"
-    @cancel="resetCustomForm"
-  >
-    <!-- Custom slot content -->
-    <div class="space-y-4">
-      <div>
-        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-          Name *
-        </label>
-        <input 
-          v-model="userForm.name"
-          type="text" 
-          class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
-          placeholder="Enter full name"
-          :class="{ 'border-red-500': errors.name }"
-        >
-        <p v-if="errors.name" class="mt-1 text-sm text-red-600">{{ errors.name }}</p>
-      </div>
-      
-      <div>
-        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-          Email *
-        </label>
-        <input 
-          v-model="userForm.email"
-          type="email" 
-          class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
-          placeholder="Enter email address"
-          :class="{ 'border-red-500': errors.email }"
-        >
-        <p v-if="errors.email" class="mt-1 text-sm text-red-600">{{ errors.email }}</p>
-      </div>
-      
-      <div>
-        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-          Role *
-        </label>
-        <select 
-          v-model="userForm.role"
-          class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
-          :class="{ 'border-red-500': errors.role }"
-        >
-          <option value="">Select a role</option>
-          <option value="admin">Administrator</option>
-          <option value="user">User</option>
-          <option value="moderator">Moderator</option>
-        </select>
-        <p v-if="errors.role" class="mt-1 text-sm text-red-600">{{ errors.role }}</p>
-      </div>
+  <div class="space-y-4">
+    <div>
+      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+        Name *
+      </label>
+      <input 
+        v-model="userForm.name"
+        type="text" 
+        class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
+        placeholder="Enter full name"
+        :class="{ 'border-red-500': errors.name }"
+      >
+      <p v-if="errors.name" class="mt-1 text-sm text-red-600">{{ errors.name }}</p>
     </div>
-  </ConfirmModal>
+    
+    <div>
+      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+        Email *
+      </label>
+      <input 
+        v-model="userForm.email"
+        type="email" 
+        class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
+        placeholder="Enter email address"
+        :class="{ 'border-red-500': errors.email }"
+      >
+      <p v-if="errors.email" class="mt-1 text-sm text-red-600">{{ errors.email }}</p>
+    </div>
+    
+    <div>
+      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+        Role *
+      </label>
+      <select 
+        v-model="userForm.role"
+        class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
+        :class="{ 'border-red-500': errors.role }"
+      >
+        <option value="">Select a role</option>
+        <option value="admin">Administrator</option>
+        <option value="user">User</option>
+        <option value="moderator">Moderator</option>
+      </select>
+      <p v-if="errors.role" class="mt-1 text-sm text-red-600">{{ errors.role }}</p>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="flex justify-end gap-3 pt-4">
+      <Button @click="handleCancel" variant="outline">Cancel</Button>
+      <Button @click="handleSave" variant="primary">Create User</Button>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
+import { reactive } from 'vue'
+import { useAppStore } from '@/stores/app'
+import Button from '@/components/common/Button.vue'
+
+const appStore = useAppStore()
+
+// Emit để đóng modal
+const emit = defineEmits<{
+  (e: 'close', result?: any): void
+}>()
+
 const userForm = reactive({
   name: '',
   email: '',
@@ -305,7 +339,7 @@ const validateForm = () => {
   return isValid
 }
 
-const handleCustomSave = async () => {
+const handleSave = async () => {
   if (!validateForm()) {
     appStore.notifyError('Validation Error', 'Please fix the errors and try again.')
     return
@@ -317,42 +351,84 @@ const handleCustomSave = async () => {
     
     // Success and close
     appStore.notifySuccess('User Created!', `User ${userForm.name} has been created successfully.`)
-    showCustomModal.value = false
-    resetCustomForm()
+    emit('close', { action: 'save', data: userForm })
   } catch (error) {
     appStore.notifyError('Creation Failed', 'Unable to create user.')
   }
 }
 
-const resetCustomForm = () => {
-  userForm.name = ''
-  userForm.email = ''
-  userForm.role = ''
-  Object.keys(errors).forEach(key => errors[key] = '')
+const handleCancel = () => {
+  emit('close', { action: 'cancel' })
+}
+</script>
+
+<!-- Parent Component Usage -->
+<script setup lang="ts">
+import { useModal } from '@/composables/useModal'
+import UserFormModal from './UserFormModal.vue'
+
+const { openModal } = useModal()
+
+const showCustomModal = async () => {
+  const result = await openModal(UserFormModal, {
+    title: 'Create New User',
+    description: 'Fill in the user details below'
+  })
+
+  if (result?.action === 'save') {
+    console.log('User created:', result.data)
+  }
 }
 </script>
 ```
 
 ## 📋 API Reference
 
-### Props
+### useConfirmModal Composable
 
-| Prop | Type | Default | Required | Description |
-|------|------|---------|----------|-------------|
-| `modelValue` | `boolean` | - | ✅ | Show/hide modal state |
-| `variant` | `ModalVariant` | `'confirm'` | ❌ | Modal type and styling |
-| `size` | `ModalSize` | `'md'` | ❌ | Modal size |
-| `title` | `string` | - | ❌ | Modal header title (optional) |
-| `message` | `string` | - | ❌ | Modal body message |
-| `showIcon` | `boolean` | `true` | ❌ | Show/hide variant icon |
-| `confirmText` | `string` | `'Confirm'` | ❌ | Confirm button text |
-| `cancelText` | `string` | `'Cancel'` | ❌ | Cancel button text |
-| `thirdText` | `string` | - | ❌ | Third button text |
-| `confirmVariant` | `ButtonVariant` | `'primary'` | ❌ | Confirm button style |
-| `thirdVariant` | `ButtonVariant` | `'secondary'` | ❌ | Third button style |
-| `loading` | `boolean` | `false` | ❌ | Loading state |
-| `closeOnBackdrop` | `boolean` | `true` | ❌ | Allow backdrop click to close |
-| `autoSize` | `boolean` | `false` | ❌ | Auto-size modal based on content |
+```typescript
+import { useConfirmModal } from '@/composables/useConfirmModal'
+
+const { 
+  confirm, 
+  alert, 
+  deleteConfirm, 
+  warning, 
+  saveChanges, 
+  openConfirmModal 
+} = useConfirmModal()
+```
+
+### Helper Functions
+
+| Function | Parameters | Returns | Description |
+|----------|------------|---------|-------------|
+| `confirm` | `title: string, message?: string` | `Promise<boolean>` | Standard confirmation dialog |
+| `alert` | `title: string, message?: string` | `Promise<void>` | Alert dialog with OK button |
+| `deleteConfirm` | `title: string, message?: string` | `Promise<boolean>` | Delete confirmation (danger variant) |
+| `warning` | `title: string, message?: string` | `Promise<boolean>` | Warning dialog with continue/cancel |
+| `saveChanges` | `title: string, message?: string` | `Promise<'save' \| 'discard' \| 'cancel' \| null>` | Three-button save/discard/cancel |
+| `openConfirmModal` | `options: ConfirmModalOptions` | `Promise<'confirm' \| 'cancel' \| 'third' \| null>` | Full customization |
+
+### ConfirmModalOptions Interface
+
+```typescript
+interface ConfirmModalOptions {
+  variant?: ModalVariant           // Modal type and styling
+  size?: ModalSize                 // Modal size
+  title?: string                   // Modal title (optional)
+  message?: string                 // Modal body message
+  showIcon?: boolean               // Show/hide variant icon (default: true)
+  confirmText?: string             // Confirm button text (default: 'Confirm')
+  cancelText?: string              // Cancel button text (default: 'Cancel')
+  thirdText?: string               // Third button text (optional)
+  confirmVariant?: ButtonVariant   // Confirm button style (default: 'primary')
+  thirdVariant?: ButtonVariant     // Third button style (default: 'secondary')
+  loading?: boolean                // Loading state (default: false)
+  closeOnBackdrop?: boolean        // Allow backdrop click to close (for docs only)
+  autoSize?: boolean               // Auto-size modal based on content (for docs only)
+}
+```
 
 ### Types
 
@@ -360,19 +436,32 @@ const resetCustomForm = () => {
 export type ModalVariant = 'confirm' | 'alert' | 'warning' | 'danger' | 'info' | 'success'
 export type ModalSize = 'sm' | 'md' | 'lg' | 'xl'
 export type ButtonVariant = 'primary' | 'secondary' | 'danger' | 'warning' | 'success' | 'outline'
+export type ConfirmModalResult = { result: 'confirm' | 'cancel' | 'third' | null }
 ```
 
-### Events
+### ConfirmModal Component Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `variant` | `ModalVariant` | `'confirm'` | Modal type and styling |
+| `size` | `ModalSize` | `'md'` | Modal size |
+| `title` | `string` | - | Modal title (optional, not displayed in template) |
+| `message` | `string` | - | Modal body message |
+| `showIcon` | `boolean` | `true` | Show/hide variant icon |
+| `confirmText` | `string` | `'Confirm'` | Confirm button text |
+| `cancelText` | `string` | `'Cancel'` | Cancel button text |
+| `thirdText` | `string` | - | Third button text |
+| `confirmVariant` | `ButtonVariant` | `'primary'` | Confirm button style |
+| `thirdVariant` | `ButtonVariant` | `'secondary'` | Third button style |
+| `loading` | `boolean` | `false` | Loading state |
+
+### ConfirmModal Events
 
 | Event | Payload | Description |
 |-------|---------|-------------|
-| `@update:modelValue` | `boolean` | Modal visibility changed |
-| `@confirm` | - | Confirm button clicked |
-| `@cancel` | - | Cancel button clicked |
-| `@third` | - | Third button clicked |
-| `@close` | - | Modal closed (any method) |
+| `@close` | `ConfirmModalResult` | Modal closed with result |
 
-### Slots
+### ConfirmModal Slots
 
 | Slot | Description |
 |------|-------------|
@@ -382,23 +471,31 @@ export type ButtonVariant = 'primary' | 'secondary' | 'danger' | 'warning' | 'su
 
 ### Modal Variants
 
-| Variant | Icon | Color | Use Case |
-|---------|------|-------|----------|
-| `confirm` | ✅ | Green | General confirmations |
-| `alert` | ℹ️ | Blue | Information alerts |
-| `warning` | ⚠️ | Yellow | Warning messages |
-| `danger` | 🗑️ | Red | Destructive actions |
-| `info` | ℹ️ | Blue | Informational content |
-| `success` | ✅ | Green | Success confirmations |
+| Variant | Icon | Background | Color | Use Case |
+|---------|------|------------|-------|----------|
+| `confirm` | `CheckIcon` | `bg-green-100 dark:bg-green-900/30` | `text-green-600 dark:text-green-400` | General confirmations |
+| `alert` | `InfoIcon` | `bg-blue-100 dark:bg-blue-900/30` | `text-blue-600 dark:text-blue-400` | Information alerts |
+| `warning` | `WarningIcon` | `bg-yellow-100 dark:bg-yellow-900/30` | `text-yellow-600 dark:text-yellow-400` | Warning messages |
+| `danger` | `TrashIcon` | `bg-red-100 dark:bg-red-900/30` | `text-red-600 dark:text-red-400` | Destructive actions |
+| `info` | `InfoIcon` | `bg-blue-100 dark:bg-blue-900/30` | `text-blue-600 dark:text-blue-400` | Informational content |
+| `success` | `CheckIcon` | `bg-green-100 dark:bg-green-900/30` | `text-green-600 dark:text-green-400` | Success confirmations |
 
 ### Modal Sizes
 
-| Size | Min Width | Use Case |
-|------|-----------|----------|
-| `sm` | `280px` | Simple confirmations |
-| `md` | `320px` | Standard dialogs |
-| `lg` | `480px` | Forms and detailed content |
-| `xl` | `640px` | Complex forms or data |
+| Size | Min Width | CSS Class | Use Case |
+|------|-----------|-----------|----------|
+| `sm` | `280px` | `min-w-[280px]` | Simple confirmations |
+| `md` | `320px` | `min-w-[320px]` | Standard dialogs (default) |
+| `lg` | `480px` | `min-w-[480px]` | Forms and detailed content |
+| `xl` | `640px` | `min-w-[640px]` | Complex forms or data |
+
+### Layout Features
+
+- **Horizontal Layout**: Icon và content nằm cạnh nhau
+- **Button Order**: Confirm button trước, cancel sau (flex-row-reverse)
+- **Icon Styling**: Rounded circle với padding, semantic colors
+- **Responsive**: Auto-width với min-width constraints
+- **Dark Mode**: Full support với appropriate color variants
 
 ### Button Variants
 
@@ -413,80 +510,202 @@ export type ButtonVariant = 'primary' | 'secondary' | 'danger' | 'warning' | 'su
 
 ## 🔧 Best Practices
 
-### 1. Modal Content
-- **Keep titles short** và descriptive
-- **Use clear messaging** để user hiểu action consequences
-- **Provide context** về what will happen after confirm
+### 1. Chọn đúng pattern
 
-### 2. Button Text
-- **Use action verbs** thay vì generic "OK"
-- **Be specific**: "Delete Item" thay vì "Delete"
-- **Match the action** với button variant (red cho delete)
+#### useConfirmModal cho simple confirmations
 
-### 3. Loading States
-- **Disable backdrop click** khi processing
-- **Show progress indication** cho long operations
-- **Handle errors gracefully** với proper notifications
+```typescript
+// ✅ Good: Simple yes/no decisions
+const confirmed = await confirm('Delete this file?', 'This action cannot be undone.')
 
-### 4. Accessibility
-- **Use semantic HTML** trong custom slots
-- **Provide proper labels** cho form inputs
-- **Handle focus management** correctly
+// ✅ Good: Pre-defined patterns
+const confirmed = await deleteConfirm('Delete User', 'This will remove user access.')
+```
+
+#### useModal + ModalWrapper cho complex content
+
+```typescript
+// ✅ Good: Forms and complex interactions
+const result = await openModal(UserEditModal, { userId: '123' })
+```
+
+### 2. Modal Content Guidelines
+
+- **Concise titles**: "Delete User" thay vì "Are you sure you want to delete this user?"
+- **Clear messaging**: Giải thích consequences của action
+- **Action-focused buttons**: "Delete" thay vì "OK", "Save Changes" thay vì "Submit"
+
+### 3. Error Handling & Loading
+
+```typescript
+// ✅ Good: Proper error handling
+const handleDelete = async () => {
+  const confirmed = await deleteConfirm('Delete Item', 'This action cannot be undone.')
+  
+  if (confirmed) {
+    try {
+      await deleteItem(itemId)
+      appStore.notifySuccess('Deleted!', 'Item removed successfully.')
+    } catch (error) {
+      appStore.notifyError('Delete Failed', 'Unable to delete item.')
+    }
+  }
+}
+```
+
+### 4. Promise-based Flow
+
+- **Always await** modal results
+- **Handle null returns** (user canceled or error)
+- **Use async/await** thay vì .then() cho readable code
 
 ### 5. UX Guidelines
-- **Use modals sparingly** - không overuse
-- **Prefer inline confirmations** cho simple actions
-- **Reserve modals** cho important decisions
-- **Provide clear escape routes** (cancel, X button)
+
+- **Use modals for important decisions** chỉ
+- **Prefer Toast notifications** cho simple feedback
+- **Provide clear escape routes** với cancel buttons
+- **Match button variants** với action severity (danger for delete)
 
 ## 🚨 Common Pitfalls
 
-### ❌ Tránh những lỗi này:
+### ❌ Tránh những lỗi này
 
-1. **Modal stacking** - Tránh mở modal trong modal
-2. **Missing validation** - Luôn validate trước khi submit
-3. **Poor error handling** - Handle network errors gracefully
-4. **Inconsistent button text** - Use consistent language
-5. **Too many modals** - Consider inline alternatives
-6. **Hard-coded positioning** - Sử dụng layout system để quản lý positioning
+#### 1. Modal Stacking
 
-### ✅ Best approach:
+```typescript
+// ❌ Bad: Modal trong modal
+const handleEdit = async () => {
+  const editResult = await openModal(EditModal)
+  if (editResult?.unsavedChanges) {
+    // DON'T do this - modal in modal
+    const saveResult = await confirm('Save changes?')
+  }
+}
 
-1. **Single modal flow** - Một modal tại một thời điểm
-2. **Client-side validation** - Validate ngay trong modal
-3. **Loading states** - Show progress cho async operations
-4. **Consistent UX** - Same patterns across app
-5. **Alternative patterns** - Consider Toast cho simple confirmations
-6. **Flexible layout** - Tận dụng vertical layout cho nội dung phức tạp
-7. **Auto-sizing** - Sử dụng `autoSize` property khi nội dung thay đổi động
+// ✅ Good: Handle trong component hoặc sequence
+const handleEdit = async () => {
+  const result = await openModal(EditModalWithSaveLogic)
+  // Modal handles its own save confirmation internally
+}
+```
+
+#### 2. Ignoring Promise Results
+
+```typescript
+// ❌ Bad: Not handling results
+confirm('Delete item?') // No await, no handling
+
+// ✅ Good: Always handle
+const confirmed = await confirm('Delete item?')
+if (confirmed) {
+  // Handle action
+}
+```
+
+#### 3. Wrong Modal Type cho Use Case
+
+```typescript
+// ❌ Bad: Using confirm() for complex forms
+const result = await confirm('Edit User', userForm) // Doesn't work
+
+// ✅ Good: Use proper modal system
+const result = await openModal(UserEditModal, { user })
+```
+
+#### 4. Poor Button Text
+
+```typescript
+// ❌ Bad: Generic text
+await confirm('Action', 'Do you want to continue?') // "Confirm" button
+
+// ✅ Good: Action-specific text
+await openConfirmModal({
+  title: 'Publish Article',
+  message: 'This will make the article visible to all users.',
+  confirmText: 'Publish Now',
+  cancelText: 'Keep Draft'
+})
+```
+
+### ✅ Best Approaches
+
+#### 1. Single Modal Policy
+
+Global modal state ensures one modal tại một thời điểm - no stacking issues.
+
+#### 2. Consistent Error Handling
+
+```typescript
+const handleAsyncAction = async () => {
+  const confirmed = await confirm('Proceed?')
+  if (!confirmed) return
+  
+  try {
+    await performAction()
+    appStore.notifySuccess('Success!')
+  } catch (error) {
+    appStore.notifyError('Failed', error.message)
+  }
+}
+```
+
+#### 3. Type-Safe API
+
+UseConfirmModal provides typed returns - no guessing what user clicked.
+
+#### 4. Progressive Enhancement
+
+Start với simple confirm(), upgrade đến openConfirmModal() khi cần more control.
 
 ## 📱 Responsive Behavior
 
 Modal system tự động adapt cho mobile devices:
 
-- **Full width** trên mobile screens
-- **Proper spacing** với padding responsive
+- **Auto-width** với min-width constraints
+- **Proper spacing** với responsive padding
 - **Touch-friendly** button sizes
-- **Readable text** với appropriate font sizes
-- **Keyboard support** cho accessibility
+- **Readable text** với appropriate font sizes  
+- **Vue-final-modal** provides mobile optimization cho ModalWrapper
+- **Backdrop và ESC support** trên desktop
 
 ## 🔗 Related Components
 
-- **[Toast Notifications](./toast-system.md)** - Cho simple confirmations
-- **[Button Component](./button-system.md)** - Cho trigger actions
-- **[Form Components](./form-system.md)** - Cho custom modal content
+- **[Toast Notifications](./toast-notification-system.md)** - Cho simple feedback messages
+- **Button Component** - Cho trigger actions
+- **Form Components** - Cho custom modal content
 
 ## 🎯 Demo & Examples
 
-Xem full interactive demo tại: **[/demo/modal](/demo/modal)**
+Xem full interactive demo tại: **[Demo/Modal/ModalDemo.vue](../views/Demo/Modal/ModalDemo.vue)**
 
 Demo bao gồm:
-- ✅ Tất cả modal variants
-- ✅ Loading states examples
-- ✅ Custom content forms
-- ✅ API integration patterns
-- ✅ Best practice examples
+
+- ✅ Tất cả useConfirmModal helpers
+- ✅ Loading states examples  
+- ✅ Custom content modal với useModal
+- ✅ Error handling patterns
+- ✅ Best practice implementations
+
+### Quick Start Examples
+
+```typescript
+// 1. Simple confirmation
+const { confirm } = useConfirmModal()
+const confirmed = await confirm('Delete file?', 'This cannot be undone.')
+
+// 2. Delete confirmation  
+const { deleteConfirm } = useConfirmModal()
+const confirmed = await deleteConfirm('Delete user?', 'All data will be lost.')
+
+// 3. Three-button modal
+const { saveChanges } = useConfirmModal()
+const result = await saveChanges('Unsaved changes?', 'Save before leaving?')
+
+// 4. Custom modal
+const { openModal } = useModal()
+const result = await openModal(CustomFormModal, { title: 'Edit User' })
+```
 
 ---
 
-**💡 Pro tip:** Combine Modal với Toast notifications để tạo complete user feedback flow - Modal cho confirmations, Toast cho results!
+**💡 Pro tip:** Modal system integrates seamlessly với Toast notifications - sử dụng Modal cho confirmations, Toast cho results feedback!

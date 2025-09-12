@@ -6,12 +6,12 @@ Thư mục này chứa tất cả tài liệu kỹ thuật cho HiveSpace Admin P
 
 ### 📋 Danh sách tài liệu:
 
-#### **1. [Toast Notification System](./toast-notification-system.md)**
+#### **1. [Toast Notification System](./components/toast-notification-system.md)**
 - Hệ thống thông báo popup hiện đại
 - Hướng dẫn sử dụng chi tiết
 - API reference và examples
 - Customization và troubleshooting
-- **[📍 Demo & Examples](./components/toast-demo-guide.md)** - Interactive demo tại `/demo/toast`
+- **📍 Demo & Examples:** `/demo/toast`
 
 #### **2. [Modal Popup System](./components/modal-system.md)**
 - Hệ thống modal dialog đầy đủ tính năng
