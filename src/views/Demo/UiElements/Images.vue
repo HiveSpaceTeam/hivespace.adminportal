@@ -15,8 +15,6 @@ import PageBreadcrumb from '@/components/common/PageBreadcrumb.vue';
 import AdminLayout from '@/components/layout/AdminLayout.vue';
 import ComponentCard from '@/components/common/ComponentCard.vue';
 import ResponsiveImage from '@/components/common/ResponsiveImage.vue';
-import TwoColumnImageGrid from '@/components/common/TwoColumnImageGrid.vue';
-import ThreeColumnImageGrid from '@/components/common/ThreeColumnImageGrid.vue';
 const currentPageTitle = ref('Images');
 </script>
 
