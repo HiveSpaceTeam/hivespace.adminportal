@@ -1,10 +1,10 @@
-import { User, UserManager, WebStorageStateStore, type UserManagerSettings } from 'oidc-client-ts';
+import { User, UserManager, WebStorageStateStore } from 'oidc-client-ts';
 import type { AppUser } from '@/types/app-user'
 import { toAppUser } from '@/types/app-user'
 import { config } from '@/config';
 
-const oidcSettings: UserManagerSettings = {
-  authority: config.gateway.baseUrl + '/identity',
+const oidcSettings = {
+  authority: config.api.baseUrl + '/identity',
   client_id: config.auth.oidc.clientId,
   redirect_uri: config.auth.oidc.redirectUri,
   response_type: config.auth.oidc.responseType,

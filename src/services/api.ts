@@ -13,7 +13,7 @@ interface ApiConfig {
 
 // Default API configuration
 const defaultConfig: ApiConfig = {
-  baseURL: config.gateway.baseUrl,
+  baseURL: config.api.baseUrl,
   timeout: config.api.timeout,
   headers: {
     'Content-Type': 'application/json',

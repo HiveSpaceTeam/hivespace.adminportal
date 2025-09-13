@@ -80,6 +80,7 @@ import { config } from '@/config'
 // or
 import { api, auth } from '@/config'
 
+// Use api.baseUrl for all API calls
 const apiUrl = config.api.baseUrl
 const clientId = config.auth.oidc.clientId
 const clientId = config.auth.oidc.clientId

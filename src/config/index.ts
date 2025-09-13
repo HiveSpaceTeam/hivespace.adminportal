@@ -1,7 +1,6 @@
 /**
  * Main configuration file for HiveSpace Admin Portal
- * Uses API Gateway pattern - frontend only communicates with gateway,
- * not directly with individual microservices
+ * Centralized configuration for API endpoints, authentication, and application settings
  */
 
 // Type definitions for better TypeScript support
@@ -14,6 +13,7 @@ export interface AppConfig {
     api: {
         baseUrl: string
         timeout: number
+        version: string
     }
     auth: {
         oidc: {
@@ -37,13 +37,11 @@ export interface AppConfig {
         storageBaseUrl: string
         cdnBaseUrl: string
     }
-    gateway: {
-        baseUrl: string
-        version: string
-    }
 }
 
 // Main configuration object
+const apiBaseUrl = import.meta.env.VITE_GATEWAY_BASE_URL || import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || 'https://localhost:7001/api'
+
 export const config: AppConfig = {
     // Application settings
     app: {
@@ -52,10 +50,11 @@ export const config: AppConfig = {
         environment: (import.meta.env.VITE_APP_ENVIRONMENT || import.meta.env.VITE_APP_ENV || 'development') as 'development' | 'staging' | 'production',
     },
 
-    // API Configuration (Legacy - use gateway instead)
+    // API Configuration
     api: {
-        baseUrl: import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || 'https://localhost:7001/api',
+        baseUrl: apiBaseUrl,
         timeout: Number(import.meta.env.VITE_API_TIMEOUT) || 30000,
+        version: import.meta.env.VITE_API_VERSION || 'v1',
     },
 
     // Authentication Configuration
@@ -85,12 +84,6 @@ export const config: AppConfig = {
         storageBaseUrl: import.meta.env.VITE_STORAGE_BASE_URL || 'https://storage.hivespace.com',
         cdnBaseUrl: import.meta.env.VITE_CDN_BASE_URL || 'https://cdn.hivespace.com',
     },
-
-    // API Gateway Configuration (replaces direct microservice endpoints)
-    gateway: {
-        baseUrl: import.meta.env.VITE_GATEWAY_BASE_URL || import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || 'https://localhost:7001/api',
-        version: import.meta.env.VITE_API_VERSION || 'v1',
-    },
 }
 
 // Environment helper functions
@@ -112,9 +105,9 @@ const joinUrl = (base: string, path: string): string => {
  * @returns Complete API URL through gateway
  */
 export const buildApiUrl = (path: string, version?: string): string => {
-    const apiVersion = version || config.gateway.version
+    const apiVersion = version || config.api.version
     const versionedPath = path.startsWith('/') ? `/${apiVersion}${path}` : `/${apiVersion}/${path}`
-    return joinUrl(config.gateway.baseUrl, versionedPath)
+    return joinUrl(config.api.baseUrl, versionedPath)
 }
 
 /**
@@ -129,7 +122,7 @@ export const getAssetUrl = (path: string, useStorage = false): string => {
 }
 
 // Export individual config sections for convenience
-export const { app, api, auth, features, services, gateway } = config
+export const { app, api, auth, features, services } = config
 
 // Default export for compatibility
 export default config
