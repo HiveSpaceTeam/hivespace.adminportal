@@ -1,7 +1,8 @@
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios'
-import { useAuthStore } from '@/stores/auth'
+import { getCurrentUser, login } from '@/auth/user-manager';
+import axios from 'axios'
+import type { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios'
 import { useAppStore } from '@/stores/app'
-import { environment } from '@/config/environment'
+import { config } from '@/config'
 
 // API configuration interface
 interface ApiConfig {
@@ -12,8 +13,8 @@ interface ApiConfig {
 
 // Default API configuration
 const defaultConfig: ApiConfig = {
-  baseURL: environment.api.baseUrl,
-  timeout: environment.api.timeout,
+  baseURL: config.gateway.baseUrl,
+  timeout: config.api.timeout,
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json'
@@ -25,12 +26,12 @@ const apiClient: AxiosInstance = axios.create(defaultConfig)
 
 // Request interceptor
 apiClient.interceptors.request.use(
-  (config) => {
-    const authStore = useAuthStore()
+  async (config) => {
+    const currentUser = await getCurrentUser();
 
     // Add authorization token if available
-    if (authStore.token) {
-      config.headers.Authorization = `Bearer ${authStore.token}`
+    if (currentUser?.access_token) {
+      config.headers.Authorization = `Bearer ${currentUser.access_token}`
     }
 
     // Add correlation ID for tracing across microservices
@@ -56,7 +57,6 @@ apiClient.interceptors.response.use(
     return response
   },
   async (error) => {
-    const authStore = useAuthStore()
     const appStore = useAppStore()
 
     console.error('Response Error:', error)
@@ -66,25 +66,7 @@ apiClient.interceptors.response.use(
 
       switch (status) {
         case 401:
-          // Unauthorized - try to refresh token
-          if (authStore.refreshToken && !error.config._retry && !error.config.url?.includes('/auth/refresh')) {
-            error.config._retry = true
-            try {
-              await authStore.refreshAccessToken()
-              // Retry the original request with new token
-              error.config.headers.Authorization = `Bearer ${authStore.token}`
-              return apiClient.request(error.config)
-            } catch (refreshError) {
-              // Refresh failed, redirect to login
-              authStore.clearAuth()
-              appStore.notifyError('Session Expired', 'Please login again')
-              // TODO: Redirect to login page
-              console.log('Redirecting to login...')
-            }
-          } else {
-            authStore.clearAuth()
-            appStore.notifyError('Unauthorized', 'Access denied')
-          }
+          login() // Redirect to login on unauthorized
           break
 
         case 403:
@@ -143,37 +125,37 @@ class ApiService {
   }
 
   // Generic GET request
-  async get<T = any>(url: string, config?: AxiosRequestConfig): Promise<T> {
+  async get<T = unknown>(url: string, config?: AxiosRequestConfig): Promise<T> {
     const response = await this.client.get<T>(url, config)
     return response.data
   }
 
   // Generic POST request
-  async post<T = any>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
+  async post<T = unknown>(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<T> {
     const response = await this.client.post<T>(url, data, config)
     return response.data
   }
 
   // Generic PUT request
-  async put<T = any>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
+  async put<T = unknown>(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<T> {
     const response = await this.client.put<T>(url, data, config)
     return response.data
   }
 
   // Generic PATCH request
-  async patch<T = any>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
+  async patch<T = unknown>(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<T> {
     const response = await this.client.patch<T>(url, data, config)
     return response.data
   }
 
   // Generic DELETE request
-  async delete<T = any>(url: string, config?: AxiosRequestConfig): Promise<T> {
+  async delete<T = unknown>(url: string, config?: AxiosRequestConfig): Promise<T> {
     const response = await this.client.delete<T>(url, config)
     return response.data
   }
 
   // File upload
-  async uploadFile<T = any>(url: string, file: File, onUploadProgress?: (progressEvent: any) => void): Promise<T> {
+  async uploadFile<T = unknown>(url: string, file: File, onUploadProgress?: (progressEvent: unknown) => void): Promise<T> {
     const formData = new FormData()
     formData.append('file', file)
 

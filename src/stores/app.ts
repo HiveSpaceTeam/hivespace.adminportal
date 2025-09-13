@@ -17,8 +17,9 @@ export const useAppStore = defineStore('app', () => {
     // State
     const isLoading = ref(false)
     const notifications = ref<Notification[]>([])
+    const storedTheme = localStorage.getItem('theme')
     const theme = ref<'light' | 'dark'>(
-        localStorage.getItem('theme') as 'light' | 'dark' || 'light'
+        (storedTheme === 'dark' || storedTheme === 'light') ? storedTheme : 'light'
     )
 
     // Actions

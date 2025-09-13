@@ -1,5 +1,4 @@
 import { apiService } from './api'
-import type { User } from '@/types/app-user'
 
 // User API endpoints
 const USER_ENDPOINTS = {
@@ -10,8 +9,20 @@ const USER_ENDPOINTS = {
 }
 
 // Interface definitions
+interface UserData {
+    id: string
+    username: string
+    fullName: string
+    email: string
+    status: 'Active' | 'Inactive'
+    hasSeller: boolean
+    createdDate: string
+    lastLoginDate: string
+    avatar?: string
+}
+
 interface UserListResponse {
-    users: User[]
+    users: UserData[]
     totalCount: number
     pageNumber: number
     pageSize: number
@@ -80,26 +91,6 @@ class UserService {
         return await apiService.get<UserListResponse>(url)
     }
 
-    /**
-     * Get user by ID
-     */
-    async getUserById(id: string): Promise<User> {
-        return await apiService.get<User>(USER_ENDPOINTS.USER_BY_ID(id))
-    }
-
-    /**
-     * Create new user
-     */
-    async createUser(userData: CreateUserRequest): Promise<User> {
-        return await apiService.post<User>(USER_ENDPOINTS.USERS, userData)
-    }
-
-    /**
-     * Update user
-     */
-    async updateUser(id: string, userData: UpdateUserRequest): Promise<User> {
-        return await apiService.put<User>(USER_ENDPOINTS.USER_BY_ID(id), userData)
-    }
 
     /**
      * Delete user
@@ -111,21 +102,21 @@ class UserService {
     /**
      * Activate user account
      */
-    async activateUser(id: string): Promise<User> {
-        return await apiService.patch<User>(USER_ENDPOINTS.USER_BY_ID(id), { status: 'active' })
+    async activateUser(id: string): Promise<UserData> {
+        return await apiService.patch<UserData>(USER_ENDPOINTS.USER_BY_ID(id), { status: 'active' })
     }
 
     /**
      * Deactivate user account
      */
-    async deactivateUser(id: string): Promise<User> {
-        return await apiService.patch<User>(USER_ENDPOINTS.USER_BY_ID(id), { status: 'inactive' })
+    async deactivateUser(id: string): Promise<UserData> {
+        return await apiService.patch<UserData>(USER_ENDPOINTS.USER_BY_ID(id), { status: 'inactive' })
     }
 
     /**
      * Upload user avatar
      */
-    async uploadAvatar(id: string, file: File, onUploadProgress?: (progressEvent: any) => void): Promise<{ avatarUrl: string }> {
+    async uploadAvatar(id: string, file: File, onUploadProgress?: (progressEvent: ProgressEvent) => void): Promise<{ avatarUrl: string }> {
         return await apiService.uploadFile<{ avatarUrl: string }>(
             USER_ENDPOINTS.USER_AVATAR(id),
             file,
@@ -150,7 +141,7 @@ class UserService {
     /**
      * Search users by term
      */
-    async searchUsers(searchTerm: string, limit = 10): Promise<User[]> {
+    async searchUsers(searchTerm: string, limit = 10): Promise<UserData[]> {
         const params = new URLSearchParams({
             searchTerm,
             pageSize: limit.toString()
@@ -159,43 +150,6 @@ class UserService {
         const response = await apiService.get<UserListResponse>(`${USER_ENDPOINTS.USERS}?${params.toString()}`)
         return response.users
     }
-
-    /**
-     * Get users by role
-     */
-    async getUsersByRole(role: string): Promise<User[]> {
-        const params = new URLSearchParams({ role })
-        const response = await apiService.get<UserListResponse>(`${USER_ENDPOINTS.USERS}?${params.toString()}`)
-        return response.users
-    }
-
-    /**
-     * Bulk update users
-     */
-    async bulkUpdateUsers(userIds: string[], updateData: UpdateUserRequest): Promise<void> {
-        return await apiService.patch<void>(`${USER_ENDPOINTS.USERS}/bulk`, {
-            userIds,
-            updateData
-        })
-    }
-
-    /**
-     * Export users to CSV
-     */
-    async exportUsers(params?: UserListParams): Promise<void> {
-        const queryParams = new URLSearchParams()
-
-        if (params) {
-            Object.entries(params).forEach(([key, value]) => {
-                if (value !== undefined && value !== null) {
-                    queryParams.append(key, value.toString())
-                }
-            })
-        }
-
-        const url = `${USER_ENDPOINTS.USERS}/export?${queryParams.toString()}`
-        return await apiService.downloadFile(url, 'users.csv')
-    }
 }
 
 // Create and export the user service instance
@@ -203,6 +157,7 @@ export const userService = new UserService()
 
 // Export types
 export type {
+    UserData,
     UserListResponse,
     UserListParams,
     CreateUserRequest,

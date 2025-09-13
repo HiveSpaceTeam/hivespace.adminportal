@@ -22,7 +22,8 @@ src/
 │   ├── user.service.ts    # User management API calls
 │   └── admin.service.ts   # Admin functionality API calls
 └── config/
-    ├── environment.ts     # Environment configuration
+    ├── index.ts           # Unified configuration (main config)
+    ├── constants.ts       # Environment constants and validation
     └── env.example.md     # Environment variables guide
 ```
 
@@ -221,11 +222,11 @@ VITE_ENABLE_DEBUG=true
 ### 2. Sử dụng Environment Config
 
 ```typescript
-import { environment, buildApiUrl } from '@/config/environment'
+import { config, buildApiUrl } from '@/config'
 
 // Sử dụng config
-console.log('API Base URL:', environment.api.baseUrl)
-console.log('App Name:', environment.app.name)
+console.log('API Base URL:', config.api.baseUrl)
+console.log('App Name:', config.app.name)
 
 // Build API URL với microservice override
 const authUrl = buildApiUrl('/auth/login', 'authService')

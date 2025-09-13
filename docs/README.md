@@ -120,7 +120,8 @@ src/
 │   ├── auth.service.ts # Authentication APIs
 │   └── user.service.ts # User management APIs
 ├── config/              # Configuration
-│   └── environment.ts  # Environment variables
+│   ├── index.ts        # Unified configuration
+│   └── constants.ts    # Environment constants
 └── i18n/               # Internationalization
     └── locales/        # Language files
 ```

@@ -1,10 +1,10 @@
+import type { UserData, UserListParams } from '@/services/user.service'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import type { User, CreateUserRequest, UpdateUserRequest, GetUsersParams, UserListResponse } from '@/types/app-user'
 
 export const useUserStore = defineStore('user', () => {
   // State
-  const users = ref<User[]>([])
+  const users = ref<UserData[]>([])
   const isLoading = ref(false)
   const error = ref<string | null>(null)
 
@@ -17,19 +17,8 @@ export const useUserStore = defineStore('user', () => {
     error.value = errorMessage
   }
 
-  function setUsers(userList: User[]) {
+  function setUsers(userList: UserData[]) {
     users.value = userList
-  }
-
-  function addUser(user: User) {
-    users.value.push(user)
-  }
-
-  function updateUser(userId: string, updatedUser: Partial<User>) {
-    const index = users.value.findIndex(user => user.id === userId)
-    if (index !== -1) {
-      users.value[index] = { ...users.value[index], ...updatedUser }
-    }
   }
 
   function removeUser(userId: string) {
@@ -39,7 +28,14 @@ export const useUserStore = defineStore('user', () => {
     }
   }
 
-  async function fetchUsers(params?: any) {
+  function updateUserInList(updatedUser: UserData) {
+    const index = users.value.findIndex(user => user.id === updatedUser.id)
+    if (index !== -1) {
+      users.value[index] = updatedUser
+    }
+  }
+
+  async function fetchUsers(params?: UserListParams) {
     setLoading(true)
     setError(null)
     try {
@@ -50,40 +46,6 @@ export const useUserStore = defineStore('user', () => {
     } catch (error) {
       console.error('Error fetching users:', error)
       setError('Failed to fetch users')
-      throw error
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  async function createUser(userData: any) {
-    setLoading(true)
-    setError(null)
-    try {
-      const { userService } = await import('@/services/user.service')
-      const newUser = await userService.createUser(userData)
-      addUser(newUser)
-      return newUser
-    } catch (error) {
-      console.error('Error creating user:', error)
-      setError('Failed to create user')
-      throw error
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  async function updateUserById(userId: string, userData: Partial<User>) {
-    setLoading(true)
-    setError(null)
-    try {
-      const { userService } = await import('@/services/user.service')
-      const updatedUser = await userService.updateUser(userId, userData)
-      updateUser(userId, updatedUser)
-      return updatedUser
-    } catch (error) {
-      console.error('Error updating user:', error)
-      setError('Failed to update user')
       throw error
     } finally {
       setLoading(false)
@@ -106,6 +68,40 @@ export const useUserStore = defineStore('user', () => {
     }
   }
 
+  async function activateUser(userId: string) {
+    setLoading(true)
+    setError(null)
+    try {
+      const { userService } = await import('@/services/user.service')
+      const updatedUser = await userService.activateUser(userId)
+      updateUserInList(updatedUser)
+      return updatedUser
+    } catch (error) {
+      console.error('Error activating user:', error)
+      setError('Failed to activate user')
+      throw error
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  async function deactivateUser(userId: string) {
+    setLoading(true)
+    setError(null)
+    try {
+      const { userService } = await import('@/services/user.service')
+      const updatedUser = await userService.deactivateUser(userId)
+      updateUserInList(updatedUser)
+      return updatedUser
+    } catch (error) {
+      console.error('Error deactivating user:', error)
+      setError('Failed to deactivate user')
+      throw error
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return {
     // State
     users,
@@ -115,12 +111,11 @@ export const useUserStore = defineStore('user', () => {
     setLoading,
     setError,
     setUsers,
-    addUser,
-    updateUser,
     removeUser,
+    updateUserInList,
     fetchUsers,
-    createUser,
-    updateUserById,
-    deleteUser
+    deleteUser,
+    activateUser,
+    deactivateUser
   }
 })
