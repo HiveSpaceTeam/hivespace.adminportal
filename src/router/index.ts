@@ -44,7 +44,7 @@ const router = createRouter({
 
 export default router
 
-router.beforeEach(async(to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   document.title = `${to.meta.title}`
   if (to.path === '/callback') {
     next();

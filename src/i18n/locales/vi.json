@@ -130,7 +130,65 @@
     "passwordGood": "Tốt",
     "passwordStrong": "Mạnh",
     "adminCreatedSuccess": "Admin {email} đã được tạo thành công!",
-    "adminCreatedError": "Không thể tạo admin. Vui lòng thử lại."
+    "adminCreatedError": "Không thể tạo admin. Vui lòng thử lại.",
+    "alerts": {
+      "success": {
+        "title": "Thành công!",
+        "message": "Admin {email} đã được tạo thành công và có thể truy cập hệ thống."
+      },
+      "error": {
+        "title": "Tạo thất bại",
+        "message": "Không thể tạo tài khoản admin. Vui lòng kiểm tra thông tin và thử lại."
+      },
+      "validation": {
+        "title": "Lỗi xác thực",
+        "message": "Vui lòng sửa các trường được đánh dấu và thử lại."
+      },
+      "network": {
+        "title": "Lỗi kết nối",
+        "message": "Không thể kết nối với máy chủ. Vui lòng kiểm tra kết nối và thử lại."
+      }
+    },
+    "actions": {
+      "deleteAdmin": {
+        "title": "Xóa Admin",
+        "message": "Bạn có chắc chắn muốn xóa admin \"{email}\"? Hành động này không thể hoàn tác."
+      }
+    },
+    "notifications": {
+      "deleteSuccess": {
+        "title": "Xóa thành công",
+        "message": "Admin {email} đã được xóa thành công."
+      },
+      "deleteFailed": {
+        "title": "Xóa thất bại",
+        "message": "Không thể xóa admin. Vui lòng thử lại."
+      },
+      "statusUpdateSuccess": {
+        "title": "Cập nhật trạng thái",
+        "message": "Admin {email} đã được {status}."
+      },
+      "statusUpdateFailed": {
+        "title": "Cập nhật thất bại",
+        "message": "Không thể cập nhật trạng thái admin. Vui lòng thử lại."
+      }
+    },
+    "values": {
+      "status": {
+        "active": "Hoạt động",
+        "inactive": "Không hoạt động",
+        "activated": "kích hoạt",
+        "deactivated": "vô hiệu hóa"
+      },
+      "type": {
+        "system": "Admin hệ thống",
+        "regular": "Admin thường"
+      },
+      "lastLogin": {
+        "never": "Chưa bao giờ"
+      },
+      "user": "người dùng"
+    }
   },
   "users": {
     "totalUsers": "Tổng số người dùng:",

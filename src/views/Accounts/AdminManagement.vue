@@ -44,7 +44,7 @@
           </div>
 
           <!-- Loading State -->
-          <div v-if="loading" class="p-8 text-center">
+          <div v-if="loading || appStore.isLoading" class="p-8 text-center">
             <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
             <p class="mt-2 text-gray-600 dark:text-gray-400">{{ $t('table.loading') }}</p>
           </div>
@@ -71,11 +71,11 @@
                   </th>
                   <th class="px-5 py-3 text-left w-1/8 sm:px-6">
                     <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">{{ $t('table.createdDate')
-                      }}</p>
+                    }}</p>
                   </th>
                   <th class="px-5 py-3 text-left w-1/8 sm:px-6">
                     <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">{{ $t('table.lastLoginDate')
-                      }}</p>
+                    }}</p>
                   </th>
                   <th class="px-5 py-3 text-left w-1/8 sm:px-6">
                     <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">{{
@@ -110,7 +110,7 @@
 
                   <!-- Status -->
                   <td class="px-5 py-4 sm:px-6">
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium" :class="admin.status === 'Active'
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium" :class="admin.status === $t('admins.values.status.active')
                       ? 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300'
                       : 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-300'">{{ admin.status }}</span>
                   </td>
@@ -158,9 +158,10 @@
 
                         <button @click="tableHandleToggleStatus(admin)"
                           class="flex items-center w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-700">
-                          <ToggleOffIcon v-if="admin.status === 'Active'" />
+                          <ToggleOffIcon v-if="admin.status === $t('admins.values.status.active')" />
                           <ToggleOnIcon v-else />
-                          {{ admin.status === 'Active' ? actionText.deactivate : actionText.activate }}
+                          {{ admin.status === $t('admins.values.status.active') ? actionText.deactivate :
+                          actionText.activate }}
                         </button>
                       </template>
                     </DropdownMenu>
@@ -195,12 +196,15 @@ import Select from "@/components/common/Select.vue";
 import DropdownMenu from "@/components/common/DropdownMenu.vue";
 import Input from '@/components/common/Input.vue';
 import { useModal } from '@/composables/useModal'
+import { useConfirmModal } from '@/composables/useConfirmModal'
+import { useAppStore } from '@/stores/app'
 import AdminDetailModal from './Popups/AdminDetailModal.vue'
 
 import { HorizontalDots, TrashRedIcon, ToggleOffIcon, ToggleOnIcon, BigPlusIcon, RefreshIcon } from '@/icons'
 import { getCurrentUser } from "@/auth/user-manager";
 import type { AppUser } from "@/types/app-user";
 const { t } = useI18n();
+const appStore = useAppStore();
 
 const currentPageTitle = computed(() => t('pages.adminManagement'));
 
@@ -224,8 +228,9 @@ const statusFilter = ref('all');
 const adminTypeFilter = ref('all');
 const lastUpdated = ref('');
 
-// Global modal handler
+// Global modal handlers
 const { openModal } = useModal()
+const { deleteConfirm } = useConfirmModal()
 
 // Current User (simulate current admin user)
 const currentUser = ref<AppUser | null>(null);
@@ -237,8 +242,8 @@ const admins = ref([
     id: 1,
     email: 'admin.system@hivespace.com',
     fullName: 'System Administrator',
-    adminType: 'System Admin',
-    status: 'Active',
+    adminType: 'System Admin', // This will be handled by display logic
+    status: 'Active', // This will be handled by display logic
     isSystemAdmin: true,
     createdDate: '2023-11-01',
     lastLoginDate: '2024-03-22',
@@ -331,11 +336,13 @@ const filteredAdminsCount = computed(() => {
   }
 
   if (statusFilter.value !== 'all') {
+    // Compare with raw values since sample data uses raw values
     const status = statusFilter.value === 'active' ? 'Active' : 'Inactive';
     filtered = filtered.filter(admin => admin.status === status);
   }
 
   if (adminTypeFilter.value !== 'all') {
+    // Compare with raw values since sample data uses raw values
     const adminType = adminTypeFilter.value === 'system' ? 'System Admin' : 'Regular Admin';
     filtered = filtered.filter(admin => admin.adminType === adminType);
   }
@@ -359,17 +366,25 @@ const filteredAdmins = computed(() => {
 
   // Status filter
   if (statusFilter.value !== 'all') {
+    // Compare with raw values since sample data uses raw values
     const status = statusFilter.value === 'active' ? 'Active' : 'Inactive'
     filtered = filtered.filter(admin => admin.status === status)
   }
 
   // Admin type filter
   if (adminTypeFilter.value !== 'all') {
+    // Compare with raw values since sample data uses raw values
     const adminType = adminTypeFilter.value === 'system' ? 'System Admin' : 'Regular Admin'
     filtered = filtered.filter(admin => admin.adminType === adminType)
   }
 
-  return filtered
+  // Map to display format with i18n values
+  return filtered.map(admin => ({
+    ...admin,
+    status: admin.status === 'Active' ? t('admins.values.status.active') : t('admins.values.status.inactive'),
+    adminType: admin.adminType === 'System Admin' ? t('admins.values.type.system') : t('admins.values.type.regular'),
+    lastLoginDate: admin.lastLoginDate === 'Never' ? t('admins.values.lastLogin.never') : admin.lastLoginDate
+  }))
 })
 
 
@@ -393,8 +408,15 @@ type Admin = {
   avatar?: string;
 }
 
-const tableHandleDelete = (admin: Admin) => {
-  handleDeleteAdmin(admin.id)
+const tableHandleDelete = async (admin: Admin) => {
+  const confirmed = await deleteConfirm(
+    t('admins.actions.deleteAdmin.title'),
+    t('admins.actions.deleteAdmin.message', { email: admin.email })
+  )
+
+  if (confirmed) {
+    handleDeleteAdmin(admin.id)
+  }
 }
 
 const tableHandleToggleStatus = (admin: Admin) => {
@@ -414,10 +436,24 @@ const handleDeleteAdmin = (adminId: number) => {
   loading.value = true;
   // Simulate API call
   setTimeout(() => {
-    admins.value = admins.value.filter(admin => admin.id !== adminId);
-    loading.value = false;
-    updateLastUpdated();
-    console.log('Admin deleted:', adminId);
+    try {
+      const admin = admins.value.find(a => a.id === adminId);
+      admins.value = admins.value.filter(admin => admin.id !== adminId);
+      loading.value = false;
+      updateLastUpdated();
+
+      appStore.notifySuccess(
+        t('admins.notifications.deleteSuccess.title'),
+        t('admins.notifications.deleteSuccess.message', { email: admin?.email || t('admins.values.user') })
+      );
+    } catch (err) {
+      loading.value = false;
+      console.error('Delete error:', err);
+      appStore.notifyError(
+        t('admins.notifications.deleteFailed.title'),
+        t('admins.notifications.deleteFailed.message')
+      );
+    }
   }, 500);
 };
 
@@ -425,14 +461,32 @@ const handleToggleStatus = (adminId: number) => {
   loading.value = true;
   // Simulate API call
   setTimeout(() => {
-    const admin = admins.value.find(a => a.id === adminId);
-    if (admin) {
-      admin.status = admin.status === 'Active' ? 'Inactive' : 'Active';
-      admin.lastUpdatedDate = new Date().toISOString().split('T')[0];
+    try {
+      const admin = admins.value.find(a => a.id === adminId);
+      if (admin) {
+        // Use raw values for data manipulation
+        const newStatus = admin.status === 'Active' ? 'Inactive' : 'Active';
+        admin.status = newStatus;
+        admin.lastUpdatedDate = new Date().toISOString().split('T')[0];
+
+        appStore.notifySuccess(
+          t('admins.notifications.statusUpdateSuccess.title'),
+          t('admins.notifications.statusUpdateSuccess.message', {
+            email: admin.email,
+            status: newStatus === 'Active' ? t('admins.values.status.activated') : t('admins.values.status.deactivated')
+          })
+        );
+      }
+      loading.value = false;
+      updateLastUpdated();
+    } catch (err) {
+      loading.value = false;
+      console.error('Status update error:', err);
+      appStore.notifyError(
+        t('admins.notifications.statusUpdateFailed.title'),
+        t('admins.notifications.statusUpdateFailed.message')
+      );
     }
-    loading.value = false;
-    updateLastUpdated();
-    console.log('Status toggled for admin:', adminId);
   }, 500);
 };
 
@@ -460,30 +514,63 @@ const updateLastUpdated = () => {
 // Open global AdminDetail modal and handle result
 type AdminModalResult = { action?: 'create' | 'cancel', data?: { email: string, isSystemAdmin: boolean } } | undefined
 const openAddAdminModal = async () => {
-  const existing = admins.value.map(a => a.email)
-  const result = await openModal(AdminDetailModal, {
-    title: t('admins.addNewAdmin'),
-    currentUserIsSystemAdmin: currentUser.value?.isSystemAdmin(),
-    existingEmails: existing
-  }) as AdminModalResult
-  if (result?.action === 'create' && result.data) {
-    const email = result.data.email
-    const isSystem = !!result.data.isSystemAdmin
-    const newAdminData = {
-      id: admins.value.length + 1,
-      email,
-      fullName: email.split('@')[0].replace('.', ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()),
-      adminType: isSystem ? 'System Admin' : 'Regular Admin',
-      status: 'Active',
-      isSystemAdmin: isSystem,
-      createdDate: new Date().toISOString().split('T')[0],
-      lastLoginDate: 'Never',
-      lastUpdatedDate: new Date().toISOString().split('T')[0],
-      avatar: '/images/user/user-default.jpg'
+  try {
+    const existing = admins.value.map(a => a.email)
+    const result = await openModal(AdminDetailModal, {
+      title: t('admins.addNewAdmin'),
+      currentUserIsSystemAdmin: currentUser.value?.isSystemAdmin(),
+      existingEmails: existing
+    }) as AdminModalResult
+
+    if (result?.action === 'create' && result.data) {
+      const email = result.data.email
+      const isSystem = !!result.data.isSystemAdmin
+
+      // Here you would make actual API call
+      // For now, simulate API call with timeout
+      appStore.setLoading(true)
+
+      setTimeout(() => {
+        try {
+          const newAdminData = {
+            id: admins.value.length + 1,
+            email,
+            fullName: email.split('@')[0].replace('.', ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()),
+            adminType: isSystem ? 'System Admin' : 'Regular Admin',
+            status: 'Active',
+            isSystemAdmin: isSystem,
+            createdDate: new Date().toISOString().split('T')[0],
+            lastLoginDate: 'Never',
+            lastUpdatedDate: new Date().toISOString().split('T')[0],
+            avatar: '/images/user/user-default.jpg'
+          }
+
+          admins.value.unshift(newAdminData)
+          updateLastUpdated()
+
+          // Show success alert
+          appStore.notifySuccess(
+            t('admins.alerts.success.title'),
+            t('admins.alerts.success.message', { email: newAdminData.email })
+          )
+
+        } catch (err) {
+          console.error('Error creating admin:', err)
+          appStore.notifyError(
+            t('admins.alerts.error.title'),
+            t('admins.alerts.error.message')
+          )
+        } finally {
+          appStore.setLoading(false)
+        }
+      }, 1000) // Simulate API delay
     }
-    admins.value.unshift(newAdminData)
-    updateLastUpdated()
-    alert(t('admins.adminCreatedSuccess', { email: newAdminData.email }))
+  } catch (err) {
+    console.error('Error opening modal:', err)
+    appStore.notifyError(
+      t('admins.alerts.network.title'),
+      t('admins.alerts.network.message')
+    )
   }
 }
 

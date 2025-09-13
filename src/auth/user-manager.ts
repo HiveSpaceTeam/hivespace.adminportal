@@ -1,19 +1,19 @@
 import { User, UserManager, WebStorageStateStore } from 'oidc-client-ts';
 import type { AppUser } from '@/types/app-user'
 import { toAppUser } from '@/types/app-user'
-import appConfig from '@/config/appConfig';
+import { config } from '@/config';
 
 const oidcSettings = {
-    authority: appConfig.apiUrl + '/identity',
-    client_id: appConfig.oidc.clientId,
-    redirect_uri: appConfig.oidc.redirectUri,
-    response_type: appConfig.oidc.responseType,
-    scope: appConfig.oidc.scope,
-    post_logout_redirect_uri: appConfig.oidc.postLogoutRedirectUri,
-    response_mode: appConfig.oidc.responseMode,
-    automaticSilentRenew: appConfig.oidc.automaticSilentRenew,
-    silent_redirect_uri: appConfig.oidc.silentRedirectUri,
-    userStore: new WebStorageStateStore({ store: window.localStorage }),
+  authority: config.api.baseUrl + '/identity',
+  client_id: config.auth.oidc.clientId,
+  redirect_uri: config.auth.oidc.redirectUri,
+  response_type: config.auth.oidc.responseType,
+  scope: config.auth.oidc.scope,
+  post_logout_redirect_uri: config.auth.oidc.postLogoutRedirectUri,
+  response_mode: config.auth.oidc.responseMode as "query" | "fragment" | undefined,
+  automaticSilentRenew: config.auth.oidc.automaticSilentRenew,
+  silent_redirect_uri: config.auth.oidc.silentRedirectUri,
+  userStore: new WebStorageStateStore({ store: window.localStorage }),
 };
 
 const userManager = new UserManager(oidcSettings);

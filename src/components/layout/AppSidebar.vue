@@ -199,6 +199,7 @@ const menuGroups = computed<MenuGroup[]>(() => [
         icon: GridIcon,
         name: 'Demo',
         subItems: [
+          { name: "Component", path: "/demo/components", new: true },
           { name: "Ecommerce", path: "/demo" },
           { name: "Calendar", path: "/demo/calendar" },
           { name: "User Profile", path: "/demo/profile" },
@@ -210,6 +211,8 @@ const menuGroups = computed<MenuGroup[]>(() => [
           { name: "Line Chart", path: "/demo/line-chart" },
           { name: "Bar Chart", path: "/demo/bar-chart" },
           { name: "Alerts", path: "/demo/alerts" },
+          { name: "Toast Notifications", path: "/demo/toast", new: true },
+          { name: "Modal Popups", path: "/demo/modal", new: true },
           { name: "Avatars", path: "/demo/avatars" },
           { name: "Badge", path: "/demo/badge" },
           { name: "Buttons", path: "/demo/buttons" },
