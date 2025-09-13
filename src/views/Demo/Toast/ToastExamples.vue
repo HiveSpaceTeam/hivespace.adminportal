@@ -176,9 +176,6 @@ const showActionToast = () => {
         type: 'info',
         title: 'New version available',
         message: 'Click the link below to update to the latest version.',
-        showLink: true,
-        linkText: 'Update now',
-        linkHref: '/demo/toast',
         duration: 8000
     })
 }

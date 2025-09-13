@@ -6,7 +6,7 @@ interface NotificationOptions {
     type: 'success' | 'error' | 'warning' | 'info'
     title: string
     message?: string
-    duration?: number
+    duration?: number,
 }
 
 interface Notification extends Required<NotificationOptions> {

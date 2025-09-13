@@ -66,6 +66,7 @@ import FacebookIcon from "./FacebookIcon.vue";
 import GoogleIcon from "./GoogleIcon.vue";
 import InstagramIcon from "./InstagramIcon.vue";
 import LinkedInIcon from "./LinkedInIcon.vue";
+import LoadingSpinnerIcon from "./LoadingSpinnerIcon.vue";
 import NotificationBellIcon from "./NotificationBellIcon.vue";
 import SearchIcon from "./SearchIcon.vue";
 import XBrandIcon from "./XBrandIcon.vue";
@@ -119,6 +120,7 @@ export {
   GoogleIcon,
   InstagramIcon,
   LinkedInIcon,
+  LoadingSpinnerIcon,
   NotificationBellIcon,
   SearchIcon,
   XBrandIcon,
