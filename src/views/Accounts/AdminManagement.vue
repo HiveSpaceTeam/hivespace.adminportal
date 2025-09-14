@@ -161,7 +161,7 @@
                           <ToggleOffIcon v-if="admin.status === $t('admins.values.status.active')" />
                           <ToggleOnIcon v-else />
                           {{ admin.status === $t('admins.values.status.active') ? actionText.deactivate :
-                          actionText.activate }}
+                            actionText.activate }}
                         </button>
                       </template>
                     </DropdownMenu>
@@ -199,6 +199,7 @@ import { useModal } from '@/composables/useModal'
 import { useConfirmModal } from '@/composables/useConfirmModal'
 import { useAppStore } from '@/stores/app'
 import AdminDetailModal from './Popups/AdminDetailModal.vue'
+import type { AdminModalResult } from '@/types'
 
 import { HorizontalDots, TrashRedIcon, ToggleOffIcon, ToggleOnIcon, BigPlusIcon, RefreshIcon } from '@/icons'
 import { getCurrentUser } from "@/auth/user-manager";
@@ -512,7 +513,6 @@ const updateLastUpdated = () => {
 };
 
 // Open global AdminDetail modal and handle result
-type AdminModalResult = { action?: 'create' | 'cancel', data?: { email: string, isSystemAdmin: boolean } } | undefined
 const openAddAdminModal = async () => {
   try {
     const existing = admins.value.map(a => a.email)
@@ -522,55 +522,31 @@ const openAddAdminModal = async () => {
       existingEmails: existing
     }) as AdminModalResult
 
+    // Only add admin to list if the API call was successful
     if (result?.action === 'create' && result.data) {
-      const email = result.data.email
-      const isSystem = !!result.data.isSystemAdmin
+      const createdAdmin = result.data
 
-      // Here you would make actual API call
-      // For now, simulate API call with timeout
-      appStore.setLoading(true)
+      // Transform API response to match the local admin format
+      const newAdminData = {
+        id: parseInt(createdAdmin.id) || admins.value.length + 1, // Convert string ID to number, fallback to next available ID
+        email: createdAdmin.email,
+        fullName: createdAdmin.fullName,
+        adminType: createdAdmin.isSystemAdmin ? 'System Admin' : 'Regular Admin',
+        status: createdAdmin.isActive ? 'Active' : 'Inactive',
+        isSystemAdmin: createdAdmin.isSystemAdmin,
+        createdDate: new Date(createdAdmin.createdAt).toISOString().split('T')[0],
+        lastLoginDate: 'Never',
+        lastUpdatedDate: new Date(createdAdmin.createdAt).toISOString().split('T')[0],
+        avatar: '/images/user/user-default.jpg'
+      }
 
-      setTimeout(() => {
-        try {
-          const newAdminData = {
-            id: admins.value.length + 1,
-            email,
-            fullName: email.split('@')[0].replace('.', ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()),
-            adminType: isSystem ? 'System Admin' : 'Regular Admin',
-            status: 'Active',
-            isSystemAdmin: isSystem,
-            createdDate: new Date().toISOString().split('T')[0],
-            lastLoginDate: 'Never',
-            lastUpdatedDate: new Date().toISOString().split('T')[0],
-            avatar: '/images/user/user-default.jpg'
-          }
-
-          admins.value.unshift(newAdminData)
-          updateLastUpdated()
-
-          // Show success alert
-          appStore.notifySuccess(
-            t('admins.alerts.success.title'),
-            t('admins.alerts.success.message', { email: newAdminData.email })
-          )
-
-        } catch (err) {
-          console.error('Error creating admin:', err)
-          appStore.notifyError(
-            t('admins.alerts.error.title'),
-            t('admins.alerts.error.message')
-          )
-        } finally {
-          appStore.setLoading(false)
-        }
-      }, 1000) // Simulate API delay
+      // Add the new admin to the beginning of the list
+      admins.value.unshift(newAdminData)
+      updateLastUpdated()
     }
   } catch (err) {
     console.error('Error opening modal:', err)
-    appStore.notifyError(
-      t('admins.alerts.network.title'),
-      t('admins.alerts.network.message')
-    )
+    // Error handling is now done in the modal itself
   }
 }
 

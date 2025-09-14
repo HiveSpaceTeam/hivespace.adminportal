@@ -13,7 +13,7 @@ interface ApiConfig {
 
 // Default API configuration
 const defaultConfig: ApiConfig = {
-  baseURL: config.api.baseUrl,
+  baseURL: config.api.baseUrl + '/api',
   timeout: config.api.timeout,
   headers: {
     'Content-Type': 'application/json',
@@ -62,7 +62,7 @@ apiClient.interceptors.response.use(
     console.error('Response Error:', error)
 
     if (error.response) {
-      const { status, data } = error.response
+      const { status } = error.response
 
       switch (status) {
         case 401:
@@ -77,15 +77,15 @@ apiClient.interceptors.response.use(
           appStore.notifyError('Not Found', 'The requested resource was not found')
           break
 
-        case 422:
-          // Validation errors
-          if (data.errors && typeof data.errors === 'object') {
-            const errorMessages = Object.values(data.errors).filter(err => err != null).flat().join(', ')
-            appStore.notifyError('Validation Error', errorMessages)
-          } else {
-            appStore.notifyError('Validation Error', data.message || 'Invalid data provided')
-          }
-          break
+        // case 422:
+        //   // Validation errors
+        //   if (data.errors && typeof data.errors === 'object') {
+        //     const errorMessages = Object.values(data.errors).filter(err => err != null).flat().join(', ')
+        //     appStore.notifyError('Validation Error', errorMessages)
+        //   } else {
+        //     appStore.notifyError('Validation Error', data.message || 'Invalid data provided')
+        //   }
+        //   break
 
         case 500:
           appStore.notifyError('Server Error', 'Internal server error occurred')
@@ -96,15 +96,10 @@ apiClient.interceptors.response.use(
         case 504:
           appStore.notifyError('Service Unavailable', 'Service is temporarily unavailable')
           break
-
-        default:
-          appStore.notifyError('Error', data.message || 'An unexpected error occurred')
       }
     } else if (error.request) {
       // Network error
       appStore.notifyError('Network Error', 'Unable to connect to the server')
-    } else {
-      appStore.notifyError('Error', error.message || 'An unexpected error occurred')
     }
 
     return Promise.reject(error)

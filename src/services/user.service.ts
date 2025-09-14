@@ -1,11 +1,11 @@
 import { apiService } from './api'
 
-// User API endpoints
+// User API endpoints (with API versioning)
 const USER_ENDPOINTS = {
-    USERS: '/users',
-    USER_BY_ID: (id: string) => `/users/${id}`,
-    USER_AVATAR: (id: string) => `/users/${id}/avatar`,
-    USER_PREFERENCES: (id: string) => `/users/${id}/preferences`
+    USERS: '/v1/users',
+    USER_BY_ID: (id: string) => `/v1/users/${id}`,
+    USER_AVATAR: (id: string) => `/v1/users/${id}/avatar`,
+    USER_PREFERENCES: (id: string) => `/v1/users/${id}/preferences`
 }
 
 // Interface definitions
