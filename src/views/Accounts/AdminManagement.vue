@@ -524,7 +524,7 @@ const openAddAdminModal = async () => {
       title: t('admins.addNewAdmin'),
       currentUserIsSystemAdmin: currentUser.value?.isSystemAdmin(),
       existingEmails: existing
-    }) as AdminModalResult
+    }) as AdminModalResulef
 
     if (result?.action === 'create' && result.data) {
       const email = result.data.email
