@@ -56,7 +56,7 @@
                 <tr class="border-b border-gray-200 dark:border-gray-700">
                   <th class="px-5 py-3 text-left w-1/8 sm:px-6">
                     <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">{{ $t('table.emailAddress')
-                    }}</p>
+                      }}</p>
                   </th>
                   <th class="px-5 py-3 text-left w-1/8 sm:px-6">
                     <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">{{ $t('table.fullName') }}
@@ -67,15 +67,15 @@
                   </th>
                   <th class="px-5 py-3 text-center w-1/8 sm:px-6" v-if="currentUser?.isSystemAdmin()">
                     <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">{{ $t('table.isSystemAdmin')
-                    }}</p>
+                      }}</p>
                   </th>
                   <th class="px-5 py-3 text-left w-1/8 sm:px-6">
                     <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">{{ $t('table.createdDate')
-                      }}</p>
+                    }}</p>
                   </th>
                   <th class="px-5 py-3 text-left w-1/8 sm:px-6">
                     <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">{{ $t('table.lastLoginDate')
-                      }}</p>
+                    }}</p>
                   </th>
                   <th class="px-5 py-3 text-left w-1/8 sm:px-6">
                     <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">{{
@@ -202,7 +202,6 @@ import { useModal } from '@/composables/useModal'
 import { useConfirmModal } from '@/composables/useConfirmModal'
 import { useAppStore } from '@/stores/app'
 import AdminDetailModal from './Popups/AdminDetailModal.vue'
-import type { Admin, AdminModalResult } from '@/types'
 
 import { HorizontalDots, TrashRedIcon, ToggleOffIcon, ToggleOnIcon, BigPlusIcon, RefreshIcon } from '@/icons'
 import { getCurrentUser } from "@/auth/user-manager";
@@ -247,7 +246,7 @@ const currentUser = ref<AppUser | null>(null);
 // Sample admins data - in real app this would come from API
 const admins = ref([
   {
-    id: '1',
+    id: 1,
     email: 'admin.system@hivespace.com',
     fullName: 'System Administrator',
     adminType: 'System Admin', // This will be handled by display logic
@@ -259,7 +258,7 @@ const admins = ref([
     avatar: '/images/user/user-01.jpg'
   },
   {
-    id: '2',
+    id: 2,
     email: 'john.admin@hivespace.com',
     fullName: 'John Anderson',
     adminType: 'Regular Admin',
@@ -271,7 +270,7 @@ const admins = ref([
     avatar: '/images/user/user-02.jpg'
   },
   {
-    id: '3',
+    id: 3,
     email: 'sarah.manager@hivespace.com',
     fullName: 'Sarah Johnson',
     adminType: 'Regular Admin',
@@ -283,7 +282,7 @@ const admins = ref([
     avatar: '/images/user/user-03.jpg'
   },
   {
-    id: '4',
+    id: 4,
     email: 'mike.supervisor@hivespace.com',
     fullName: 'Mike Thompson',
     adminType: 'System Admin',
@@ -295,7 +294,7 @@ const admins = ref([
     avatar: '/images/user/user-04.jpg'
   },
   {
-    id: '5',
+    id: 5,
     email: 'lisa.admin@hivespace.com',
     fullName: 'Lisa Wilson',
     adminType: 'Regular Admin',
@@ -307,7 +306,7 @@ const admins = ref([
     avatar: '/images/user/user-05.jpg'
   },
   {
-    id: '6',
+    id: 6,
     email: 'david.tech@hivespace.com',
     fullName: 'David Rodriguez',
     adminType: 'System Admin',
@@ -319,7 +318,7 @@ const admins = ref([
     avatar: '/images/user/user-06.jpg'
   },
   {
-    id: '7',
+    id: 7,
     email: 'emma.support@hivespace.com',
     fullName: 'Emma Davis',
     adminType: 'Regular Admin',
@@ -402,6 +401,20 @@ const actionText = {
   deactivate: t('table.deactivate')
 }
 
+// lightweight Admin type for handlers
+type Admin = {
+  id: number;
+  email: string;
+  fullName?: string;
+  adminType?: string;
+  status?: string;
+  isSystemAdmin?: boolean;
+  createdDate?: string;
+  lastLoginDate?: string;
+  lastUpdatedDate?: string;
+  avatar?: string;
+}
+
 const tableHandleDelete = async (admin: Admin) => {
   const confirmed = await deleteConfirm(
     t('admins.actions.deleteAdmin.title'),
@@ -426,7 +439,7 @@ const tableHandleSearchInput = (event: Event) => {
 // Dropdown menu is handled by DropdownMenu component which manages its own outside clicks
 
 // Event handlers
-const handleDeleteAdmin = (adminId: string) => {
+const handleDeleteAdmin = (adminId: number) => {
   loading.value = true;
   // Simulate API call
   setTimeout(() => {
@@ -451,7 +464,7 @@ const handleDeleteAdmin = (adminId: string) => {
   }, 500);
 };
 
-const handleToggleStatus = (adminId: string) => {
+const handleToggleStatus = (adminId: number) => {
   loading.value = true;
   // Simulate API call
   setTimeout(() => {
@@ -506,6 +519,7 @@ const updateLastUpdated = () => {
 };
 
 // Open global AdminDetail modal and handle result
+type AdminModalResult = { action?: 'create' | 'cancel', data?: { email: string, isSystemAdmin: boolean } } | undefined
 const openAddAdminModal = async () => {
   try {
     const existing = admins.value.map(a => a.email)
@@ -513,33 +527,57 @@ const openAddAdminModal = async () => {
       title: t('admins.addNewAdmin'),
       currentUserIsSystemAdmin: currentUser.value?.isSystemAdmin(),
       existingEmails: existing
-    }) as AdminModalResult
+    }) as AdminModalResulef
 
-    // Only add admin to list if the API call was successful
     if (result?.action === 'create' && result.data) {
-      const createdAdmin = result.data
+      const email = result.data.email
+      const isSystem = !!result.data.isSystemAdmin
 
-      // Transform API response to match the local admin format
-      const newAdminData = {
-        id: createdAdmin.id, // Convert string ID to number, fallback to next available ID
-        email: createdAdmin.email,
-        fullName: createdAdmin.fullName,
-        adminType: createdAdmin.isSystemAdmin ? 'System Admin' : 'Regular Admin',
-        status: createdAdmin.isActive ? 'Active' : 'Inactive',
-        isSystemAdmin: createdAdmin.isSystemAdmin,
-        createdDate: new Date(createdAdmin.createdAt).toISOString().split('T')[0],
-        lastLoginDate: 'Never',
-        lastUpdatedDate: new Date(createdAdmin.createdAt).toISOString().split('T')[0],
-        avatar: '/images/user/user-default.jpg'
-      }
+      // Here you would make actual API call
+      // For now, simulate API call with timeout
+      appStore.setLoading(true)
 
-      // Add the new admin to the beginning of the list
-      admins.value.unshift(newAdminData)
-      updateLastUpdated()
+      setTimeout(() => {
+        try {
+          const newAdminData = {
+            id: admins.value.length + 1,
+            email,
+            fullName: email.split('@')[0].replace('.', ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()),
+            adminType: isSystem ? 'System Admin' : 'Regular Admin',
+            status: 'Active',
+            isSystemAdmin: isSystem,
+            createdDate: new Date().toISOString().split('T')[0],
+            lastLoginDate: 'Never',
+            lastUpdatedDate: new Date().toISOString().split('T')[0],
+            avatar: '/images/user/user-default.jpg'
+          }
+
+          admins.value.unshift(newAdminData)
+          updateLastUpdated()
+
+          // Show success alert
+          appStore.notifySuccess(
+            t('admins.alerts.success.title'),
+            t('admins.alerts.success.message', { email: newAdminData.email })
+          )
+
+        } catch (err) {
+          console.error('Error creating admin:', err)
+          appStore.notifyError(
+            t('admins.alerts.error.title'),
+            t('admins.alerts.error.message')
+          )
+        } finally {
+          appStore.setLoading(false)
+        }
+      }, 1000) // Simulate API delay
     }
   } catch (err) {
     console.error('Error opening modal:', err)
-    // Error handling is now done in the modal itself
+    appStore.notifyError(
+      t('admins.alerts.network.title'),
+      t('admins.alerts.network.message')
+    )
   }
 }
 
