@@ -161,7 +161,7 @@
                           <ToggleOffIcon v-if="admin.status === $t('admins.values.status.active')" />
                           <ToggleOnIcon v-else />
                           {{ admin.status === $t('admins.values.status.active') ? actionText.deactivate :
-                            actionText.activate }}
+                          <<<<<< <HEAD actionText.activate }}=======actionText.activate }}>>>>>>> origin/master
                         </button>
                       </template>
                     </DropdownMenu>
