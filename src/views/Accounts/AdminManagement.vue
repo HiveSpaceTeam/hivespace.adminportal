@@ -56,7 +56,7 @@
                 <tr class="border-b border-gray-200 dark:border-gray-700">
                   <th class="px-5 py-3 text-left w-1/8 sm:px-6">
                     <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">{{ $t('table.emailAddress')
-                      }}</p>
+                    }}</p>
                   </th>
                   <th class="px-5 py-3 text-left w-1/8 sm:px-6">
                     <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">{{ $t('table.fullName') }}
@@ -67,15 +67,15 @@
                   </th>
                   <th class="px-5 py-3 text-center w-1/8 sm:px-6" v-if="currentUser?.isSystemAdmin()">
                     <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">{{ $t('table.isSystemAdmin')
-                      }}</p>
+                    }}</p>
                   </th>
                   <th class="px-5 py-3 text-left w-1/8 sm:px-6">
                     <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">{{ $t('table.createdDate')
-                    }}</p>
+                      }}</p>
                   </th>
                   <th class="px-5 py-3 text-left w-1/8 sm:px-6">
                     <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">{{ $t('table.lastLoginDate')
-                    }}</p>
+                      }}</p>
                   </th>
                   <th class="px-5 py-3 text-left w-1/8 sm:px-6">
                     <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">{{
@@ -129,17 +129,17 @@
 
                   <!-- Created Date -->
                   <td class="px-5 py-4 sm:px-6">
-                    <div class="text-sm text-gray-900 dark:text-white">{{ admin.createdDate }}</div>
+                    <div class="text-sm text-gray-900 dark:text-white">{{ formatDate(admin.createdDate) }}</div>
                   </td>
 
                   <!-- Last Login Date -->
                   <td class="px-5 py-4 sm:px-6">
-                    <div class="text-sm text-gray-900 dark:text-white">{{ admin.lastLoginDate }}</div>
+                    <div class="text-sm text-gray-900 dark:text-white">{{ formatDateTime(admin.lastLoginDate) }}</div>
                   </td>
 
                   <!-- Last Updated Date -->
                   <td class="px-5 py-4 sm:px-6">
-                    <div class="text-sm text-gray-900 dark:text-white">{{ admin.lastUpdatedDate }}</div>
+                    <div class="text-sm text-gray-900 dark:text-white">{{ formatDateTime(admin.lastUpdatedDate) }}</div>
                   </td>
 
                   <!-- Actions -->
@@ -161,7 +161,7 @@
                           <ToggleOffIcon v-if="admin.status === $t('admins.values.status.active')" />
                           <ToggleOnIcon v-else />
                           {{ admin.status === $t('admins.values.status.active') ? actionText.deactivate :
-                          actionText.activate }}
+                            actionText.activate }}
                         </button>
                       </template>
                     </DropdownMenu>
@@ -203,8 +203,12 @@ import AdminDetailModal from './Popups/AdminDetailModal.vue'
 import { HorizontalDots, TrashRedIcon, ToggleOffIcon, ToggleOnIcon, BigPlusIcon, RefreshIcon } from '@/icons'
 import { getCurrentUser } from "@/auth/user-manager";
 import type { AppUser } from "@/types/app-user";
+import { useDateFormatter } from '@/composables/useDateFormatter'
 const { t } = useI18n();
 const appStore = useAppStore();
+
+// Date formatting
+const { formatDate, formatDateTime } = useDateFormatter();
 
 const currentPageTitle = computed(() => t('pages.adminManagement'));
 

@@ -230,6 +230,15 @@
   },
   "search": {
     "placeholder": "Search or type command..."
+  },
+  "pagination": {
+    "previous": "Previous",
+    "next": "Next",
+    "showing": "Showing",
+    "to": "to",
+    "of": "of",
+    "results": "results",
+    "itemsPerPage": "Items per page"
   }
 }
 

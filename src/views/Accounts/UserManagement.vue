@@ -42,6 +42,17 @@
             <p class="mt-2 text-gray-600 dark:text-gray-400">{{ $t('table.loading') }}</p>
           </div>
 
+          <!-- Error State -->
+          <div v-else-if="error" class="p-8 text-center">
+            <div class="text-red-600 dark:text-red-400 mb-4">
+              <p class="text-lg font-semibold">{{ $t('table.error') }}</p>
+              <p class="text-sm">{{ error }}</p>
+            </div>
+            <Button @click="refreshUsers" variant="outline">
+              {{ $t('actions.retry') }}
+            </Button>
+          </div>
+
           <!-- Table -->
           <div v-else class="max-w-full overflow-x-auto custom-scrollbar">
             <table class="min-w-full">
@@ -105,25 +116,25 @@
 
                   <!-- Status -->
                   <td class="px-5 py-4 sm:px-6">
-                    <Badge :size="'sm'" :color="user.status === 'Active' ? 'success' : 'error'">{{ user.status }}
+                    <Badge :size="'sm'" :color="getUserStatusColor(user.status)">{{ getUserStatusText(user.status) }}
                     </Badge>
                   </td>
 
                   <!-- Is Seller -->
                   <td class="px-5 py-4 sm:px-6">
                     <div class="flex items-center justify-center">
-                      <CheckGreenIcon v-if="user.hasSeller" />
+                      <CheckGreenIcon v-if="user.isSeller" />
                     </div>
                   </td>
 
                   <!-- Created Date -->
                   <td class="px-5 py-4 sm:px-6">
-                    <div class="text-sm text-gray-900 dark:text-white">{{ user.createdDate }}</div>
+                    <div class="text-sm text-gray-900 dark:text-white">{{ formatDate(user.createdDate) }}</div>
                   </td>
 
                   <!-- Last Login Date -->
                   <td class="px-5 py-4 sm:px-6">
-                    <div class="text-sm text-gray-900 dark:text-white">{{ user.lastLoginDate }}</div>
+                    <div class="text-sm text-gray-900 dark:text-white">{{ formatDateTime(user.lastLoginDate) }}</div>
                   </td>
                   <!-- Actions -->
                   <td class="px-5 py-4 sm:px-6 text-center">
@@ -141,9 +152,9 @@
 
                         <button @click="handleToggleStatus(user)"
                           class="flex items-center w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-700">
-                          <ToggleOffIcon v-if="user.status === 'Active'" />
+                          <ToggleOffIcon v-if="user.status === UserStatus.Active" />
                           <ToggleOnIcon v-else />
-                          {{ user.status === 'Active' ? actionDeactivate : actionActivate }}
+                          {{ user.status === UserStatus.Active ? actionDeactivate : actionActivate }}
                         </button>
                       </template>
                     </DropdownMenu>
@@ -154,10 +165,17 @@
           </div>
         </div>
 
+        <!-- Pagination -->
+        <div v-if="users.length > 0" class="mt-4">
+          <Pagination :currentPage="pagination.currentPage.value" :totalItems="pagination.totalItems.value"
+            :pageSize="pagination.pageSize.value" :totalPages="pagination.totalPages.value"
+            :pageSizeOptions="pagination.pageSizeOptions" @pageChange="handlePageChange"
+            @pageSizeChange="handlePageSizeChange" />
+        </div>
+
         <!-- Footer -->
         <div class="mt-4">
           <div class="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400">
-            <span>{{ $t('users.showingResults', { count: filteredUsersCount, total: users.length }) }}</span>
             <span>{{ $t('users.lastUpdated') }} {{ lastUpdated }}</span>
           </div>
         </div>
@@ -169,7 +187,7 @@
 
 <script setup lang="ts">
 defineOptions({ name: 'UserManagement' });
-import { computed, ref, onMounted } from "vue";
+import { computed, ref, onMounted, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import PageBreadcrumb from "@/components/common/PageBreadcrumb.vue";
 import AdminLayout from "@/components/layout/AdminLayout.vue";
@@ -180,6 +198,11 @@ import Button from '@/components/common/Button.vue'
 import Badge from '@/components/common/Badge.vue'
 import Input from '@/components/common/Input.vue';
 import { RefreshIcon, CheckGreenIcon, ToggleOffIcon, ToggleOnIcon, TrashRedIcon, HorizontalDots } from '@/icons'
+import { useUserStore } from '@/stores/user'
+import { getUserStatusText, getUserStatusColor, UserStatus } from '@/services/user.service'
+import Pagination from '@/components/common/Pagination.vue'
+import { usePagination } from '@/composables/usePagination'
+import { useDateFormatter } from '@/composables/useDateFormatter'
 
 // Options for the filter selects (i18n-backed)
 const statusOptions = computed(() => [
@@ -198,176 +221,152 @@ const { t } = useI18n();
 
 const currentPageTitle = computed(() => t('pages.userManagement'));
 
-// State management
-const loading = ref(false);
+// Use user store
+const userStore = useUserStore();
+
+// Pagination
+const pagination = usePagination({
+  initialPageSize: 10,
+  pageSizeOptions: [10, 20, 50]
+});
+
+// Date formatting
+const { formatDate, formatDateTime } = useDateFormatter();
+
+// Local state for filters
 const searchQuery = ref('');
 const statusFilter = ref('all');
 const sellerFilter = ref('all');
 const lastUpdated = ref('');
 
+// Get data from store
+const users = computed(() => userStore.users);
+const loading = computed(() => userStore.isLoading);
+const error = computed(() => userStore.error);
+
+// Display users directly from store (filtering is done on backend)
+const filteredUsers = computed(() => users.value);
+
+// Convert filter values to API params
+const getApiFilters = () => {
+  return {
+    role: sellerFilter.value === 'all' ? 0 : sellerFilter.value === 'seller' ? 2 : 1, // 0=All, 1=Customer, 2=Seller
+    status: statusFilter.value === 'all' ? 0 : statusFilter.value === 'active' ? 1 : 2, // 0=All, 1=Active, 2=Inactive
+    searchTerm: searchQuery.value || '',
+    sort: 'createdDate.desc'
+  };
+};
 
 
-// Sample users data - in real app this would come from API
-const users = ref([
-  {
-    id: 1,
-    username: 'johndoe',
-    fullName: 'John Doe',
-    email: 'john.doe@example.com',
-    hasSeller: true,
-    status: 'Active',
-    createdDate: '2024-01-15',
-    lastLoginDate: '2024-03-20',
-    avatar: '/images/user/user-01.jpg'
-  },
-  {
-    id: 2,
-    username: 'janesmith',
-    fullName: 'Jane Smith',
-    email: 'jane.smith@example.com',
-    hasSeller: false,
-    status: 'Active',
-    createdDate: '2024-02-03',
-    lastLoginDate: '2024-03-19',
-    avatar: '/images/user/user-02.jpg'
-  },
-  {
-    id: 3,
-    username: 'mikebrown',
-    fullName: 'Mike Brown',
-    email: 'mike.brown@example.com',
-    hasSeller: true,
-    status: 'Inactive',
-    createdDate: '2023-12-10',
-    lastLoginDate: '2024-02-28',
-    avatar: '/images/user/user-03.jpg'
-  },
-  {
-    id: 4,
-    username: 'sarahwilson',
-    fullName: 'Sarah Wilson',
-    email: 'sarah.wilson@example.com',
-    hasSeller: true,
-    status: 'Active',
-    createdDate: '2024-01-28',
-    lastLoginDate: '2024-03-21',
-    avatar: '/images/user/user-04.jpg'
-  },
-  {
-    id: 5,
-    username: 'davidlee',
-    fullName: 'David Lee',
-    email: 'david.lee@example.com',
-    hasSeller: false,
-    status: 'Active',
-    createdDate: '2024-02-14',
-    lastLoginDate: '2024-03-18',
-    avatar: '/images/user/user-05.jpg'
-  }
-]);
 
-// Computed properties
-const filteredUsers = computed(() => {
-  let filtered = users.value;
+// Pagination event handlers
+const handlePageChange = async (page: number) => {
+  pagination.setPage(page);
+  await fetchUsers();
+};
 
-  if (searchQuery.value) {
-    const query = searchQuery.value.toLowerCase();
-    filtered = filtered.filter(user =>
-      user.username.toLowerCase().includes(query) ||
-      user.fullName.toLowerCase().includes(query) ||
-      user.email.toLowerCase().includes(query)
-    );
-  }
-
-  if (statusFilter.value !== 'all') {
-    const status = statusFilter.value === 'active' ? 'Active' : 'Inactive';
-    filtered = filtered.filter(user => user.status === status);
-  }
-
-  if (sellerFilter.value !== 'all') {
-    const isSeller = sellerFilter.value === 'seller';
-    filtered = filtered.filter(user => user.hasSeller === isSeller);
-  }
-
-  return filtered;
-});
-
-const filteredUsersCount = computed(() => filteredUsers.value.length);
-
-
+const handlePageSizeChange = async (size: number) => {
+  pagination.setPageSize(size);
+  await fetchUsers();
+};
 
 // Event handlers
-// Dropdown menu component used per-row (handled in template)
-
 const actionDelete = computed(() => t('actions.delete'))
 const actionActivate = computed(() => t('actions.activate'))
 const actionDeactivate = computed(() => t('actions.deactivate'))
 
-// Accept either an id (number) or a user object { id }
-const handleDeleteUser = (userOrId: number | { id: number }) => {
-  const userId = typeof userOrId === 'number' ? userOrId : userOrId.id
-  loading.value = true
-  // Simulate API call
-  setTimeout(() => {
-    users.value = users.value.filter((user) => user.id !== userId)
-    loading.value = false
+// Handle user deletion
+const handleDelete = async (user: any) => {
+  try {
+    await userStore.deleteUser(user.id)
     updateLastUpdated()
-    console.log('User deleted:', userId)
-  }, 500)
+    console.log('User deleted:', user.id)
+  } catch (error) {
+    console.error('Failed to delete user:', error)
+  }
 }
 
-const handleToggleStatus = (userOrId: number | { id: number }) => {
-  const userId = typeof userOrId === 'number' ? userOrId : userOrId.id
-  loading.value = true
-  // Simulate API call
-  setTimeout(() => {
-    const user = users.value.find((u) => u.id === userId)
-    if (user) {
-      user.status = user.status === 'Active' ? 'Inactive' : 'Active'
+// Handle status toggle
+const handleToggleStatus = async (user: any) => {
+  try {
+    if (user.status === UserStatus.Active) {
+      await userStore.deactivateUser(user.id)
+    } else {
+      await userStore.activateUser(user.id)
     }
-    loading.value = false
     updateLastUpdated()
-    console.log('Status toggled for user:', userId)
-  }, 500)
+    console.log('Status toggled for user:', user.id)
+  } catch (error) {
+    console.error('Failed to toggle user status:', error)
+  }
 }
 
-const handleSearch = (query: string) => {
-  searchQuery.value = query
-  console.log('Search query:', query)
-}
+// Handle search input with debounce
+let searchTimeout: ReturnType<typeof setTimeout> | null = null;
 
 function handleSearchInput(e: Event) {
   const v = (e.target as HTMLInputElement).value
   searchQuery.value = v
-  handleSearch(v)
+
+  // Clear previous timeout
+  if (searchTimeout) {
+    clearTimeout(searchTimeout)
+  }
+
+  // Debounce search API call by 300ms
+  searchTimeout = setTimeout(async () => {
+    pagination.goToFirstPage(); // Reset to first page when searching
+    await fetchUsers();
+  }, 300);
+
+  console.log('Search query:', v)
 }
 
-// Filters are bound via v-model on Select; no manual handlers required here.
+// Refresh users from API
+const refreshUsers = async () => {
+  try {
+    await fetchUsers()
+    updateLastUpdated()
+    console.log('Users refreshed')
+  } catch (error) {
+    console.error('Failed to refresh users:', error)
+  }
+}
 
-const refreshUsers = () => {
-  loading.value = true;
-  // Simulate API refresh
-  setTimeout(() => {
-    loading.value = false;
-    updateLastUpdated();
-    console.log('Users refreshed');
-  }, 1000);
-};
+// Fetch users with current pagination and filters
+const fetchUsers = async () => {
+  try {
+    const paginationParams = pagination.getApiParams();
+    const filterParams = getApiFilters();
+
+    const response = await userStore.fetchUsers({
+      ...paginationParams,
+      ...filterParams
+    });
+
+    // Update pagination with response data
+    if (response && response.pagination) {
+      pagination.updatePagination(response.pagination);
+    }
+  } catch (error) {
+    console.error('Failed to fetch users:', error)
+  }
+}
 
 const updateLastUpdated = () => {
-  lastUpdated.value = new Date().toLocaleString();
-};
+  lastUpdated.value = new Date().toLocaleString()
+}
 
-
-
-// Lifecycle
-onMounted(() => {
-  updateLastUpdated();
-  console.log('UserManagement component mounted');
+// Watch filters for automatic refresh
+watch([statusFilter, sellerFilter], async () => {
+  pagination.goToFirstPage(); // Reset to first page when filters change
+  await fetchUsers();
 });
 
-// small template-facing wrappers
-function handleDelete(user: { id: number }) {
-  handleDeleteUser(user)
-}
+// Lifecycle
+onMounted(async () => {
+  await fetchUsers()
+  updateLastUpdated()
+  console.log('UserManagement component mounted')
+})
 </script>

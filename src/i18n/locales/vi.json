@@ -230,6 +230,15 @@
   },
   "search": {
     "placeholder": "Tìm kiếm hoặc nhập lệnh..."
+  },
+  "pagination": {
+    "previous": "Trước",
+    "next": "Tiếp",
+    "showing": "Hiển thị",
+    "to": "đến",
+    "of": "trong tổng số",
+    "results": "kết quả",
+    "itemsPerPage": "Kết quả mỗi trang"
   }
 }
 
