@@ -7,7 +7,7 @@ import type { CreateAdminResponse } from '../api/admin.types'
 
 // Admin data structure for UI components
 export interface Admin {
-    id: number
+    id: string
     email: string
     fullName?: string
     adminType?: string

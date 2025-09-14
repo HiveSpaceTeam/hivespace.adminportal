@@ -23,7 +23,6 @@ export const useAdminStore = defineStore('admin', () => {
     }
 
     async function createAdmin(adminData: CreateAdminRequest) {
-        setLoading(true)
         setError(null)
         setCreatedAdmin(null)
         await adminService.createAdmin(adminData)

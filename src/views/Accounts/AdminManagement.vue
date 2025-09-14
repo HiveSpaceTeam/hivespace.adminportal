@@ -202,7 +202,7 @@ import { useModal } from '@/composables/useModal'
 import { useConfirmModal } from '@/composables/useConfirmModal'
 import { useAppStore } from '@/stores/app'
 import AdminDetailModal from './Popups/AdminDetailModal.vue'
-import type { AdminModalResult } from '@/types'
+import type { Admin, AdminModalResult } from '@/types'
 
 import { HorizontalDots, TrashRedIcon, ToggleOffIcon, ToggleOnIcon, BigPlusIcon, RefreshIcon } from '@/icons'
 import { getCurrentUser } from "@/auth/user-manager";
@@ -243,7 +243,7 @@ const currentUser = ref<AppUser | null>(null);
 // Sample admins data - in real app this would come from API
 const admins = ref([
   {
-    id: 1,
+    id: '1',
     email: 'admin.system@hivespace.com',
     fullName: 'System Administrator',
     adminType: 'System Admin', // This will be handled by display logic
@@ -255,7 +255,7 @@ const admins = ref([
     avatar: '/images/user/user-01.jpg'
   },
   {
-    id: 2,
+    id: '2',
     email: 'john.admin@hivespace.com',
     fullName: 'John Anderson',
     adminType: 'Regular Admin',
@@ -267,7 +267,7 @@ const admins = ref([
     avatar: '/images/user/user-02.jpg'
   },
   {
-    id: 3,
+    id: '3',
     email: 'sarah.manager@hivespace.com',
     fullName: 'Sarah Johnson',
     adminType: 'Regular Admin',
@@ -279,7 +279,7 @@ const admins = ref([
     avatar: '/images/user/user-03.jpg'
   },
   {
-    id: 4,
+    id: '4',
     email: 'mike.supervisor@hivespace.com',
     fullName: 'Mike Thompson',
     adminType: 'System Admin',
@@ -291,7 +291,7 @@ const admins = ref([
     avatar: '/images/user/user-04.jpg'
   },
   {
-    id: 5,
+    id: '5',
     email: 'lisa.admin@hivespace.com',
     fullName: 'Lisa Wilson',
     adminType: 'Regular Admin',
@@ -303,7 +303,7 @@ const admins = ref([
     avatar: '/images/user/user-05.jpg'
   },
   {
-    id: 6,
+    id: '6',
     email: 'david.tech@hivespace.com',
     fullName: 'David Rodriguez',
     adminType: 'System Admin',
@@ -315,7 +315,7 @@ const admins = ref([
     avatar: '/images/user/user-06.jpg'
   },
   {
-    id: 7,
+    id: '7',
     email: 'emma.support@hivespace.com',
     fullName: 'Emma Davis',
     adminType: 'Regular Admin',
@@ -398,20 +398,6 @@ const actionText = {
   deactivate: t('table.deactivate')
 }
 
-// lightweight Admin type for handlers
-type Admin = {
-  id: number;
-  email: string;
-  fullName?: string;
-  adminType?: string;
-  status?: string;
-  isSystemAdmin?: boolean;
-  createdDate?: string;
-  lastLoginDate?: string;
-  lastUpdatedDate?: string;
-  avatar?: string;
-}
-
 const tableHandleDelete = async (admin: Admin) => {
   const confirmed = await deleteConfirm(
     t('admins.actions.deleteAdmin.title'),
@@ -436,7 +422,7 @@ const tableHandleSearchInput = (event: Event) => {
 // Dropdown menu is handled by DropdownMenu component which manages its own outside clicks
 
 // Event handlers
-const handleDeleteAdmin = (adminId: number) => {
+const handleDeleteAdmin = (adminId: string) => {
   loading.value = true;
   // Simulate API call
   setTimeout(() => {
@@ -461,7 +447,7 @@ const handleDeleteAdmin = (adminId: number) => {
   }, 500);
 };
 
-const handleToggleStatus = (adminId: number) => {
+const handleToggleStatus = (adminId: string) => {
   loading.value = true;
   // Simulate API call
   setTimeout(() => {
@@ -531,7 +517,7 @@ const openAddAdminModal = async () => {
 
       // Transform API response to match the local admin format
       const newAdminData = {
-        id: parseInt(createdAdmin.id) || admins.value.length + 1, // Convert string ID to number, fallback to next available ID
+        id: createdAdmin.id, // Convert string ID to number, fallback to next available ID
         email: createdAdmin.email,
         fullName: createdAdmin.fullName,
         adminType: createdAdmin.isSystemAdmin ? 'System Admin' : 'Regular Admin',

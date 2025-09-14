@@ -13,7 +13,7 @@ interface ApiConfig {
 
 // Default API configuration
 const defaultConfig: ApiConfig = {
-  baseURL: config.api.baseUrl + '/api',
+  baseURL: new URL('/api', config.api.baseUrl).toString(),
   timeout: config.api.timeout,
   headers: {
     'Content-Type': 'application/json',
