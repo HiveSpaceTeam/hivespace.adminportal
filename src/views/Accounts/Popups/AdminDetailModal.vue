@@ -88,17 +88,20 @@ import Input from '@/components/common/Input.vue'
 import Button from '@/components/common/Button.vue'
 import Checkbox from '@/components/common/Checkbox.vue'
 import { ShowPasswordIcon, HidePasswordIcon } from '@/icons'
+import { adminService, type CreateAdminRequest } from '@/services/admin.service'
+import type { ErrorResponse, AdminModalClosePayload } from '@/types'
+import { useAppStore } from '@/stores/app'
 
 const { t } = useI18n()
+const appStore = useAppStore()
 
 const props = defineProps<{
   currentUserIsSystemAdmin: boolean,
   existingEmails?: string[]
 }>()
 
-type ClosePayload = { action?: 'create' | 'cancel', data?: { email: string, isSystemAdmin: boolean } }
 const emit = defineEmits<{
-  (e: 'close', payload?: ClosePayload): void
+  (e: 'close', payload?: AdminModalClosePayload): void
 }>()
 
 const form = reactive({
@@ -227,15 +230,100 @@ function validateConfirmPassword() {
   return true
 }
 
-function onCreate() {
+const onCreate = async () => {
   const ok = validateFullName() && validateEmail() && validatePassword() && validateConfirmPassword()
   if (!ok) return
-  emit('close', {
-    action: 'create',
-    data: {
-      email: form.email,
-      isSystemAdmin: form.isSystemAdmin,
+
+  const adminData: CreateAdminRequest = {
+    fullName: form.fullName.trim(),
+    email: form.email.toLowerCase().trim(),
+    password: form.password,
+    confirmPassword: form.confirmPassword,
+    isSystemAdmin: form.isSystemAdmin
+  }
+
+  try {
+    // Show loading state
+    appStore.setLoading(true)
+
+    // Call the API
+    const createdAdmin = await adminService.createAdmin(adminData)
+
+    // Show success notification
+    appStore.notifySuccess(
+      t('admins.alerts.success.title'),
+      t('admins.alerts.success.message', { email: createdAdmin.email })
+    )
+
+    // Emit success result with the created admin data
+    emit('close', {
+      action: 'create',
+      data: createdAdmin
+    })
+  } catch (error: unknown) {
+
+    // Show error notification
+    const errorMessage = t('admins.alerts.error.message')
+    const errorTitle = t('admins.alerts.error.title')
+
+    // Handle API error response
+    if (error && typeof error === 'object' && 'response' in error) {
+      const apiError = error as { response?: { data?: ErrorResponse } }
+      const errorData = apiError.response?.data
+
+      // if (errorData?.errors) {
+      // // Handle field-specific validation errors
+      // const apiErrors = apiError.response.data.errors
+      // let hasFieldErrors = false
+
+      // apiErrors.forEach(err => {
+      //   const fieldName = err.source.toLowerCase()
+      //   if (fieldName === 'fullname') {
+      //     errors.fullName = t(`admins.validation.${err.messageCode}`, { defaultValue: err.messageCode })
+      //     hasFieldErrors = true
+      //   } else if (fieldName === 'email') {
+      //     errors.email = t(`admins.validation.${err.messageCode}`, { defaultValue: err.messageCode })
+      //     hasFieldErrors = true
+      //   } else if (fieldName === 'password') {
+      //     errors.password = t(`admins.validation.${err.messageCode}`, { defaultValue: err.messageCode })
+      //     hasFieldErrors = true
+      //   } else if (fieldName === 'confirmpassword') {
+      //     errors.confirmPassword = t(`admins.validation.${err.messageCode}`, { defaultValue: err.messageCode })
+      //     hasFieldErrors = true
+      //   }
+      // })
+
+      // // If we have field errors, don't show the general error notification
+      // if (hasFieldErrors) {
+      //   return
+      // }
+
+      // // Show general error notification if no field-specific errors
+      // const firstError = apiErrors[0]
+      // appStore.notifyError(
+      //   t('admins.notifications.createFailed.title'),
+      //   t(`admins.errors.${firstError.messageCode}`, { defaultValue: firstError.messageCode })
+      // )
+      if (errorData?.status === "409") {
+        // Handle conflict (email already exists)
+        errors.email = t('admins.emailExists')
+      } else {
+        // Handle other HTTP errors
+        appStore.notifyError(
+          errorTitle,
+          errorMessage
+        )
+      }
+    } else {
+      // Handle network or other errors
+      appStore.notifyError(
+        errorTitle,
+        errorMessage
+      )
     }
-  })
+  } finally {
+    // Hide loading state
+    appStore.setLoading(false)
+  }
 }
 </script>

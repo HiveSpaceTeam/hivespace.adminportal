@@ -1,21 +1,21 @@
+import type { CreateAdminRequest, CreateAdminResponse } from '@/types'
 import { apiService } from './api'
 
-// Admin API endpoints
+// Admin API endpoints (with API versioning)
 const ADMIN_ENDPOINTS = {
-    DASHBOARD: '/admin/dashboard',
-    SYSTEM_STATS: '/admin/system/stats',
-    SYSTEM_HEALTH: '/admin/system/health',
-    SYSTEM_LOGS: '/admin/system/logs',
-    PERMISSIONS: '/admin/permissions',
-    ROLES: '/admin/roles',
-    ROLE_BY_ID: (id: string) => `/admin/roles/${id}`,
-    AUDIT_LOGS: '/admin/audit-logs',
-    SETTINGS: '/admin/settings',
-    CACHE: '/admin/cache',
-    BACKUP: '/admin/backup'
+    ADMINS: '/v1/admins',
+    DASHBOARD: '/v1/admin/dashboard',
+    SYSTEM_STATS: '/v1/admin/system/stats',
+    SYSTEM_HEALTH: '/v1/admin/system/health',
+    SYSTEM_LOGS: '/v1/admin/system/logs',
+    PERMISSIONS: '/v1/admin/permissions',
+    ROLES: '/v1/admin/roles',
+    ROLE_BY_ID: (id: string) => `/v1/admin/roles/${id}`,
+    AUDIT_LOGS: '/v1/admin/audit-logs',
+    SETTINGS: '/v1/admin/settings',
+    CACHE: '/v1/admin/cache',
+    BACKUP: '/v1/admin/backup'
 }
-
-// Interface definitions
 interface DashboardStats {
     totalUsers: number
     activeUsers: number
@@ -94,7 +94,7 @@ interface AuditLog {
     timestamp: string
     ipAddress: string
     userAgent: string
-    details: Record<string, any>
+    details: Record<string, unknown>
 }
 
 interface AuditLogParams {
@@ -136,6 +136,61 @@ interface SystemSettings {
 
 // Admin service class
 class AdminService {
+    /**
+     * Create a new admin user
+     */
+    async createAdmin(adminData: CreateAdminRequest): Promise<CreateAdminResponse> {
+        return await apiService.post<CreateAdminResponse>(ADMIN_ENDPOINTS.ADMINS, adminData)
+    }
+
+    /**
+     * Get list of admin users
+     */
+    async getAdmins(params?: {
+        pageNumber?: number
+        pageSize?: number
+        search?: string
+        isSystemAdmin?: boolean
+        isActive?: boolean
+    }): Promise<{ admins: CreateAdminResponse[]; totalCount: number }> {
+        const queryParams = new URLSearchParams()
+
+        if (params) {
+            Object.entries(params).forEach(([key, value]) => {
+                if (value !== undefined && value !== null) {
+                    queryParams.append(key, value.toString())
+                }
+            })
+        }
+
+        const url = queryParams.toString()
+            ? `${ADMIN_ENDPOINTS.ADMINS}?${queryParams.toString()}`
+            : ADMIN_ENDPOINTS.ADMINS
+
+        return await apiService.get<{ admins: CreateAdminResponse[]; totalCount: number }>(url)
+    }
+
+    /**
+     * Update admin user
+     */
+    async updateAdmin(adminId: string, adminData: Partial<Omit<CreateAdminRequest, 'password'>>): Promise<CreateAdminResponse> {
+        return await apiService.put<CreateAdminResponse>(`${ADMIN_ENDPOINTS.ADMINS}/${adminId}`, adminData)
+    }
+
+    /**
+     * Delete admin user
+     */
+    async deleteAdmin(adminId: string): Promise<void> {
+        return await apiService.delete<void>(`${ADMIN_ENDPOINTS.ADMINS}/${adminId}`)
+    }
+
+    /**
+     * Toggle admin active status
+     */
+    async toggleAdminStatus(adminId: string, isActive: boolean): Promise<CreateAdminResponse> {
+        return await apiService.patch<CreateAdminResponse>(`${ADMIN_ENDPOINTS.ADMINS}/${adminId}/status`, { isActive })
+    }
+
     /**
      * Get dashboard statistics
      */
@@ -309,6 +364,8 @@ export const adminService = new AdminService()
 
 // Export types
 export type {
+    CreateAdminRequest,
+    CreateAdminResponse,
     DashboardStats,
     SystemHealth,
     SystemLog,
