@@ -276,7 +276,7 @@ const actionActivate = computed(() => t('actions.activate'))
 const actionDeactivate = computed(() => t('actions.deactivate'))
 
 // Handle user deletion
-const handleDelete = async (user: any) => {
+const handleDelete = async (user: unknown) => {
   try {
     await userStore.deleteUser(user.id)
     updateLastUpdated()
@@ -287,7 +287,7 @@ const handleDelete = async (user: any) => {
 }
 
 // Handle status toggle
-const handleToggleStatus = async (user: any) => {
+const handleToggleStatus = async (user: unknown) => {
   try {
     if (user.status === UserStatus.Active) {
       await userStore.deactivateUser(user.id)

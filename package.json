@@ -10,7 +10,12 @@
     "build-only": "vite build",
     "type-check": "vue-tsc --build",
     "lint": "eslint . --fix",
-    "format": "prettier --write src/"
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "format:src": "prettier --write src/",
+    "format:docs": "prettier --write docs/ memory-bank/ README.md",
+    "format:config": "prettier --write *.{js,ts,json} .*rc.json",
+    "format:all": "npm run format && npm run lint"
   },
   "dependencies": {
     "@fullcalendar/core": "^6.1.15",

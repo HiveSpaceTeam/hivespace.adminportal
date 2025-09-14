@@ -1,157 +1,166 @@
-import { BaseApiService } from './api.service'
+import { apiService } from './api'
 
-// Types based on API design
-export interface UserData {
+// User API endpoints
+const USER_ENDPOINTS = {
+  USERS: '/users',
+  USER_BY_ID: (id: string) => `/users/${id}`,
+  USER_AVATAR: (id: string) => `/users/${id}/avatar`,
+  USER_PREFERENCES: (id: string) => `/users/${id}/preferences`
+}
+
+// Interface definitions
+interface UserData {
   id: string
   username: string
   fullName: string
   email: string
-  status: number // 1=Active, 2=Inactive, 3=Suspended, 4=Deleted
-  isSeller: boolean
+  status: 'Active' | 'Inactive'
+  hasSeller: boolean
   createdDate: string
-  lastLoginDate: string | null
-  avatar: string | null
+  lastLoginDate: string
+  avatar?: string
 }
 
-export interface PaginationData {
-  currentPage: number
-  pageSize: number
-  totalItems: number
-  totalPages: number
-  hasNextPage: boolean
-  hasPreviousPage: boolean
-}
-
-export interface UserListResponse {
+interface UserListResponse {
   users: UserData[]
-  pagination: PaginationData
+  totalCount: number
+  pageNumber: number
+  pageSize: number
+  totalPages: number
 }
 
-export interface UserListParams {
-  page?: number
+interface UserListParams {
+  pageNumber?: number
   pageSize?: number
-  role?: number // 0=All, 1=Customer, 2=Seller
-  status?: number // 0=All, 1=Active, 2=Inactive
   searchTerm?: string
-  sort?: string // Format: "field.direction"
+  sortBy?: string
+  sortDirection?: 'asc' | 'desc'
+  role?: string
+  status?: 'active' | 'inactive' | 'pending'
 }
 
-// User Status enum for frontend use
-export enum UserStatus {
-  Active = 1,
-  Inactive = 2,
-  Suspended = 3,
-  Deleted = 4
+interface CreateUserRequest {
+  email: string
+  firstName: string
+  lastName: string
+  role: string
+  phoneNumber?: string
+  department?: string
 }
 
-// Role Filter enum
-export enum UserRoleFilter {
-  All = 0,
-  Customer = 1,
-  Seller = 2
+interface UpdateUserRequest {
+  firstName?: string
+  lastName?: string
+  phoneNumber?: string
+  department?: string
+  role?: string
+  status?: 'active' | 'inactive'
 }
 
-// Status Filter enum
-export enum UserStatusFilter {
-  All = 0,
-  Active = 1,
-  Inactive = 2
-}
-
-// User Service class extending BaseApiService
-class UserService extends BaseApiService {
-  constructor() {
-    super('/api/v1/admin/users')
+interface UserPreferences {
+  theme: 'light' | 'dark'
+  language: string
+  notifications: {
+    email: boolean
+    push: boolean
+    sms: boolean
   }
+  timezone: string
+}
 
-  // Get users list with parameters
+// User service class
+class UserService {
+  /**
+   * Get paginated list of users
+   */
   async getUsers(params?: UserListParams): Promise<UserListResponse> {
-    // Default params
-    const defaultParams: UserListParams = {
-      page: 1,
-      pageSize: 10,
-      role: 0,
-      status: 0,
-      searchTerm: '',
-      sort: 'createdDate.desc'
+    const queryParams = new URLSearchParams()
+
+    if (params) {
+      Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          queryParams.append(key, value.toString())
+        }
+      })
     }
 
-    const finalParams = { ...defaultParams, ...params }
+    const url = queryParams.toString()
+      ? `${USER_ENDPOINTS.USERS}?${queryParams.toString()}`
+      : USER_ENDPOINTS.USERS
 
-    // Convert params to query string
-    const queryParams = new URLSearchParams()
-    Object.entries(finalParams).forEach(([key, value]) => {
-      if (value !== undefined && value !== null) {
-        queryParams.append(key, value.toString())
-      }
+    return await apiService.get<UserListResponse>(url)
+  }
+
+
+  /**
+   * Delete user
+   */
+  async deleteUser(id: string): Promise<void> {
+    return await apiService.delete<void>(USER_ENDPOINTS.USER_BY_ID(id))
+  }
+
+  /**
+   * Activate user account
+   */
+  async activateUser(id: string): Promise<UserData> {
+    return await apiService.patch<UserData>(USER_ENDPOINTS.USER_BY_ID(id), { status: 'active' })
+  }
+
+  /**
+   * Deactivate user account
+   */
+  async deactivateUser(id: string): Promise<UserData> {
+    return await apiService.patch<UserData>(USER_ENDPOINTS.USER_BY_ID(id), { status: 'inactive' })
+  }
+
+  /**
+   * Upload user avatar
+   */
+  async uploadAvatar(id: string, file: File, onUploadProgress?: (progressEvent: ProgressEvent) => void): Promise<{ avatarUrl: string }> {
+    return await apiService.uploadFile<{ avatarUrl: string }>(
+      USER_ENDPOINTS.USER_AVATAR(id),
+      file,
+      onUploadProgress
+    )
+  }
+
+  /**
+   * Get user preferences
+   */
+  async getUserPreferences(id: string): Promise<UserPreferences> {
+    return await apiService.get<UserPreferences>(USER_ENDPOINTS.USER_PREFERENCES(id))
+  }
+
+  /**
+   * Update user preferences
+   */
+  async updateUserPreferences(id: string, preferences: Partial<UserPreferences>): Promise<UserPreferences> {
+    return await apiService.put<UserPreferences>(USER_ENDPOINTS.USER_PREFERENCES(id), preferences)
+  }
+
+  /**
+   * Search users by term
+   */
+  async searchUsers(searchTerm: string, limit = 10): Promise<UserData[]> {
+    const params = new URLSearchParams({
+      searchTerm,
+      pageSize: limit.toString()
     })
 
-    console.log('API Call:', `${this.baseEndpoint}?${queryParams.toString()}`)
-
-    const response = await this.get<UserListResponse>(`?${queryParams.toString()}`)
-
-    // Ensure pagination data is properly formatted
-    if (response && response.pagination) {
-      response.pagination = {
-        ...response.pagination,
-        hasNextPage: response.pagination.currentPage < response.pagination.totalPages,
-        hasPreviousPage: response.pagination.currentPage > 1
-      }
-    }
-
-    return response
-  }
-
-  // Delete user
-  async deleteUser(userId: string): Promise<void> {
-    await this.delete(`/${userId}`)
-  }
-
-  // Activate user
-  async activateUser(userId: string): Promise<UserData> {
-    return await this.patch<UserData>(`/${userId}/activate`)
-  }
-
-  // Deactivate user
-  async deactivateUser(userId: string): Promise<UserData> {
-    return await this.patch<UserData>(`/${userId}/deactivate`)
-  }
-
-  // Update user status
-  async updateUserStatus(userId: string, status: UserStatus): Promise<UserData> {
-    return await this.patch<UserData>(`/${userId}/status`, { status })
+    const response = await apiService.get<UserListResponse>(`${USER_ENDPOINTS.USERS}?${params.toString()}`)
+    return response.users
   }
 }
 
-// Export singleton instance
+// Create and export the user service instance
 export const userService = new UserService()
 
-// Helper functions for frontend
-export const getUserStatusText = (status: number): string => {
-  switch (status) {
-    case UserStatus.Active:
-      return 'Active'
-    case UserStatus.Inactive:
-      return 'Inactive'
-    case UserStatus.Suspended:
-      return 'Suspended'
-    case UserStatus.Deleted:
-      return 'Deleted'
-    default:
-      return 'Unknown'
-  }
-}
-
-export const getUserStatusColor = (status: number): 'success' | 'error' | 'warning' => {
-  switch (status) {
-    case UserStatus.Active:
-      return 'success'
-    case UserStatus.Inactive:
-      return 'warning'
-    case UserStatus.Suspended:
-    case UserStatus.Deleted:
-      return 'error'
-    default:
-      return 'error'
-  }
+// Export types
+export type {
+  UserData,
+  UserListResponse,
+  UserListParams,
+  CreateUserRequest,
+  UpdateUserRequest,
+  UserPreferences
 }

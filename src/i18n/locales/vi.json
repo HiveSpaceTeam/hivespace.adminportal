@@ -70,10 +70,10 @@
     "notifications": "Thông báo",
     "profile": "Hồ sơ",
     "settings": "Cài đặt",
-  "logout": "Đăng xuất",
-  "language": "Ngôn ngữ",
-  "language_vi": "Tiếng Việt",
-  "language_en": "English"
+    "logout": "Đăng xuất",
+    "language": "Ngôn ngữ",
+    "language_vi": "Tiếng Việt",
+    "language_en": "English"
   },
   "sidebar": {
     "menu": "Menu",
@@ -104,22 +104,22 @@
     "showingResults": "Hiển thị {count} trên tổng số {total} kết quả",
     "lastUpdated": "Cập nhật lần cuối:",
     "addNewAdmin": "Thêm Admin Mới",
-  "fullName": "Họ và tên",
-  "email": "Email",
+    "fullName": "Họ và tên",
+    "email": "Email",
     "password": "Mật khẩu",
     "confirmPassword": "Xác nhận mật khẩu",
     "adminType": "Loại Admin",
     "regularAdmin": "Admin Thường",
     "systemAdmin": "Admin Hệ Thống",
     "createAdmin": "Tạo Admin",
-  "fullNamePlaceholder": "Nhập họ và tên",
-  "emailPlaceholder": "Nhập địa chỉ email admin",
+    "fullNamePlaceholder": "Nhập họ và tên",
+    "emailPlaceholder": "Nhập địa chỉ email admin",
     "passwordPlaceholder": "Nhập mật khẩu bảo mật (tối thiểu 12 ký tự)",
     "confirmPasswordPlaceholder": "Xác nhận mật khẩu",
     "emailRequired": "Email là bắt buộc",
     "emailInvalid": "Vui lòng nhập địa chỉ email hợp lệ",
-  "emailExists": "Một quản trị viên với email này đã tồn tại",
-  "fullNameRequired": "Họ và tên là bắt buộc",
+    "emailExists": "Một quản trị viên với email này đã tồn tại",
+    "fullNameRequired": "Họ và tên là bắt buộc",
     "passwordRequired": "Mật khẩu là bắt buộc",
     "passwordTooShort": "Mật khẩu phải có ít nhất 12 ký tự",
     "passwordComplexity": "Mật khẩu phải bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt",
@@ -241,4 +241,3 @@
     "itemsPerPage": "Kết quả mỗi trang"
   }
 }
-
