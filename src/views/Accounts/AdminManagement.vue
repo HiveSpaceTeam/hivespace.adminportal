@@ -202,7 +202,7 @@ import { useModal } from '@/composables/useModal'
 import { useConfirmModal } from '@/composables/useConfirmModal'
 import { useAppStore } from '@/stores/app'
 import AdminDetailModal from './Popups/AdminDetailModal.vue'
-import type { Admin, AdminModalResult } from '@/types'
+import type { Admin } from '@/types'
 
 import { HorizontalDots, TrashRedIcon, ToggleOffIcon, ToggleOnIcon, BigPlusIcon, RefreshIcon } from '@/icons'
 import { getCurrentUser } from "@/auth/user-manager";
@@ -502,41 +502,11 @@ const updateLastUpdated = () => {
 };
 
 // Open global AdminDetail modal and handle result
-const openAddAdminModal = async () => {
-  try {
-    const existing = admins.value.map(a => a.email)
-    const result = await openModal(AdminDetailModal, {
-      title: t('admins.addNewAdmin'),
-      currentUserIsSystemAdmin: currentUser.value?.isSystemAdmin(),
-      existingEmails: existing
-    }) as AdminModalResult
-
-    // Only add admin to list if the API call was successful
-    if (result?.action === 'create' && result.data) {
-      const createdAdmin = result.data
-
-      // Transform API response to match the local admin format
-      const newAdminData = {
-        id: createdAdmin.id, // Convert string ID to number, fallback to next available ID
-        email: createdAdmin.email,
-        fullName: createdAdmin.fullName,
-        adminType: createdAdmin.isSystemAdmin ? 'System Admin' : 'Regular Admin',
-        status: createdAdmin.isActive ? 'Active' : 'Inactive',
-        isSystemAdmin: createdAdmin.isSystemAdmin,
-        createdDate: new Date(createdAdmin.createdAt).toISOString().split('T')[0],
-        lastLoginDate: 'Never',
-        lastUpdatedDate: new Date(createdAdmin.createdAt).toISOString().split('T')[0],
-        avatar: '/images/user/user-default.jpg'
-      }
-
-      // Add the new admin to the beginning of the list
-      admins.value.unshift(newAdminData)
-      updateLastUpdated()
-    }
-  } catch (err) {
-    console.error('Error opening modal:', err)
-    // Error handling is now done in the modal itself
-  }
+const openAddAdminModal = () => {
+  openModal(AdminDetailModal, {
+    title: t('admins.addNewAdmin'),
+    currentUserIsSystemAdmin: currentUser.value?.isSystemAdmin(),
+  })
 }
 
 // Lifecycle

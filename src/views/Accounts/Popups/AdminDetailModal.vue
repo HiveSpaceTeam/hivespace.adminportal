@@ -88,20 +88,20 @@ import Input from '@/components/common/Input.vue'
 import Button from '@/components/common/Button.vue'
 import Checkbox from '@/components/common/Checkbox.vue'
 import { ShowPasswordIcon, HidePasswordIcon } from '@/icons'
-import { adminService, type CreateAdminRequest } from '@/services/admin.service'
-import type { ErrorResponse, AdminModalClosePayload } from '@/types'
+import { adminService } from '@/services/admin.service'
+import type { CreateAdminRequest, ErrorResponse } from '@/types'
 import { useAppStore } from '@/stores/app'
+
 
 const { t } = useI18n()
 const appStore = useAppStore()
 
-const props = defineProps<{
+defineProps<{
   currentUserIsSystemAdmin: boolean,
-  existingEmails?: string[]
 }>()
 
 const emit = defineEmits<{
-  (e: 'close', payload?: AdminModalClosePayload): void
+  (e: 'close'): void
 }>()
 
 const form = reactive({
@@ -174,10 +174,6 @@ function validateEmail() {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
   if (!emailRegex.test(email)) {
     errors.email = t('admins.emailInvalid') as string
-    return false
-  }
-  if (props.existingEmails && props.existingEmails.some(e => e.toLowerCase() === email.toLowerCase())) {
-    errors.email = t('admins.emailExists') as string
     return false
   }
   errors.email = ''
@@ -256,10 +252,7 @@ const onCreate = async () => {
     )
 
     // Emit success result with the created admin data
-    emit('close', {
-      action: 'create',
-      data: createdAdmin
-    })
+    emit('close')
   } catch (error: unknown) {
 
     // Show error notification

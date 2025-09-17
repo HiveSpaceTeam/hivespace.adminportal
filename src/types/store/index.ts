@@ -4,7 +4,7 @@
  */
 
 import type { AppUser } from '../app-user'
-import type { UserData, UserListParams } from '../api/user.types'
+export * from './admin.types'
 
 // App store types (notifications, theme, loading)
 export interface NotificationOptions {
@@ -25,33 +25,6 @@ export interface AppState {
     notifications: Notification[]
     sidebarCollapsed: boolean
     user: AppUser | null
-}
-
-// User store types
-export interface UserStoreState {
-    users: UserData[]
-    currentUser: UserData | null
-    isLoading: boolean
-    error: string | null
-    pagination: {
-        page: number
-        pageSize: number
-        total: number
-        totalPages: number
-    }
-    filters: UserListParams
-}
-
-// Auth store types
-export interface AuthState {
-    isAuthenticated: boolean
-    user: AppUser | null
-    accessToken: string | null
-    refreshToken: string | null
-    permissions: string[]
-    roles: string[]
-    isLoading: boolean
-    error: string | null
 }
 
 // General store action types

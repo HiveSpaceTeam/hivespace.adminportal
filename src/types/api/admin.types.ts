@@ -1,9 +1,7 @@
-/**
- * Admin API Types
- * All interfaces related to admin management API endpoints
- */
-
-// Admin creation and management
+// /**
+//  * Admin API Types
+//  * All interfaces related to admin management API endpoints
+//  */
 export interface CreateAdminRequest {
     fullName: string
     email: string
@@ -23,116 +21,119 @@ export interface CreateAdminResponse {
     avatarUrl?: string
 }
 
-export interface UpdateAdminRequest {
-    firstName?: string
-    lastName?: string
-    isSystemAdmin?: boolean
-    status?: 'active' | 'inactive' | 'pending'
-}
 
-// Dashboard and statistics
-export interface DashboardStats {
-    totalUsers: number
-    activeUsers: number
-    totalRevenue: number
-    pendingOrders: number
-    newRegistrations: number
-    supportTickets: number
-}
+// // Admin creation and management
 
-export interface SystemHealth {
-    status: 'healthy' | 'warning' | 'critical'
-    uptime: number
-    memoryUsage: number
-    cpuUsage: number
-    diskUsage: number
-    activeConnections: number
-}
+// export interface UpdateAdminRequest {
+//     firstName?: string
+//     lastName?: string
+//     isSystemAdmin?: boolean
+//     status?: 'active' | 'inactive' | 'pending'
+// }
 
-export interface SystemLog {
-    id: string
-    level: 'info' | 'warning' | 'error' | 'debug'
-    message: string
-    timestamp: string
-    source: string
-    metadata?: Record<string, unknown>
-}
+// // Dashboard and statistics
+// export interface DashboardStats {
+//     totalUsers: number
+//     activeUsers: number
+//     totalRevenue: number
+//     pendingOrders: number
+//     newRegistrations: number
+//     supportTickets: number
+// }
 
-// Permissions and roles
-export interface Permission {
-    id: string
-    name: string
-    description: string
-    resource: string
-    action: string
-}
+// export interface SystemHealth {
+//     status: 'healthy' | 'warning' | 'critical'
+//     uptime: number
+//     memoryUsage: number
+//     cpuUsage: number
+//     diskUsage: number
+//     activeConnections: number
+// }
 
-export interface Role {
-    id: string
-    name: string
-    description: string
-    permissions: Permission[]
-    isSystem: boolean
-}
+// export interface SystemLog {
+//     id: string
+//     level: 'info' | 'warning' | 'error' | 'debug'
+//     message: string
+//     timestamp: string
+//     source: string
+//     metadata?: Record<string, unknown>
+// }
 
-export interface CreateRoleRequest {
-    name: string
-    description: string
-    permissions: string[]
-}
+// // Permissions and roles
+// export interface Permission {
+//     id: string
+//     name: string
+//     description: string
+//     resource: string
+//     action: string
+// }
 
-export interface UpdateRoleRequest {
-    name?: string
-    description?: string
-    permissions?: string[]
-}
+// export interface Role {
+//     id: string
+//     name: string
+//     description: string
+//     permissions: Permission[]
+//     isSystem: boolean
+// }
 
-// Audit and system settings
-export interface AuditLog {
-    id: string
-    userId: string
-    action: string
-    resource: string
-    resourceId?: string
-    details: Record<string, unknown>
-    timestamp: string
-    ipAddress: string
-    userAgent: string
-}
+// export interface CreateRoleRequest {
+//     name: string
+//     description: string
+//     permissions: string[]
+// }
 
-export interface AuditLogParams {
-    startDate?: string
-    endDate?: string
-    userId?: string
-    action?: string
-    resource?: string
-    page?: number
-    limit?: number
-}
+// export interface UpdateRoleRequest {
+//     name?: string
+//     description?: string
+//     permissions?: string[]
+// }
 
-export interface SystemSettings {
-    general: {
-        siteName: string
-        siteUrl: string
-        contactEmail: string
-        timezone: string
-    }
-    security: {
-        passwordMinLength: number
-        passwordRequireSpecialChars: boolean
-        sessionTimeout: number
-        maxLoginAttempts: number
-    }
-    email: {
-        smtpHost: string
-        smtpPort: number
-        smtpUsername: string
-        smtpPassword: string
-        fromEmail: string
-    }
-    features: {
-        registrationEnabled: boolean
-        emailVerificationRequired: boolean
-        twoFactorAuthEnabled: boolean
-    }
-}
+// // Audit and system settings
+// export interface AuditLog {
+//     id: string
+//     userId: string
+//     action: string
+//     resource: string
+//     resourceId?: string
+//     details: Record<string, unknown>
+//     timestamp: string
+//     ipAddress: string
+//     userAgent: string
+// }
+
+// export interface AuditLogParams {
+//     startDate?: string
+//     endDate?: string
+//     userId?: string
+//     action?: string
+//     resource?: string
+//     page?: number
+//     limit?: number
+// }
+
+// export interface SystemSettings {
+//     general: {
+//         siteName: string
+//         siteUrl: string
+//         contactEmail: string
+//         timezone: string
+//     }
+//     security: {
+//         passwordMinLength: number
+//         passwordRequireSpecialChars: boolean
+//         sessionTimeout: number
+//         maxLoginAttempts: number
+//     }
+//     email: {
+//         smtpHost: string
+//         smtpPort: number
+//         smtpUsername: string
+//         smtpPassword: string
+//         fromEmail: string
+//     }
+//     features: {
+//         registrationEnabled: boolean
+//         emailVerificationRequired: boolean
+//         twoFactorAuthEnabled: boolean
+//     }
+// }

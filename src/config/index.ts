@@ -3,88 +3,141 @@
  * Centralized configuration for API endpoints, authentication, and application settings
  */
 
+// Environment type for better type safety
+type Environment = 'development' | 'staging' | 'production'
+
 // Type definitions for better TypeScript support
 export interface AppConfig {
-    app: {
-        name: string
-        version: string
-        environment: 'development' | 'staging' | 'production'
+    readonly app: {
+        readonly name: string
+        readonly version: string
+        readonly environment: Environment
     }
-    api: {
-        baseUrl: string
-        timeout: number
-        version: string
+    readonly api: {
+        readonly baseUrl: string
+        readonly timeout: number
+        readonly version: string
     }
-    auth: {
-        oidc: {
-            clientId: string
-            redirectUri: string
-            postLogoutRedirectUri: string
-            responseType: string
-            responseMode: string
-            scope: string
-            automaticSilentRenew: boolean
-            silentRedirectUri: string
+    readonly auth: {
+        readonly oidc: {
+            readonly clientId: string
+            readonly redirectUri: string
+            readonly postLogoutRedirectUri: string
+            readonly responseType: string
+            readonly responseMode: string
+            readonly scope: string
+            readonly automaticSilentRenew: boolean
+            readonly silentRedirectUri: string
         }
-        callbackUrl: string
+        readonly callbackUrl: string
     }
-    features: {
-        enableLogging: boolean
-        enableAnalytics: boolean
-        enableDebug: boolean
+    readonly features: {
+        readonly enableLogging: boolean
+        readonly enableAnalytics: boolean
+        readonly enableDebug: boolean
     }
-    services: {
-        storageBaseUrl: string
-        cdnBaseUrl: string
+    readonly services: {
+        readonly storageBaseUrl: string
+        readonly cdnBaseUrl: string
     }
 }
 
-// Main configuration object
-const apiBaseUrl = import.meta.env.VITE_GATEWAY_BASE_URL || import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || 'https://localhost:7001/api'
+// Configuration validation helpers
+const validateUrl = (url: string, name: string): string => {
+    if (!url) throw new Error(`${name} is required`)
+    try {
+        new URL(url)
+        return url
+    } catch {
+        throw new Error(`${name} must be a valid URL`)
+    }
+}
 
-export const config: AppConfig = {
-    // Application settings
-    app: {
-        name: import.meta.env.VITE_APP_NAME || 'HiveSpace Admin Portal',
-        version: import.meta.env.VITE_APP_VERSION || '1.0.0',
-        environment: (import.meta.env.VITE_APP_ENVIRONMENT || import.meta.env.VITE_APP_ENV || 'development') as 'development' | 'staging' | 'production',
-    },
+const validateEnvironment = (env: string): Environment => {
+    const validEnvironments: Environment[] = ['development', 'staging', 'production']
+    if (validEnvironments.includes(env as Environment)) {
+        return env as Environment
+    }
+    console.warn(`Invalid environment "${env}", defaulting to "development"`)
+    return 'development'
+}
 
-    // API Configuration
-    api: {
-        baseUrl: apiBaseUrl,
-        timeout: Number(import.meta.env.VITE_API_TIMEOUT) || 30000,
-        version: import.meta.env.VITE_API_VERSION || 'v1',
-    },
+const parseBoolean = (value: string | undefined, defaultValue: boolean): boolean => {
+    if (value === undefined) return defaultValue
+    return value.toLowerCase() === 'true'
+}
 
-    // Authentication Configuration
-    auth: {
-        oidc: {
-            clientId: import.meta.env.VITE_APP_CLIENT_ID || '',
-            redirectUri: import.meta.env.VITE_APP_REDIRECT_URI || 'http://localhost:5173/auth/callback',
-            postLogoutRedirectUri: import.meta.env.VITE_APP_POST_LOGOUT_REDIRECT_URI || 'http://localhost:5173',
-            responseType: import.meta.env.VITE_APP_RESPONSE_TYPE || 'code',
-            responseMode: import.meta.env.VITE_APP_RESPONSE_MODE || 'query',
-            scope: import.meta.env.VITE_APP_SCOPE || 'openid profile email',
-            automaticSilentRenew: import.meta.env.VITE_APP_AUTOMATIC_SILENT_RENEW === 'true',
-            silentRedirectUri: import.meta.env.VITE_APP_SILENT_REDIRECT_URI || 'http://localhost:5173/auth/silent-callback',
+const parseNumber = (value: string | undefined, defaultValue: number): number => {
+    if (value === undefined) return defaultValue
+    const parsed = Number(value)
+    return isNaN(parsed) ? defaultValue : parsed
+}
+
+// Get environment variables with defaults
+const getEnvVar = (key: string, defaultValue?: string): string => {
+    return import.meta.env[key] || defaultValue || ''
+}
+
+// Main configuration object with validation and caching
+let configCache: AppConfig | null = null
+
+const createConfig = (): AppConfig => {
+    // Base API URL with validation
+    const apiBaseUrl = validateUrl(
+        getEnvVar('VITE_GATEWAY_BASE_URL') ||
+        getEnvVar('VITE_API_BASE_URL') ||
+        getEnvVar('VITE_API_URL') ||
+        'https://localhost:7001/api',
+        'API Base URL'
+    )
+
+    return {
+        // Application settings
+        app: {
+            name: getEnvVar('VITE_APP_NAME', 'HiveSpace Admin Portal'),
+            version: getEnvVar('VITE_APP_VERSION', '1.0.0'),
+            environment: validateEnvironment(getEnvVar('VITE_APP_ENVIRONMENT') || getEnvVar('VITE_APP_ENV', 'development')),
         },
-        callbackUrl: import.meta.env.VITE_AUTH_CALLBACK_URL || 'http://localhost:5173/auth/callback',
-    },
 
-    // Feature Flags
-    features: {
-        enableLogging: import.meta.env.VITE_ENABLE_LOGGING === 'true',
-        enableAnalytics: import.meta.env.VITE_ENABLE_ANALYTICS === 'true',
-        enableDebug: import.meta.env.VITE_ENABLE_DEBUG === 'true' || import.meta.env.NODE_ENV === 'development',
-    },
+        // API Configuration
+        api: {
+            baseUrl: apiBaseUrl,
+            timeout: parseNumber(getEnvVar('VITE_API_TIMEOUT'), 30000),
+            version: getEnvVar('VITE_API_VERSION', 'v1'),
+        },
 
-    // External Services
-    services: {
-        storageBaseUrl: import.meta.env.VITE_STORAGE_BASE_URL || 'https://storage.hivespace.com',
-        cdnBaseUrl: import.meta.env.VITE_CDN_BASE_URL || 'https://cdn.hivespace.com',
-    },
+        // Authentication Configuration
+        auth: {
+            oidc: {
+                clientId: getEnvVar('VITE_APP_CLIENT_ID'),
+                redirectUri: validateUrl(getEnvVar('VITE_APP_REDIRECT_URI', 'http://localhost:5173/auth/callback'), 'Redirect URI'),
+                postLogoutRedirectUri: validateUrl(getEnvVar('VITE_APP_POST_LOGOUT_REDIRECT_URI', 'http://localhost:5173'), 'Post Logout Redirect URI'),
+                responseType: getEnvVar('VITE_APP_RESPONSE_TYPE', 'code'),
+                responseMode: getEnvVar('VITE_APP_RESPONSE_MODE', 'query'),
+                scope: getEnvVar('VITE_APP_SCOPE', 'openid profile email'),
+                automaticSilentRenew: parseBoolean(getEnvVar('VITE_APP_AUTOMATIC_SILENT_RENEW'), false),
+                silentRedirectUri: validateUrl(getEnvVar('VITE_APP_SILENT_REDIRECT_URI', 'http://localhost:5173/auth/silent-callback'), 'Silent Redirect URI'),
+            },
+            callbackUrl: validateUrl(getEnvVar('VITE_AUTH_CALLBACK_URL', 'http://localhost:5173/auth/callback'), 'Auth Callback URL'),
+        },
+
+        // Feature Flags
+        features: {
+            enableLogging: parseBoolean(getEnvVar('VITE_ENABLE_LOGGING'), false),
+            enableAnalytics: parseBoolean(getEnvVar('VITE_ENABLE_ANALYTICS'), false),
+            enableDebug: parseBoolean(getEnvVar('VITE_ENABLE_DEBUG'), false) || import.meta.env.NODE_ENV === 'development',
+        },
+
+        // External Services
+        services: {
+            storageBaseUrl: validateUrl(getEnvVar('VITE_STORAGE_BASE_URL', 'https://storage.hivespace.com'), 'Storage Base URL'),
+            cdnBaseUrl: validateUrl(getEnvVar('VITE_CDN_BASE_URL', 'https://cdn.hivespace.com'), 'CDN Base URL'),
+        },
+    } as const
 }
+
+// Export cached configuration
+export const config: AppConfig = configCache || (configCache = createConfig())
 
 // Environment helper functions
 export const isDevelopment = (): boolean => config.app.environment === 'development'
@@ -107,7 +160,7 @@ const joinUrl = (base: string, path: string): string => {
 export const buildApiUrl = (path: string, version?: string): string => {
     const apiVersion = version || config.api.version
     const versionedPath = path.startsWith('/') ? `/${apiVersion}${path}` : `/${apiVersion}/${path}`
-    return joinUrl(config.api.baseUrl, versionedPath)
+    return joinUrl(joinUrl(config.api.baseUrl, '/api'), versionedPath)
 }
 
 /**
