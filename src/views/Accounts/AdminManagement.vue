@@ -56,7 +56,7 @@
                 <tr class="border-b border-gray-200 dark:border-gray-700">
                   <th class="px-5 py-3 text-left w-1/8 sm:px-6">
                     <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">{{ $t('table.emailAddress')
-                    }}</p>
+                      }}</p>
                   </th>
                   <th class="px-5 py-3 text-left w-1/8 sm:px-6">
                     <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">{{ $t('table.fullName') }}
@@ -67,15 +67,15 @@
                   </th>
                   <th class="px-5 py-3 text-center w-1/8 sm:px-6" v-if="currentUser?.isSystemAdmin()">
                     <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">{{ $t('table.isSystemAdmin')
-                    }}</p>
+                      }}</p>
                   </th>
                   <th class="px-5 py-3 text-left w-1/8 sm:px-6">
                     <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">{{ $t('table.createdDate')
-                      }}</p>
+                    }}</p>
                   </th>
                   <th class="px-5 py-3 text-left w-1/8 sm:px-6">
                     <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">{{ $t('table.lastLoginDate')
-                      }}</p>
+                    }}</p>
                   </th>
                   <th class="px-5 py-3 text-left w-1/8 sm:px-6">
                     <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">{{
