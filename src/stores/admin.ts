@@ -1,4 +1,4 @@
-import type { CreateAdminRequest, CreateAdminResponse } from '@/services/admin.service'
+import type { CreateAdminRequest, CreateAdminResponse } from '@/types'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { adminService } from '@/services/admin.service'
