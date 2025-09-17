@@ -160,7 +160,9 @@ const joinUrl = (base: string, path: string): string => {
 export const buildApiUrl = (path: string, version?: string): string => {
     const apiVersion = version || config.api.version
     const versionedPath = path.startsWith('/') ? `/${apiVersion}${path}` : `/${apiVersion}/${path}`
-    return joinUrl(joinUrl(config.api.baseUrl, '/api'), versionedPath)
+    const base = config.api.baseUrl.replace(/\/+$/, '')
+    const apiRoot = base.endsWith('/api') ? base : `${base}/api`
+    return joinUrl(apiRoot, versionedPath)
 }
 
 /**
