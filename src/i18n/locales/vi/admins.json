@@ -1,0 +1,95 @@
+{
+  "showingResults": "Hiển thị {count} trên tổng số {total} kết quả",
+  "lastUpdated": "Cập nhật lần cuối:",
+  "addNewAdmin": "Thêm Admin Mới",
+  "email": "Email",
+  "password": "Mật khẩu",
+  "confirmPassword": "Xác nhận mật khẩu",
+  "createAdmin": "Tạo Admin",
+  "fullNamePlaceholder": "Nhập họ và tên",
+  "emailPlaceholder": "Nhập địa chỉ email admin",
+  "passwordPlaceholder": "Nhập mật khẩu bảo mật (tối thiểu 12 ký tự)",
+  "confirmPasswordPlaceholder": "Xác nhận mật khẩu",
+  "emailRequired": "Email là bắt buộc",
+  "emailInvalid": "Vui lòng nhập địa chỉ email hợp lệ",
+  "emailExists": "Đã tồn tại quản trị viên với email này",
+  "fullNameRequired": "Họ và tên là bắt buộc",
+  "passwordRequired": "Mật khẩu là bắt buộc",
+  "passwordTooShort": "Mật khẩu phải có ít nhất 12 ký tự",
+  "passwordComplexity": "Mật khẩu phải bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt",
+  "confirmPasswordRequired": "Vui lòng xác nhận mật khẩu của bạn",
+  "passwordMismatch": "Mật khẩu không khớp",
+  "passwordWeak": "Yếu",
+  "passwordFair": "Trung bình",
+  "passwordGood": "Tốt",
+  "passwordStrong": "Mạnh",
+  "emailAddress": "Địa chỉ Email",
+  "isSystemAdmin": "Admin hệ thống",
+  "lastUpdatedDate": "Ngày cập nhật cuối",
+  "fullName": "Họ và tên",
+  "status": "Trạng thái",
+  "createdDate": "Ngày tạo",
+  "lastLoginDate": "Lần đăng nhập cuối",
+  "actionsColumn": "Thao tác",
+  "searchPlaceholder": "Tìm kiếm theo email...",
+  "loading": "Đang tải...",
+  "delete": "Xóa",
+  "activate": "Kích hoạt",
+  "deactivate": "Vô hiệu hóa",
+  "allStatus": "Tất cả trạng thái",
+  "active": "Hoạt động",
+  "inactive": "Không hoạt động",
+  "allAdmins": "Tất cả Admin",
+  "regularAdmin": "Admin thường",
+  "systemAdmin": "Admin hệ thống",
+  "alerts": {
+    "success": {
+      "title": "Thành công!",
+      "message": "Admin {email} đã được tạo thành công và có thể truy cập hệ thống."
+    },
+    "error": {
+      "title": "Tạo thất bại",
+      "message": "Không thể tạo tài khoản admin. Vui lòng kiểm tra thông tin và thử lại."
+    }
+  },
+  "actions": {
+    "deleteAdmin": {
+      "title": "Xóa Admin",
+      "message": "Bạn có chắc chắn muốn xóa admin \"{email}\"? Hành động này không thể hoàn tác."
+    }
+  },
+  "notifications": {
+    "deleteSuccess": {
+      "title": "Xóa thành công",
+      "message": "Admin {email} đã được xóa thành công."
+    },
+    "deleteFailed": {
+      "title": "Xóa thất bại",
+      "message": "Không thể xóa admin. Vui lòng thử lại."
+    },
+    "statusUpdateSuccess": {
+      "title": "Cập nhật trạng thái",
+      "message": "Admin {email} đã được {status}."
+    },
+    "statusUpdateFailed": {
+      "title": "Cập nhật thất bại",
+      "message": "Không thể cập nhật trạng thái admin. Vui lòng thử lại."
+    }
+  },
+  "values": {
+    "status": {
+      "active": "Hoạt động",
+      "inactive": "Không hoạt động",
+      "activated": "kích hoạt",
+      "deactivated": "vô hiệu hóa"
+    },
+    "type": {
+      "system": "Admin hệ thống",
+      "regular": "Admin thường"
+    },
+    "lastLogin": {
+      "never": "Chưa bao giờ"
+    },
+    "user": "người dùng"
+  }
+}

@@ -13,6 +13,7 @@ This directory contains common code patterns, solutions, and reusable code snipp
 ## Adding Pattern Documentation
 
 When documenting code patterns:
+
 1. Include a clear description of the pattern
 2. Provide code examples with explanations
 3. Note when and why to use each pattern

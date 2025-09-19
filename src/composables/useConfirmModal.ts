@@ -23,7 +23,9 @@ export type ConfirmModalResult = { result: 'confirm' | 'cancel' | 'third' | null
 export function useConfirmModal() {
   const { openModal } = useModal()
 
-  const openConfirmModal = async (options: ConfirmModalOptions): Promise<'confirm' | 'cancel' | 'third' | null> => {
+  const openConfirmModal = async (
+    options: ConfirmModalOptions,
+  ): Promise<'confirm' | 'cancel' | 'third' | null> => {
     try {
       // Apply auto sizing if specified
       const modalOptions = { ...options }
@@ -32,7 +34,7 @@ export function useConfirmModal() {
         modalOptions.size = 'md'
       }
 
-      const result = await openModal(ConfirmModal, modalOptions) as ConfirmModalResult | undefined
+      const result = (await openModal(ConfirmModal, modalOptions)) as ConfirmModalResult | undefined
       return result?.result || null
     } catch (error) {
       console.error('Error opening confirm modal:', error)
@@ -47,7 +49,7 @@ export function useConfirmModal() {
       title,
       message,
       confirmText: 'Confirm',
-      cancelText: 'Cancel'
+      cancelText: 'Cancel',
     })
     return result === 'confirm'
   }
@@ -58,7 +60,7 @@ export function useConfirmModal() {
       title,
       message,
       confirmText: 'OK',
-      cancelText: undefined
+      cancelText: undefined,
     })
   }
 
@@ -69,7 +71,7 @@ export function useConfirmModal() {
       message,
       confirmText: 'Delete',
       cancelText: 'Cancel',
-      confirmVariant: 'danger'
+      confirmVariant: 'danger',
     })
     return result === 'confirm'
   }
@@ -81,12 +83,15 @@ export function useConfirmModal() {
       message,
       confirmText: 'Continue',
       cancelText: 'Cancel',
-      confirmVariant: 'warning'
+      confirmVariant: 'warning',
     })
     return result === 'confirm'
   }
 
-  const saveChanges = async (title: string, message?: string): Promise<'save' | 'discard' | 'cancel' | null> => {
+  const saveChanges = async (
+    title: string,
+    message?: string,
+  ): Promise<'save' | 'discard' | 'cancel' | null> => {
     const result = await openConfirmModal({
       variant: 'warning',
       title,
@@ -95,7 +100,7 @@ export function useConfirmModal() {
       cancelText: 'Cancel',
       thirdText: 'Discard',
       confirmVariant: 'success',
-      thirdVariant: 'danger'
+      thirdVariant: 'danger',
     })
 
     if (result === 'confirm') return 'save'

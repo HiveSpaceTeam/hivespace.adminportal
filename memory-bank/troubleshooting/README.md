@@ -13,6 +13,7 @@ This directory contains solutions to common issues, error messages, and debuggin
 ## Adding Troubleshooting Documentation
 
 When documenting troubleshooting steps:
+
 1. Clearly describe the problem and symptoms
 2. Provide step-by-step solution steps
 3. Include any relevant error messages or logs

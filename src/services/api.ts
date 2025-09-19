@@ -1,6 +1,12 @@
 import { getCurrentUser, login } from '@/auth/user-manager'
 import axios from 'axios'
-import type { AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosError, InternalAxiosRequestConfig } from 'axios'
+import type {
+  AxiosInstance,
+  AxiosRequestConfig,
+  AxiosResponse,
+  AxiosError,
+  InternalAxiosRequestConfig,
+} from 'axios'
 import { useAppStore } from '@/stores/app'
 import { config } from '@/config'
 
@@ -27,14 +33,14 @@ const defaultConfig: ApiConfig = {
   retryDelay: 1000,
   headers: {
     'Content-Type': 'application/json',
-    'Accept': 'application/json'
-  }
+    Accept: 'application/json',
+  },
 }
 
 // Create axios instance with optimized configuration
 const apiClient: AxiosInstance = axios.create({
   ...defaultConfig,
-  validateStatus: (status) => status >= 200 && status < 300
+  validateStatus: (status) => status >= 200 && status < 300,
 })
 
 // Simple correlation ID generator
@@ -42,8 +48,7 @@ const generateCorrelationId = (): string =>
   `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
 
 // Simple retry utility
-const sleep = (ms: number): Promise<void> =>
-  new Promise(resolve => setTimeout(resolve, ms))
+const sleep = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms))
 
 // Request interceptor with better error handling
 apiClient.interceptors.request.use(
@@ -73,7 +78,7 @@ apiClient.interceptors.request.use(
   (error) => {
     console.error('Request error:', error)
     return Promise.reject(error)
-  }
+  },
 )
 
 // Response interceptor with better error handling and retry logic
@@ -99,7 +104,10 @@ apiClient.interceptors.response.use(
         const delay = defaultConfig.retryDelay * Math.pow(2, retryCount - 1) // Exponential backoff
         await sleep(delay)
 
-        console.log(`Retrying request (${retryCount}/${defaultConfig.retries}):`, originalRequest.url)
+        console.log(
+          `Retrying request (${retryCount}/${defaultConfig.retries}):`,
+          originalRequest.url,
+        )
         return apiClient(originalRequest)
       }
     }
@@ -114,7 +122,7 @@ apiClient.interceptors.response.use(
     }
 
     return Promise.reject(error)
-  }
+  },
 )
 
 // Helper function to determine if request should be retried
@@ -193,7 +201,7 @@ class ApiService {
   async uploadFile<T = unknown>(
     url: string,
     file: File,
-    onUploadProgress?: (progress: number) => void
+    onUploadProgress?: (progress: number) => void,
   ): Promise<T> {
     const formData = new FormData()
     formData.append('file', file)
@@ -203,12 +211,14 @@ class ApiService {
       method: 'POST',
       data: formData,
       headers: { 'Content-Type': 'multipart/form-data' },
-      onUploadProgress: onUploadProgress ? (progressEvent) => {
-        if (progressEvent.total) {
-          const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total)
-          onUploadProgress(progress)
-        }
-      } : undefined
+      onUploadProgress: onUploadProgress
+        ? (progressEvent) => {
+            if (progressEvent.total) {
+              const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total)
+              onUploadProgress(progress)
+            }
+          }
+        : undefined,
     })
   }
 

@@ -13,6 +13,7 @@ This directory contains supplementary documentation that doesn't fit into the ot
 ## Adding Documentation
 
 When adding new documentation:
+
 1. Use clear, descriptive titles
 2. Include practical examples and use cases
 3. Keep documentation focused and concise

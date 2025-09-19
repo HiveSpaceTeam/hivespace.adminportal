@@ -5,72 +5,72 @@
 
 // Generic API response wrappers
 export interface ApiResponse<T = unknown> {
-    data: T
-    message?: string
-    success: boolean
-    timestamp: string
+  data: T
+  message?: string
+  success: boolean
+  timestamp: string
 }
 
 export interface PaginatedResponse<T = unknown> {
-    data: T[]
-    pagination: {
-        page: number
-        limit: number
-        total: number
-        totalPages: number
-        hasNext: boolean
-        hasPrevious: boolean
-    }
+  data: T[]
+  pagination: {
+    page: number
+    limit: number
+    total: number
+    totalPages: number
+    hasNext: boolean
+    hasPrevious: boolean
+  }
 }
 
 // API Error structure matching your backend
 export interface ApiError {
-    code: string
-    messageCode: string
-    source: string
+  code: string
+  messageCode: string
+  source: string
 }
 
 export interface ErrorResponse {
-    errors: ApiError[]
-    status: string
-    timestamp: string
-    traceId: string
-    version: string
+  errors: ApiError[]
+  status: string
+  timestamp: string
+  traceId: string
+  version: string
 }
 
 // Common query parameters
 export interface PaginationParams {
-    page?: number
-    limit?: number
+  page?: number
+  limit?: number
 }
 
 export interface SortParams {
-    sortBy?: string
-    sortDirection?: 'asc' | 'desc'
+  sortBy?: string
+  sortDirection?: 'asc' | 'desc'
 }
 
 export interface SearchParams {
-    searchTerm?: string
-    searchFields?: string[]
+  searchTerm?: string
+  searchFields?: string[]
 }
 
 export interface FilterParams extends PaginationParams, SortParams, SearchParams {
-    filters?: Record<string, unknown>
+  filters?: Record<string, unknown>
 }
 
 // File upload types
 export interface FileUploadResponse {
-    fileId: string
-    filename: string
-    originalName: string
-    mimetype: string
-    size: number
-    url: string
-    thumbnailUrl?: string
+  fileId: string
+  filename: string
+  originalName: string
+  mimetype: string
+  size: number
+  url: string
+  thumbnailUrl?: string
 }
 
 export interface UploadProgress {
-    loaded: number
-    total: number
-    percentage: number
+  loaded: number
+  total: number
+  percentage: number
 }

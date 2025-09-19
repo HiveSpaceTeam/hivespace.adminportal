@@ -12,6 +12,7 @@ This directory contains architectural decisions, diagrams, and patterns used in 
 ## Adding Architecture Documentation
 
 When documenting architecture decisions:
+
 1. Include the context and problem being solved
 2. Document the decision and rationale
 3. Include any diagrams or visual representations

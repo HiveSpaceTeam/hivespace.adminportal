@@ -10,15 +10,15 @@ export type Maybe<T> = T | null | undefined
 
 // Object utility types
 export type Partial<T> = {
-    [P in keyof T]?: T[P]
+  [P in keyof T]?: T[P]
 }
 
 export type Required<T> = {
-    [P in keyof T]-?: T[P]
+  [P in keyof T]-?: T[P]
 }
 
 export type Pick<T, K extends keyof T> = {
-    [P in K]: T[P]
+  [P in K]: T[P]
 }
 
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>
@@ -73,13 +73,13 @@ export type ComponentSize = 'small' | 'medium' | 'large'
 
 // Deep readonly utility
 export type DeepReadonly<T> = {
-    readonly [P in keyof T]: T[P] extends object ? DeepReadonly<T[P]> : T[P]
+  readonly [P in keyof T]: T[P] extends object ? DeepReadonly<T[P]> : T[P]
 }
 
 // Key-value pairs
 export type KeyValuePair<K = string, V = unknown> = {
-    key: K
-    value: V
+  key: K
+  value: V
 }
 
 // Environment types

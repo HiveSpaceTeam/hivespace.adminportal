@@ -3,24 +3,23 @@
 //  * All interfaces related to admin management API endpoints
 //  */
 export interface CreateAdminRequest {
-    fullName: string
-    email: string
-    password: string
-    confirmPassword: string
-    isSystemAdmin: boolean
+  fullName: string
+  email: string
+  password: string
+  confirmPassword: string
+  isSystemAdmin: boolean
 }
 
 export interface CreateAdminResponse {
-    id: string
-    fullName: string
-    email: string
-    isSystemAdmin: boolean
-    createdAt: string
-    isActive: boolean,
-    lastLoginAt?: string,
-    avatarUrl?: string
+  id: string
+  fullName: string
+  email: string
+  isSystemAdmin: boolean
+  createdAt: string
+  isActive: boolean
+  lastLoginAt?: string
+  avatarUrl?: string
 }
-
 
 // // Admin creation and management
 
