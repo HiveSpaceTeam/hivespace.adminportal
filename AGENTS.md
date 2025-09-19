@@ -265,6 +265,7 @@ await authStore.login(credentials)
 ## Agent Instructions
 
 **Trust These Instructions**: These instructions are comprehensive and tested. Only search the codebase if information here is incomplete or found to be incorrect.
+Always answer in English
 
 ### Feature Development Workflow
 
@@ -376,89 +377,6 @@ Be mindful of performance. Avoid unnecessary re-renders, use lazy loading for ro
   - **Component-specific types**: Define within component file unless reusable
   - **Import from**: `import type { TypeName } from '@/types'` for shared types
 
-### Code Templates & Examples
-
-#### Vue Component Template
-```vue
-<template>
-  <div class="p-4 bg-white rounded-lg shadow">
-    <!-- Use Tailwind classes -->
-    <h2 class="text-xl font-semibold mb-4">{{ $t('feature.title') }}</h2>
-    <!-- Use i18n for all text -->
-  </div>
-</template>
-
-<script setup lang="ts">
-// Always use script setup with TypeScript
-import type { ComponentProps } from '@/types'
-
-// Define props with proper typing
-interface Props {
-  data: ComponentProps[]
-  loading?: boolean
-}
-
-const props = withDefaults(defineProps<Props>(), {
-  loading: false
-})
-
-// Define emits with proper typing
-interface Emits {
-  (e: 'update', data: ComponentProps): void
-  (e: 'delete', id: string): void
-}
-
-const emit = defineEmits<Emits>()
-</script>
-```
-
-#### API Service Template
-```typescript
-// src/services/feature.service.ts
-import type { FeatureData, CreateFeatureRequest } from '@/types'
-import { api } from './api'
-
-export const featureService = {
-  async getFeatures(): Promise<FeatureData[]> {
-    const { data } = await api.get<FeatureData[]>('/features')
-    return data
-  },
-
-  async createFeature(request: CreateFeatureRequest): Promise<FeatureData> {
-    const { data } = await api.post<FeatureData>('/features', request)
-    return data
-  }
-}
-```
-
-#### Pinia Store Template
-```typescript
-// src/stores/feature.ts
-import { defineStore } from 'pinia'
-import type { FeatureData, CreateFeatureRequest } from '@/types'
-import { featureService } from '@/services/feature.service'
-
-export const useFeatureStore = defineStore('feature', () => {
-  const features = ref<FeatureData[]>([])
-  const loading = ref(false)
-  const error = ref<string | null>(null)
-
-  const fetchFeatures = async () => {
-    loading.value = true
-    error.value = null
-    try {
-      features.value = await featureService.getFeatures()
-    } catch (err) {
-      error.value = 'Failed to fetch features'
-      console.error(err)
-    } finally {
-      loading.value = false
-    }
-  }
-
-  return { features, loading, error, fetchFeatures }
-})
-```
 
 ### Before Making Changes
 1. Run `npm install` to ensure dependencies are current
