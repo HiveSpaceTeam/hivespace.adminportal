@@ -1,42 +1,68 @@
 <template>
   <div class="w-full max-w-[700px] overflow-y-auto">
-
     <form class="space-y-4" @submit.prevent="onCreate">
       <!-- Full Name Field (Input component) -->
       <div>
-        <Input id="adminFullName" v-model="form.fullName" type="text" :label="t('admins.fullName')"
-          :placeholder="t('admins.fullNamePlaceholder')" required @blur="validateFullName"
-          :inputClass="errors.fullName ? 'border-red-500' : ''" />
+        <Input
+          id="adminFullName"
+          v-model="form.fullName"
+          type="text"
+          :label="t('admins.fullName')"
+          :placeholder="t('admins.fullNamePlaceholder')"
+          required
+          @blur="validateFullName"
+          :inputClass="errors.fullName ? 'border-red-500' : ''"
+        />
         <p v-if="errors.fullName" class="form-error-text">{{ errors.fullName }}</p>
       </div>
       <!-- Email Field (Input component) -->
       <div>
-        <Input id="adminEmail" v-model="form.email" type="email" :label="t('admins.email')"
-          :placeholder="t('admins.emailPlaceholder')" required @blur="validateEmail" autocomplete="false"
-          :inputClass="errors.email ? 'border-red-500' : ''" />
+        <Input
+          id="adminEmail"
+          v-model="form.email"
+          type="email"
+          :label="t('admins.email')"
+          :placeholder="t('admins.emailPlaceholder')"
+          required
+          @blur="validateEmail"
+          autocomplete="false"
+          :inputClass="errors.email ? 'border-red-500' : ''"
+        />
         <p v-if="errors.email" class="form-error-text">{{ errors.email }}</p>
       </div>
 
       <!-- Password Field (Input component + append slot for toggle) -->
       <div>
-        <Input id="adminPassword" v-model="form.password" :type="showPassword ? 'text' : 'password'"
-          :label="t('admins.password')" :placeholder="t('admins.passwordPlaceholder')"
-          :inputClass="['pr-10', errors.password ? 'border-red-500' : ''].join(' ')" required
-          autocomplete="new-password" @update:modelValue="validatePassword" @blur="validatePassword">
-        <template #append>
-          <button type="button" @click="showPassword = !showPassword"
-            class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400">
-            <ShowPasswordIcon v-if="showPassword" />
-            <HidePasswordIcon v-else />
-          </button>
-        </template>
+        <Input
+          id="adminPassword"
+          v-model="form.password"
+          :type="showPassword ? 'text' : 'password'"
+          :label="t('admins.password')"
+          :placeholder="t('admins.passwordPlaceholder')"
+          :inputClass="['pr-10', errors.password ? 'border-red-500' : ''].join(' ')"
+          required
+          autocomplete="new-password"
+          @update:modelValue="validatePassword"
+          @blur="validatePassword"
+        >
+          <template #append>
+            <button
+              type="button"
+              @click="showPassword = !showPassword"
+              class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400"
+            >
+              <ShowPasswordIcon v-if="showPassword" />
+              <HidePasswordIcon v-else />
+            </button>
+          </template>
         </Input>
         <div v-if="form.password" class="mt-1">
           <div class="flex items-center space-x-1">
             <div class="flex-1 h-2 bg-gray-200 rounded-full">
-              <div :class="['h-2 rounded-full transition-all', passwordStrengthColor]"
-                :style="`width: ${passwordStrength}%`">
-              </div>
+              <div
+                :class="['h-2 rounded-full transition-all', passwordStrengthColor]"
+                :style="`width: ${passwordStrength}%`"
+              ></div>
             </div>
             <span :class="['text-xs', passwordStrengthTextColor]">{{ passwordStrengthText }}</span>
           </div>
@@ -46,17 +72,26 @@
 
       <!-- Confirm Password Field (Input component) -->
       <div>
-        <Input id="confirmPassword" v-model="form.confirmPassword" :type="showConfirmPassword ? 'text' : 'password'"
-          :label="t('admins.confirmPassword')" :placeholder="t('admins.confirmPasswordPlaceholder')" required
+        <Input
+          id="confirmPassword"
+          v-model="form.confirmPassword"
+          :type="showConfirmPassword ? 'text' : 'password'"
+          :label="t('admins.confirmPassword')"
+          :placeholder="t('admins.confirmPasswordPlaceholder')"
+          required
           @blur="validateConfirmPassword"
-          :inputClass="['pr-10', errors.confirmPassword ? 'border-red-500' : ''].join(' ')">
-        <template #append>
-          <button type="button" @click="showConfirmPassword = !showConfirmPassword"
-            class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400">
-            <ShowPasswordIcon v-if="showConfirmPassword" />
-            <HidePasswordIcon v-else />
-          </button>
-        </template>
+          :inputClass="['pr-10', errors.confirmPassword ? 'border-red-500' : ''].join(' ')"
+        >
+          <template #append>
+            <button
+              type="button"
+              @click="showConfirmPassword = !showConfirmPassword"
+              class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400"
+            >
+              <ShowPasswordIcon v-if="showConfirmPassword" />
+              <HidePasswordIcon v-else />
+            </button>
+          </template>
         </Input>
         <p v-if="errors.confirmPassword" class="form-error-text">
           {{ errors.confirmPassword }}
@@ -65,7 +100,11 @@
 
       <!-- Admin Type Field (only for System Admins) -->
       <div v-if="currentUserIsSystemAdmin">
-        <Checkbox v-model="form.isSystemAdmin" :label="t('admins.systemAdmin')" id="is-system-admin" />
+        <Checkbox
+          v-model="form.isSystemAdmin"
+          :label="t('admins.systemAdmin')"
+          id="is-system-admin"
+        />
       </div>
 
       <!-- Actions -->
@@ -92,12 +131,11 @@ import { adminService } from '@/services/admin.service'
 import type { CreateAdminRequest, ErrorResponse } from '@/types'
 import { useAppStore } from '@/stores/app'
 
-
 const { t } = useI18n()
 const appStore = useAppStore()
 
 defineProps<{
-  currentUserIsSystemAdmin: boolean,
+  currentUserIsSystemAdmin: boolean
 }>()
 
 const emit = defineEmits<{
@@ -116,7 +154,7 @@ const errors = reactive({
   email: '',
   fullName: '',
   password: '',
-  confirmPassword: ''
+  confirmPassword: '',
 })
 
 const showPassword = ref(false)
@@ -160,9 +198,18 @@ const passwordStrengthTextColor = computed(() => {
 })
 
 const isFormValid = computed(() => {
-  return !!form.fullName && !!form.email && !!form.password && !!form.confirmPassword &&
-    !errors.fullName && !errors.email && !errors.password && !errors.confirmPassword &&
-    form.password === form.confirmPassword && passwordStrength.value >= 60
+  return (
+    !!form.fullName &&
+    !!form.email &&
+    !!form.password &&
+    !!form.confirmPassword &&
+    !errors.fullName &&
+    !errors.email &&
+    !errors.password &&
+    !errors.confirmPassword &&
+    form.password === form.confirmPassword &&
+    passwordStrength.value >= 60
+  )
 })
 
 function validateEmail() {
@@ -227,7 +274,8 @@ function validateConfirmPassword() {
 }
 
 const onCreate = async () => {
-  const ok = validateFullName() && validateEmail() && validatePassword() && validateConfirmPassword()
+  const ok =
+    validateFullName() && validateEmail() && validatePassword() && validateConfirmPassword()
   if (!ok) return
 
   const adminData: CreateAdminRequest = {
@@ -235,7 +283,7 @@ const onCreate = async () => {
     email: form.email.toLowerCase().trim(),
     password: form.password,
     confirmPassword: form.confirmPassword,
-    isSystemAdmin: form.isSystemAdmin
+    isSystemAdmin: form.isSystemAdmin,
   }
 
   try {
@@ -248,13 +296,12 @@ const onCreate = async () => {
     // Show success notification
     appStore.notifySuccess(
       t('admins.alerts.success.title'),
-      t('admins.alerts.success.message', { email: createdAdmin.email })
+      t('admins.alerts.success.message', { email: createdAdmin.email }),
     )
 
     // Emit success result with the created admin data
     emit('close')
   } catch (error: unknown) {
-
     // Show error notification
     const errorMessage = t('admins.alerts.error.message')
     const errorTitle = t('admins.alerts.error.title')
@@ -297,22 +344,16 @@ const onCreate = async () => {
       //   t('admins.notifications.createFailed.title'),
       //   t(`admins.errors.${firstError.messageCode}`, { defaultValue: firstError.messageCode })
       // )
-      if (errorData?.status === "409") {
+      if (errorData?.status === '409') {
         // Handle conflict (email already exists)
         errors.email = t('admins.emailExists')
       } else {
         // Handle other HTTP errors
-        appStore.notifyError(
-          errorTitle,
-          errorMessage
-        )
+        appStore.notifyError(errorTitle, errorMessage)
       }
     } else {
       // Handle network or other errors
-      appStore.notifyError(
-        errorTitle,
-        errorMessage
-      )
+      appStore.notifyError(errorTitle, errorMessage)
     }
   } finally {
     // Hide loading state

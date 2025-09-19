@@ -22,14 +22,14 @@ export const useUserStore = defineStore('user', () => {
   }
 
   function removeUser(userId: string) {
-    const index = users.value.findIndex(user => user.id === userId)
+    const index = users.value.findIndex((user) => user.id === userId)
     if (index !== -1) {
       users.value.splice(index, 1)
     }
   }
 
   function updateUserInList(updatedUser: UserData) {
-    const index = users.value.findIndex(user => user.id === updatedUser.id)
+    const index = users.value.findIndex((user) => user.id === updatedUser.id)
     if (index !== -1) {
       users.value[index] = updatedUser
     }
@@ -116,6 +116,6 @@ export const useUserStore = defineStore('user', () => {
     fetchUsers,
     deleteUser,
     activateUser,
-    deactivateUser
+    deactivateUser,
   }
 })

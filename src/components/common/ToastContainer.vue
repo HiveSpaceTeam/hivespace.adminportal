@@ -2,9 +2,19 @@
   <Teleport to="body">
     <!-- Toast Container positioned at top-right -->
     <div
-      class="fixed top-4 right-4 left-4 sm:left-auto pointer-events-none z-[9999] space-y-3 max-w-sm sm:max-w-sm ml-auto">
-      <Toast v-for="toast in toasts" :key="toast.id" :id="toast.id" :variant="toast.type" :title="toast.title"
-        :message="toast.message" :duration="toast.duration" :show-progress="true" @close="removeToast" />
+      class="fixed top-4 right-4 left-4 sm:left-auto pointer-events-none z-[9999] space-y-3 max-w-sm sm:max-w-sm ml-auto"
+    >
+      <Toast
+        v-for="toast in toasts"
+        :key="toast.id"
+        :id="toast.id"
+        :variant="toast.type"
+        :title="toast.title"
+        :message="toast.message"
+        :duration="toast.duration"
+        :show-progress="true"
+        @close="removeToast"
+      />
     </div>
   </Teleport>
 </template>

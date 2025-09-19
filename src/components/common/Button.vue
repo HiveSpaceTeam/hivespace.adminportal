@@ -1,14 +1,19 @@
 <template>
-  <button :class="[
-    'inline-flex items-center justify-center font-medium gap-2 rounded-lg transition-all duration-200',
-    sizeClasses[size],
-    variantClasses[variant],
-    className,
-    {
-      'cursor-not-allowed opacity-50': disabled || loading,
-      'pointer-events-none': loading,
-    },
-  ]" @click="onClick" :disabled="disabled || loading" :type="type">
+  <button
+    :class="[
+      'inline-flex items-center justify-center font-medium gap-2 rounded-lg transition-all duration-200',
+      sizeClasses[size],
+      variantClasses[variant],
+      className,
+      {
+        'cursor-not-allowed opacity-50': disabled || loading,
+        'pointer-events-none': loading,
+      },
+    ]"
+    @click="onClick"
+    :disabled="disabled || loading"
+    :type="type"
+  >
     <!-- Loading Spinner -->
     <LoadingSpinnerIcon v-if="loading" class="-ml-1 mr-2" />
 

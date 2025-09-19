@@ -12,6 +12,7 @@ src/config/
 ```
 
 ### ✅ Migration Complete
+
 All imports have been migrated to the new unified configuration structure. The old `environment.ts` and `appConfig.ts` files have been removed.
 
 ## 📦 New Imports
@@ -43,17 +44,20 @@ import { buildApiUrl, getAssetUrl, isDevelopment } from '@/config'
 ## 🎯 Key Improvements
 
 ### 1. **Unified Configuration**
+
 - Single source of truth for all config
 - Type-safe configuration with TypeScript interfaces
 - Better organization and structure
 
 ### 2. **Enhanced Features**
+
 - Environment validation for required variables
 - Backward compatibility with existing imports
 - New utility functions (`getAssetUrl`, better `buildApiUrl`)
 - Environment-specific constants
 
 ### 3. **Better Type Safety**
+
 ```typescript
 // Full type safety
 const config: AppConfig = { ... }
@@ -65,6 +69,7 @@ type Environment = 'development' | 'staging' | 'production'
 ## 📋 Migration Guide
 
 ### Before (Old)
+
 ```typescript
 // DEPRECATED - Use new unified config instead
 // import { environment } from '@/config/environment'
@@ -75,6 +80,7 @@ type Environment = 'development' | 'staging' | 'production'
 ```
 
 ### After (New)
+
 ```typescript
 import { config } from '@/config'
 // or
@@ -91,6 +97,7 @@ const clientId = auth.oidc.clientId
 ## 🔧 New Features
 
 ### 1. **Asset URL Builder**
+
 ```typescript
 import { getAssetUrl } from '@/config'
 
@@ -99,6 +106,7 @@ const fileUrl = getAssetUrl('/files/document.pdf', true) // Uses storage
 ```
 
 ### 2. **Environment Validation**
+
 ```typescript
 import { validateEnvironment } from '@/config/constants'
 
@@ -107,6 +115,7 @@ validateEnvironment()
 ```
 
 ### 3. **Environment Constants**
+
 ```typescript
 import { getCurrentEnvironmentConstants } from '@/config/constants'
 
@@ -115,6 +124,7 @@ const envConstants = getCurrentEnvironmentConstants()
 ```
 
 ### 4. **Feature Flags**
+
 ```typescript
 import { FEATURE_FLAGS } from '@/config/constants'
 
@@ -136,7 +146,7 @@ The new config supports both old and new environment variable names:
 VITE_API_BASE_URL=https://api.hivespace.com  # Preferred
 VITE_API_URL=https://api.hivespace.com       # Legacy support
 
-# App Environment  
+# App Environment
 VITE_APP_ENVIRONMENT=production              # Preferred
 VITE_APP_ENV=production                      # Legacy support
 ```
@@ -149,9 +159,9 @@ The new configuration supports API Gateway architecture. Use the `buildApiUrl` h
 import { buildApiUrl } from '@/config'
 
 // Build versioned API URLs through gateway
-const userEndpoint = buildApiUrl('/users')           // → /v1/users
-const authEndpoint = buildApiUrl('/auth/login')      // → /v1/auth/login
-const customVersion = buildApiUrl('/admin', 'v2')    // → /v2/admin
+const userEndpoint = buildApiUrl('/users') // → /v1/users
+const authEndpoint = buildApiUrl('/auth/login') // → /v1/auth/login
+const customVersion = buildApiUrl('/admin', 'v2') // → /v2/admin
 ```
 
 ## ✅ Benefits

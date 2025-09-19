@@ -1,4 +1,12 @@
-# HiveSpace Admin Portal - Copilot Instructions
+# Frontend Project Code Generation Guidelines
+
+## 🚨 SYSTEM INSTRUCTIONS FOR AI AGENTS 🚨
+
+**MANDATORY FIRST ACTION**: Every AI assistant must read and acknowledge these instructions before proceeding with ANY task in this repository.
+
+**ENFORCEMENT**: If an AI assistant does not explicitly reference these guidelines in their response, they are not following project requirements.
+
+---
 
 ## Repository Overview
 
@@ -20,6 +28,22 @@ This is the **HiveSpace Admin Portal**, a modern Vue 3 admin dashboard built on 
 - **Routing**: Vue Router 4
 - **UI Components**: Custom components + third-party libraries (ApexCharts, Flatpickr, Quill, etc.)
 - **Authentication**: OIDC (OpenID Connect) for enterprise SSO
+
+### Project Architecture
+
+**API Gateway Pattern**: The application uses a centralized API gateway architecture where all API calls route through a single gateway endpoint configured via `VITE_API_BASE_URL`.
+
+**Component-Based Architecture**: Follows Vue 3 composition API patterns with clear separation of concerns:
+- **Components**: Reusable UI components
+- **Views**: Page-level components 
+- **Stores**: Centralized state management (Pinia)
+- **Services**: API and business logic layer
+- **Composables**: Reusable composition functions
+
+**Architectural Principles**:
+- **Component-Based**: The application is built as a tree of components, with a clear hierarchy from App.vue down to individual UI elements
+- **Separation of Concerns**: Logic, state, and presentation are separated. `views/` components orchestrate logic and data, `components/` present UI, and `stores/` handle global state
+- **Micro-Frontends Ready**: For larger applications, a micro-frontend approach using a monorepo structure and Module Federation via Vite plugins can be considered
 
 ## Build Instructions & Commands
 
@@ -96,15 +120,12 @@ Create `.env` in project root (copy from `docs/env.example.md`):
 # API Configuration
 VITE_API_BASE_URL=https://localhost:7001/api
 VITE_API_TIMEOUT=30000
-
 # Authentication (OIDC)
 VITE_AUTH_CALLBACK_URL=http://localhost:5173/callback
-
 # Application
 VITE_APP_NAME=HiveSpace Admin Portal
 VITE_APP_VERSION=1.0.0
 VITE_APP_ENVIRONMENT=development
-
 # Feature Flags
 VITE_ENABLE_LOGGING=true
 VITE_ENABLE_DEBUG=true
@@ -241,15 +262,6 @@ await authStore.login(credentials)
 - TypeScript + vue-tsc (type checking)
 - ESLint + Prettier (code quality)
 
-### Memory Bank Documentation
-
-The `memory-bank/` directory contains additional project context:
-- `architecture/` - Architectural decisions
-- `patterns/` - Code patterns and examples
-- `troubleshooting/` - Common issues and solutions
-- `conventions/` - Coding standards
-- `docs/` - Additional documentation
-
 ### Documentation Resources
 
 **Primary Documentation:**
@@ -261,23 +273,197 @@ The `memory-bank/` directory contains additional project context:
 ## Agent Instructions
 
 **Trust These Instructions**: These instructions are comprehensive and tested. Only search the codebase if information here is incomplete or found to be incorrect.
+Always answer in English
 
-**Common Tasks:**
+### Feature Development Workflow
+
+**When creating any new feature, ALWAYS follow this pattern:**
+
+#### 1. Plan & Structure
+- **Identify required types**: Determine what API types, store interfaces, and component props are needed
+- **Plan component hierarchy**: Break down the feature into reusable components
+- **Determine data flow**: Identify what stores, services, and API endpoints are required
+
+#### 2. Create Types First (if needed)
+- **API Types**: Add to `src/types/api/` for any new backend contracts
+- **Store Types**: Add to `src/types/store/` for state management interfaces
+- **Utility Types**: Add to `src/types/utils/` for common helpers
+- **Export in index**: Update `src/types/index.ts` to export new types
+
+#### 3. Build Services & Stores
+- **Create API Service**: Add to `src/services/` with proper TypeScript typing
+- **Create/Update Store**: Add Pinia store in `src/stores/` if state management needed
+- **Use centralized imports**: `import type { TypeName } from '@/types'`
+
+#### 4. Build Components
+- **Create reusable components**: Place in appropriate `src/components/` subdirectory
+- **Create page/view**: Place in `src/views/` for page-level components
+- **Use TypeScript**: Properly type all props, emits, and local state
+- **Component-specific types**: Define within component unless reusable
+
+#### 5. Implement Features
+- **Follow Vue 3 Composition API**: Use `<script setup>` syntax exclusively
+- **Use Tailwind CSS**: Apply utility classes for all styling
+- **Add proper error handling**: Implement loading states and error boundaries
+- **Add internationalization**: Use i18n keys for all user-facing text
+
+#### 6. Update Routing & Navigation
+- **Add routes**: Update `src/router/` configuration
+- **Update navigation**: Add menu items, breadcrumbs as needed
+- **Add icons**: Create SVG components in `src/icons/` and export in index
+
+#### ✅ Mandatory Checklist for Every Feature
+Before completing any feature development, verify:
+- [ ] All new types are properly organized in `src/types/` structure
+- [ ] API services use centralized type imports: `import type { } from '@/types'`
+- [ ] Components use `<script setup lang="ts">` with proper TypeScript
+- [ ] All user-facing text uses i18n translation keys
+- [ ] Tailwind CSS classes used for all styling (no custom CSS unless necessary)
+- [ ] Error handling and loading states implemented
+- [ ] Component props and emits properly typed with `defineProps` and `defineEmits`
+- [ ] Pinia stores used for shared state (no prop drilling)
+- [ ] Components are modular and reusable
+- [ ] Code follows project naming conventions (PascalCase components, camelCase functions)
+
+### Core Development Principles
+
+#### 1. Modular & Reusable Components
+All UI elements must be created as single-file components (.vue). Components should be small, focused, and reusable. Avoid monolithic components.
+
+#### 2. Vue Composition API
+Utilize the `<script setup>` syntax for all components. Manage state, lifecycle hooks, and logic using `ref`, `reactive`, `computed`, and other Composition API functions. Avoid the Options API.
+
+#### 3. TypeScript First
+All code must be written in TypeScript. Use strict typing for props (`defineProps`), emits (`defineEmits`), component state, and functions to ensure type safety.
+
+**Type Organization Guidelines:**
+- **Shared Types**: Place shared types for API services and stores in `src/types/` directory
+  - `src/types/api/` - API request/response interfaces and backend contracts
+  - `src/types/store/` - Pinia store state and action interfaces
+  - `src/types/utils/` - Common utility types and helper interfaces
+- **Component-Specific Types**: Define component props, emits, and local interfaces directly within the component file unless they are reusable across multiple components
+- **Import Pattern**: Use centralized imports from `@/types` for shared types: `import type { UserData, CreateAdminRequest } from '@/types'`
+
+#### 4. Semantic & Accessible HTML
+Write clean, semantic HTML5. Use ARIA attributes and other accessibility best practices to ensure the application is usable for all users.
+
+#### 5. Reactive Styling
+Utilize Tailwind CSS utility classes to handle all styling. Implement responsive design using Tailwind's breakpoints (`sm:`, `md:`, `lg:`). Custom CSS should be minimal and only used for complex, non-utility-based styles.
+
+#### 6. Pinia for State Management
+All shared application state must be managed with Pinia stores. Do not use global variables or prop drilling for state that is shared across multiple components.
+
+#### 7. Asynchronous Data Handling
+Use a consistent pattern for fetching data. Implement proper loading and error states for all asynchronous operations.
+
+#### 8. Internationalization (i18n) Organization
+Organize i18n translation keys based on modules or shared usage:
+- **Module-based translations**: Create separate JSON files for each major feature module (e.g., `admins.json`, `users.json`, `pages.json`) in `src/i18n/locales/{lang}/`
+- **Common translations**: Place shared translations (UI elements, actions, navigation) in `common.json`
+- **File naming**: Follow the pattern `{module}.json` where module corresponds to store modules or major feature areas
+- **Key structure**: Use nested objects for logical grouping within each module (e.g., `admins.createAdmin`, `admins.actions.delete`)
+- **Import pattern**: Import and organize translations by module in `src/i18n/index.ts` following the existing pattern
+
+#### 9. Clear & Concise Code
+Write well-commented code. All functions should have clear docstrings explaining their purpose, parameters, and return value. The code should be self-documenting as much as possible.
+
+#### 10. Error Handling
+Implement graceful error handling. Use try/catch blocks for asynchronous calls and display user-friendly error messages on the UI.
+
+#### 11. Performance Optimization
+Be mindful of performance. Avoid unnecessary re-renders, use lazy loading for routes, and optimize image assets.
+
+### Common Tasks
 - **Adding Components**: Place in appropriate `src/components/` subdirectory
+- **Adding Pages/Views**: Place in appropriate `src/Views/` subdirectory
 - **API Integration**: Use `src/services/` pattern with Axios
 - **State Management**: Use Pinia stores in `src/stores/`
 - **Styling**: Use Tailwind CSS utility classes
 - **Icons**: Add SVG components to `src/icons/` and export in `index.ts`
+- **Types & Interfaces**: 
+  - **Shared types**: Add to `src/types/` (api/, store/, utils/ subdirectories)
+  - **Component-specific types**: Define within component file unless reusable
+  - **Import from**: `import type { TypeName } from '@/types'` for shared types
 
-**Before Making Changes:**
+
+### Before Making Changes
 1. Run `npm install` to ensure dependencies are current
 2. Start with `npm run dev` to verify current functionality
 3. Use `npm run lint` to check for immediate code quality issues
 4. Make incremental changes and test frequently
 
-**Critical Notes:**
+### Critical Notes
 - Always use TypeScript for new files
 - Follow Vue 3 Composition API patterns
 - Use the centralized configuration system (`src/config/`)
 - Respect the existing component architecture
 - Test changes with both `npm run dev` and `npm run build`
+
+### Development Conventions & Patterns
+
+#### Naming
+- **Components**: Use PascalCase for component names (e.g., `UserList.vue`)
+- **Files**: Use kebab-case for non-component file names (e.g., `user-service.ts`)
+- **Variables/Functions**: Use camelCase for variables and functions
+
+#### Component Patterns
+- **Container/Presentational**: Separate components that manage data and logic (containers) from components that only display data and handle UI (presentational)
+- **Composables**: Extract reusable logic into composable functions (`composables/` directory, e.g., `useFetch.ts`) that utilize the Composition API
+- **State Management**: Follow the observer pattern by using Pinia stores to create a single source of truth for the application state. Use `storeToRefs` to maintain reactivity when destructuring from a store
+
+### New API Integration Process
+
+1. **Create a Service**: For each new external API, create a dedicated service file (`services/api-service.ts`). This service should contain functions for making HTTP requests (using fetch or Axios).
+
+2. **Handle Logic in a Store**: Define a Pinia store to manage the data and state related to the API calls. This store will handle the loading and data state.
+
+3. **Expose State to Components**: Components should import the Pinia store and use `storeToRefs` to access the reactive state, ensuring they are decoupled from the data-fetching logic.
+
+4. **Component Interaction**: A component will trigger an action in the Pinia store (e.g., `fetchData()`) and then reactively display the data or handle loading/error states from the store.
+
+By following these guidelines, you will generate high-quality, professional code that is easy to understand, maintain, and scale.
+
+---
+
+## 🤖 AI AGENT REQUIREMENTS
+
+### MANDATORY BEHAVIOR FOR ALL AI ASSISTANTS
+
+**⚠️ CRITICAL**: Every AI assistant working on this project MUST follow these rules:
+
+#### 🔴 BEFORE STARTING ANY TASK:
+1. **ALWAYS announce**: "Checking project guidelines from copilot-instructions.md..."
+2. **ALWAYS confirm**: Understanding of the current request against project patterns
+3. **ALWAYS state**: Which sections of the guidelines apply to this specific task
+
+#### 🔴 FOR ALL DEVELOPMENT TASKS:
+1. **MUST use**: Vue 3 Composition API with `<script setup lang="ts">`
+2. **MUST follow**: The 6-step Feature Development Workflow above
+3. **MUST complete**: The ✅ Mandatory Checklist before declaring task complete
+4. **MUST use**: TypeScript for all new code
+5. **MUST use**: Tailwind CSS for all styling
+6. **MUST implement**: Proper error handling and loading states
+7. **MUST use**: i18n translation keys for all user-facing text
+
+#### 🔴 FOR ALL RESPONSES:
+- **Reference specific sections** of these guidelines when explaining decisions
+- **Mention which pattern/principle** is being applied
+- **Confirm compliance** with project architecture
+
+#### 🔴 FORBIDDEN ACTIONS:
+- ❌ Writing Vue 2 Options API syntax
+- ❌ Using custom CSS instead of Tailwind utilities
+- ❌ Creating components without proper TypeScript typing
+- ❌ Skipping error handling or loading states
+- ❌ Hardcoding text instead of using i18n keys
+- ❌ Prop drilling instead of using Pinia stores
+
+### EXAMPLE COMPLIANCE STATEMENT:
+```
+✅ Checking project guidelines from copilot-instructions.md...
+✅ This request requires: [Component Creation/API Integration/State Management]
+✅ I will follow: [Specific sections from guidelines]
+✅ Mandatory checklist items that apply: [List relevant items]
+```
+
+---

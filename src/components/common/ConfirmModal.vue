@@ -1,20 +1,32 @@
 <template>
   <div class="w-auto overflow-y-auto">
     <div class="flex justify-center">
-      <div :class="[
-        'relative transform overflow-hidden bg-white dark:bg-gray-800 text-left transition-all w-full',
-        sizeClasses[size],
-      ]" role="dialog" aria-modal="true" :aria-labelledby="title ? 'confirm-modal-title' : undefined"
-        :aria-describedby="message ? 'confirm-modal-desc' : undefined" tabindex="-1">
+      <div
+        :class="[
+          'relative transform overflow-hidden bg-white dark:bg-gray-800 text-left transition-all w-full',
+          sizeClasses[size],
+        ]"
+        role="dialog"
+        aria-modal="true"
+        :aria-labelledby="title ? 'confirm-modal-title' : undefined"
+        :aria-describedby="message ? 'confirm-modal-desc' : undefined"
+        tabindex="-1"
+      >
         <!-- Content -->
         <div class="flex flex-col">
           <!-- Content section -->
           <div class="flex mb-4 items-center">
-            <div v-if="showIcon" :class="[
-              'flex-shrink-0 flex items-center justify-center rounded-full p-2 mr-3',
-              iconClasses[variant].background,
-            ]">
-              <component :is="iconClasses[variant].icon" :class="['h-5 w-5', iconClasses[variant].color]" />
+            <div
+              v-if="showIcon"
+              :class="[
+                'flex-shrink-0 flex items-center justify-center rounded-full p-2 mr-3',
+                iconClasses[variant].background,
+              ]"
+            >
+              <component
+                :is="iconClasses[variant].icon"
+                :class="['h-5 w-5', iconClasses[variant].color]"
+              />
             </div>
 
             <div class="flex-1">
@@ -33,16 +45,34 @@
 
           <!-- Actions section -->
           <div class="flex flex-row-reverse gap-3">
-            <Button v-if="confirmText" @click="handleConfirm" :variant="confirmVariant" :loading="loading"
-              :disabled="loading" class="w-auto">
+            <Button
+              v-if="confirmText"
+              @click="handleConfirm"
+              :variant="confirmVariant"
+              :loading="loading"
+              :disabled="loading"
+              class="w-auto"
+            >
               {{ confirmText }}
             </Button>
 
-            <Button v-if="cancelText" @click="handleCancel" variant="outline" :disabled="loading" class="w-auto">
+            <Button
+              v-if="cancelText"
+              @click="handleCancel"
+              variant="outline"
+              :disabled="loading"
+              class="w-auto"
+            >
               {{ cancelText }}
             </Button>
 
-            <Button v-if="thirdText" @click="handleThird" :variant="thirdVariant" :disabled="loading" class="w-auto">
+            <Button
+              v-if="thirdText"
+              @click="handleThird"
+              :variant="thirdVariant"
+              :disabled="loading"
+              class="w-auto"
+            >
               {{ thirdText }}
             </Button>
           </div>

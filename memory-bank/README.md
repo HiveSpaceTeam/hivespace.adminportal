@@ -5,6 +5,7 @@ This folder serves as a knowledge repository to support Cursor AI in understandi
 ## Purpose
 
 The memory-bank folder contains various types of information that Cursor AI can reference to:
+
 - Better understand the project structure and architecture
 - Access common code patterns and solutions
 - Reference project-specific decisions and conventions
@@ -31,6 +32,7 @@ memory-bank/
 ## Adding Content
 
 When adding new content to the memory-bank:
+
 1. Use clear, descriptive filenames
 2. Include relevant context and examples
 3. Keep information up-to-date

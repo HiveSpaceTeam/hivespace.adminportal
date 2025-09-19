@@ -13,6 +13,7 @@ This directory contains coding standards, naming conventions, and development gu
 ## Adding Convention Documentation
 
 When documenting coding conventions:
+
 1. Be specific and provide clear examples
 2. Explain the reasoning behind each convention
 3. Include both "do" and "don't" examples
