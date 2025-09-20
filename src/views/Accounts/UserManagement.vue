@@ -4,38 +4,24 @@
     <div class="space-y-5 sm:space-y-6">
       <ComponentCard :title="$t('pages.listOfUsers')">
         <div
-          class="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]"
-        >
+          class="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
           <!-- Search and Filter Controls -->
           <div class="p-4 border-b border-gray-200 dark:border-gray-700">
             <div class="flex flex-col sm:flex-row gap-4 items-center">
               <!-- Search Input -->
               <div class="w-full sm:w-64">
-                <Input
-                  type="text"
-                  :value="searchQuery"
-                  @input="handleSearchInput"
-                  :placeholder="$t('users.searchPlaceholder')"
-                  autocomplete="off"
-                />
+                <Input type="text" :value="searchQuery" @input="handleSearchInput"
+                  :placeholder="$t('users.searchPlaceholder')" autocomplete="off" />
               </div>
 
               <!-- Status Filter -->
               <div class="sm:w-48">
-                <Select
-                  v-model="statusFilter"
-                  :options="statusOptions"
-                  :buttonClass="'w-full text-left px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white flex justify-between items-center'"
-                />
+                <Select v-model="statusFilter" :options="statusOptions" />
               </div>
 
               <!-- Seller Filter -->
               <div class="sm:w-48">
-                <Select
-                  v-model="sellerFilter"
-                  :options="sellerOptions"
-                  :buttonClass="'w-full text-left px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white flex justify-between items-center'"
-                />
+                <Select v-model="sellerFilter" :options="sellerOptions" />
               </div>
               <!-- Refresh Button -->
               <div class="sm:ml-auto">
@@ -48,9 +34,7 @@
 
           <!-- Loading State -->
           <div v-if="loading" class="p-8 text-center">
-            <div
-              class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"
-            ></div>
+            <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
             <p class="mt-2 text-gray-600 dark:text-gray-400">{{ $t('users.loading') }}</p>
           </div>
 
@@ -102,20 +86,14 @@
                 </tr>
               </thead>
               <tbody>
-                <tr
-                  v-for="user in filteredUsers"
-                  :key="user.id"
-                  class="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-white/[0.05]"
-                >
+                <tr v-for="user in filteredUsers" :key="user.id"
+                  class="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-white/[0.05]">
                   <!-- Username -->
                   <td class="px-5 py-4 sm:px-6">
                     <div class="flex items-center">
                       <div class="flex-shrink-0 h-10 w-10">
-                        <img
-                          class="h-10 w-10 rounded-full object-cover"
-                          :src="user.avatar || '/images/user/default-avatar.jpg'"
-                          :alt="user.username"
-                        />
+                        <img class="h-10 w-10 rounded-full object-cover"
+                          :src="user.avatar || '/images/user/default-avatar.jpg'" :alt="user.username" />
                       </div>
                       <div class="ml-4">
                         <div class="text-sm font-medium text-gray-900 dark:text-white">
@@ -137,8 +115,8 @@
 
                   <!-- Status -->
                   <td class="px-5 py-4 sm:px-6">
-                    <Badge :size="'sm'" :color="user.status === 'Active' ? 'success' : 'error'"
-                      >{{ user.status }}
+                    <Badge :size="'sm'" :color="user.status === 'Active' ? 'success' : 'error'">
+                      {{ user.displayStatus }}
                     </Badge>
                   </td>
 
@@ -168,18 +146,14 @@
                       </template>
 
                       <template #menu>
-                        <button
-                          @click="handleDelete(user)"
-                          class="flex items-center w-full px-3 py-2 text-sm text-red-700 hover:bg-gray-50 dark:text-red-400 dark:hover:bg-gray-600"
-                        >
+                        <button @click="handleDelete(user)"
+                          class="flex items-center w-full px-3 py-2 text-sm text-red-700 hover:bg-gray-50 dark:text-red-400 dark:hover:bg-gray-600">
                           <TrashRedIcon />
                           {{ actionDelete }}
                         </button>
 
-                        <button
-                          @click="handleToggleStatus(user)"
-                          class="flex items-center w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-700"
-                        >
+                        <button @click="handleToggleStatus(user)"
+                          class="flex items-center w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-700">
                           <ToggleOffIcon v-if="user.status === 'Active'" />
                           <ToggleOnIcon v-else />
                           {{ user.status === 'Active' ? actionDeactivate : actionActivate }}
@@ -198,7 +172,7 @@
           <div class="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400">
             <span>{{
               $t('users.showingResults', { count: filteredUsersCount, total: users.length })
-            }}</span>
+              }}</span>
             <span>{{ $t('users.lastUpdated') }} {{ lastUpdated }}</span>
           </div>
         </div>
@@ -335,7 +309,13 @@ const filteredUsers = computed(() => {
     filtered = filtered.filter((user) => user.hasSeller === isSeller)
   }
 
-  return filtered
+  // Map to display format with i18n values
+  return filtered.map((user) => ({
+    ...user,
+    displayStatus: user.status === 'Active'
+      ? t('users.values.status.active')
+      : t('users.values.status.inactive'),
+  }))
 })
 
 const filteredUsersCount = computed(() => filteredUsers.value.length)

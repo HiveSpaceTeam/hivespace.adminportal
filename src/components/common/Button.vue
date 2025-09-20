@@ -60,17 +60,17 @@ const sizeClasses = {
 
 const variantClasses = {
   primary:
-    'bg-blue-600 text-white shadow-sm hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:bg-blue-300 dark:bg-blue-500 dark:hover:bg-blue-600 dark:disabled:bg-blue-800',
+    'bg-blue-600 text-white shadow-sm hover:bg-blue-700 focus:outline-none disabled:bg-blue-300 dark:bg-blue-500 dark:hover:bg-blue-600 dark:disabled:bg-blue-800',
   secondary:
-    'bg-gray-600 text-white shadow-sm hover:bg-gray-700 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 disabled:bg-gray-300 dark:bg-gray-500 dark:hover:bg-gray-600 dark:disabled:bg-gray-700',
+    'bg-gray-600 text-white shadow-sm hover:bg-gray-700 focus:outline-none disabled:bg-gray-300 dark:bg-gray-500 dark:hover:bg-gray-600 dark:disabled:bg-gray-700',
   danger:
-    'bg-red-600 text-white shadow-sm hover:bg-red-700 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 disabled:bg-red-300 dark:bg-red-500 dark:hover:bg-red-600 dark:disabled:bg-red-800',
+    'bg-red-600 text-white shadow-sm hover:bg-red-700 focus:outline-none disabled:bg-red-300 dark:bg-red-500 dark:hover:bg-red-600 dark:disabled:bg-red-800',
   warning:
-    'bg-yellow-600 text-white shadow-sm hover:bg-yellow-700 focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 disabled:bg-yellow-300 dark:bg-yellow-500 dark:hover:bg-yellow-600 dark:disabled:bg-yellow-800',
+    'bg-yellow-600 text-white shadow-sm hover:bg-yellow-700 focus:outline-none disabled:bg-yellow-300 dark:bg-yellow-500 dark:hover:bg-yellow-600 dark:disabled:bg-yellow-800',
   success:
-    'bg-green-600 text-white shadow-sm hover:bg-green-700 focus:ring-2 focus:ring-green-500 focus:ring-offset-2 disabled:bg-green-300 dark:bg-green-500 dark:hover:bg-green-600 dark:disabled:bg-green-800',
+    'bg-green-600 text-white shadow-sm hover:bg-green-700 focus:outline-none disabled:bg-green-300 dark:bg-green-500 dark:hover:bg-green-600 dark:disabled:bg-green-800',
   outline:
-    'bg-white text-gray-700 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 disabled:text-gray-300 dark:bg-gray-800 dark:text-gray-300 dark:ring-gray-600 dark:hover:bg-gray-700 dark:hover:text-white dark:disabled:text-gray-500',
+    'bg-white text-gray-700 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:outline-none disabled:text-gray-300 dark:bg-gray-800 dark:text-gray-300 dark:ring-gray-600 dark:hover:bg-gray-700 dark:hover:text-white dark:disabled:text-gray-500',
 }
 
 const onClick = () => {

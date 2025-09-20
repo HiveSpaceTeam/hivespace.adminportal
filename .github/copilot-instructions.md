@@ -319,11 +319,12 @@ Before completing any feature development, verify:
 - [ ] Components use `<script setup lang="ts">` with proper TypeScript
 - [ ] All user-facing text uses i18n translation keys
 - [ ] Tailwind CSS classes used for all styling (no custom CSS unless necessary)
-- [ ] Error handling and loading states implemented
+- [ ] Error handling and loading states implemented, remember to add new backend.errorCode i18n
 - [ ] Component props and emits properly typed with `defineProps` and `defineEmits`
 - [ ] Pinia stores used for shared state (no prop drilling)
 - [ ] Components are modular and reusable
 - [ ] Code follows project naming conventions (PascalCase components, camelCase functions)
+- [ ] Arrow functions used whenever possible for consistency and readability
 
 ### Core Development Principles
 
@@ -366,6 +367,12 @@ Organize i18n translation keys based on modules or shared usage:
 
 #### 9. Clear & Concise Code
 Write well-commented code. All functions should have clear docstrings explaining their purpose, parameters, and return value. The code should be self-documenting as much as possible.
+
+**Arrow Function Usage:**
+- **ALWAYS use arrow functions** whenever possible for better readability and consistency
+- **Prefer arrow functions** for all function expressions, event handlers, and callback functions
+- **Use arrow functions** in Vue Composition API for computed properties, watchers, and lifecycle hooks
+- **Exception**: Only use regular function declarations for top-level functions that need hoisting or when `this` binding is specifically required
 
 #### 10. Error Handling
 Implement graceful error handling. Use try/catch blocks for asynchronous calls and display user-friendly error messages on the UI.
@@ -457,6 +464,7 @@ By following these guidelines, you will generate high-quality, professional code
 - ❌ Skipping error handling or loading states
 - ❌ Hardcoding text instead of using i18n keys
 - ❌ Prop drilling instead of using Pinia stores
+- ❌ Using regular function expressions when arrow functions are appropriate
 
 ### EXAMPLE COMPLIANCE STATEMENT:
 ```

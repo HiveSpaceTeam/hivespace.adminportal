@@ -16,8 +16,14 @@
   "deactivate": "Vô hiệu hóa",
   "allStatus": "Tất cả trạng thái",
   "active": "Hoạt động",
-  "inactive": "Không hoạt động",
+  "inactive": "Tạm khóa",
   "allUsers": "Tất cả người dùng",
   "sellersOnly": "Chỉ người bán",
-  "nonSellers": "Không phải người bán"
+  "nonSellers": "Không phải người bán",
+  "values": {
+    "status": {
+      "active": "Hoạt động",
+      "inactive": "Tạm khóa"
+    }
+  }
 }

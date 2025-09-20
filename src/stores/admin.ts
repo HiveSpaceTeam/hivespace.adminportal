@@ -1,46 +1,55 @@
-import type { CreateAdminRequest, CreateAdminResponse } from '@/types'
+import type { Admin, CreateAdminRequest } from '@/types'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { adminService } from '@/services/admin.service'
+import { useAppStore } from './app'
 
 export const useAdminStore = defineStore('admin', () => {
   // State
-  const isLoading = ref(false)
-  const error = ref<string | null>(null)
-  const createdAdmin = ref<CreateAdminResponse | null>(null)
+  const createdAdmin = ref<Admin | null>(null)
 
-  // Actions
-  function setLoading(loading: boolean) {
-    isLoading.value = loading
-  }
-
-  function setError(errorMessage: string | null) {
-    error.value = errorMessage
-  }
-
-  function setCreatedAdmin(admin: CreateAdminResponse | null) {
+  const setCreatedAdmin = (admin: Admin | null) => {
     createdAdmin.value = admin
   }
 
-  async function createAdmin(adminData: CreateAdminRequest) {
-    setError(null)
-    setCreatedAdmin(null)
-    await adminService.createAdmin(adminData)
+  const createAdmin = async (adminData: CreateAdminRequest) => {
+    const appStore = useAppStore()
+
+    try {
+      // Show loading state
+      appStore.setLoading(true)
+      setCreatedAdmin(null)
+
+      const response = await adminService.createAdmin(adminData)
+
+      // Map CreateAdminResponse to Admin interface
+      const admin: Admin = {
+        id: response.id,
+        email: response.email,
+        fullName: response.fullName,
+        isSystemAdmin: response.isSystemAdmin,
+        createdDate: response.createdAt,
+        lastLoginDate: response.lastLoginAt,
+        avatar: response.avatarUrl,
+        status: response.isActive ? 'active' : 'inactive',
+      }
+
+      setCreatedAdmin(admin)
+      return admin
+    } finally {
+      // Hide loading state
+      appStore.setLoading(false)
+    }
   }
 
-  function clearState() {
-    setError(null)
+  const clearState = () => {
     setCreatedAdmin(null)
   }
 
   return {
     // State
-    isLoading,
-    error,
     createdAdmin,
     // Actions
-    setLoading,
-    setError,
     setCreatedAdmin,
     createAdmin,
     clearState,
