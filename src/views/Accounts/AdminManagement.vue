@@ -176,7 +176,7 @@
                           {{
                             admin.status === $t('admins.values.status.active')
                               ? actionText.deactivate
-                          : actionText.activate
+                              : actionText.activate
                           }}
                         </button>
                       </template>
@@ -192,7 +192,7 @@
           <div class="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400">
             <span>{{
               $t('admins.showingResults', { count: filteredAdminsCount, total: admins.length })
-              }}</span>
+            }}</span>
             <span>{{ $t('admins.lastUpdated') }} {{ lastUpdated }}</span>
           </div>
         </template>

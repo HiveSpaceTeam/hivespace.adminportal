@@ -172,7 +172,7 @@
           <div class="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400">
             <span>{{
               $t('users.showingResults', { count: filteredUsersCount, total: users.length })
-            }}</span>
+              }}</span>
             <span>{{ $t('users.lastUpdated') }} {{ lastUpdated }}</span>
           </div>
         </div>
