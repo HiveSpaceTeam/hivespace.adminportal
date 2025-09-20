@@ -9,7 +9,7 @@
       <!-- Email Field (Input component) -->
       <div>
         <Input id="adminEmail" v-model="form.email" type="email" :label="t('admins.email')"
-          :placeholder="t('admins.emailPlaceholder')" required :error="errors.email" autocomplete="false" />
+          :placeholder="t('admins.emailPlaceholder')" required :error="errors.email" autocomplete="off" />
       </div>
 
       <!-- Password Field (Input component + append slot for toggle) -->
@@ -181,8 +181,10 @@ const handleFieldValidationErrors = (errorData: ErrorResponse): boolean => {
     const errorCode = err.code
     const source = err.source
 
-    // Get translated error message from backend errors, fallback to generic message
-    const errorMessage = t(`backendErrors.${errorCode}`, { defaultValue: t('errors.UNKNOWN_ERROR') })
+    // Translate with explicit fallback if key is missing
+    const key = `backendErrors.${errorCode}`
+    const translated = t(key)
+    const errorMessage = translated === key ? (t('errors.UNKNOWN_ERROR') as string) : (translated as string)
 
     // Check if the source exists in errors object (backend returns camelCase)
     if (source && source in errors) {
