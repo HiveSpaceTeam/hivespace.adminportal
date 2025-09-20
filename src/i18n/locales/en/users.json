@@ -19,5 +19,11 @@
   "inactive": "Inactive",
   "allUsers": "All Users",
   "sellersOnly": "Sellers Only",
-  "nonSellers": "Non-Sellers"
+  "nonSellers": "Non-Sellers",
+  "values": {
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive"
+    }
+  }
 }

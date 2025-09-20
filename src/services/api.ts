@@ -9,6 +9,7 @@ import type {
 } from 'axios'
 import { useAppStore } from '@/stores/app'
 import { config } from '@/config'
+import i18n from '@/i18n'
 
 // Extended request config for retry functionality
 interface ExtendedAxiosRequestConfig extends InternalAxiosRequestConfig {
@@ -115,13 +116,19 @@ apiClient.interceptors.response.use(
     // Handle specific HTTP errors
     if (error.response) {
       handleHttpError(error.response.status, appStore)
+      // Return only the ErrorResponse data that components care about
+      return Promise.reject(error.response.data)
     } else if (error.request) {
-      appStore.notifyError('Network Error', 'Unable to connect to the server')
+      const title = i18n.global.t('errors.CONNECTION_ERROR.title')
+      const message = i18n.global.t('errors.CONNECTION_ERROR.message')
+      appStore.notifyError(title, message)
+      return Promise.reject({ message })
     } else {
-      appStore.notifyError('Request Error', 'An unexpected error occurred')
+      const title = i18n.global.t('errors.REQUEST_ERROR.title')
+      const message = i18n.global.t('errors.REQUEST_ERROR.message')
+      appStore.notifyError(title, message)
+      return Promise.reject({ message })
     }
-
-    return Promise.reject(error)
   },
 )
 
@@ -140,24 +147,30 @@ const handleHttpError = (status: number, appStore: ReturnType<typeof useAppStore
       login() // Redirect to login
       break
     case 403:
-      appStore.notifyError('Forbidden', 'You do not have permission to perform this action')
-      break
-    case 404:
-      appStore.notifyError('Not Found', 'The requested resource was not found')
-      break
-    case 422:
-      // Validation errors - handled by individual services
+      appStore.notifyError(
+        i18n.global.t('errors.ACCESS_DENIED.title'),
+        i18n.global.t('errors.ACCESS_DENIED.message')
+      )
       break
     case 429:
-      appStore.notifyError('Rate Limited', 'Too many requests. Please try again later.')
+      appStore.notifyError(
+        i18n.global.t('errors.TOO_MANY_REQUESTS.title'),
+        i18n.global.t('errors.TOO_MANY_REQUESTS.message')
+      )
       break
     case 500:
-      appStore.notifyError('Server Error', 'Internal server error occurred')
+      appStore.notifyError(
+        i18n.global.t('errors.SERVER_ERROR.title'),
+        i18n.global.t('errors.SERVER_ERROR.message')
+      )
       break
     case 502:
     case 503:
     case 504:
-      appStore.notifyError('Service Unavailable', 'Service is temporarily unavailable')
+      appStore.notifyError(
+        i18n.global.t('errors.SERVICE_UNAVAILABLE.title'),
+        i18n.global.t('errors.SERVICE_UNAVAILABLE.message')
+      )
       break
   }
 }
@@ -213,11 +226,11 @@ class ApiService {
       headers: { 'Content-Type': 'multipart/form-data' },
       onUploadProgress: onUploadProgress
         ? (progressEvent) => {
-            if (progressEvent.total) {
-              const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total)
-              onUploadProgress(progress)
-            }
+          if (progressEvent.total) {
+            const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total)
+            onUploadProgress(progress)
           }
+        }
         : undefined,
     })
   }

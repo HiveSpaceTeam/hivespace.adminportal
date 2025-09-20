@@ -5,39 +5,25 @@
       <ComponentCard :title="$t('pages.listOfAdmins')">
         <!-- Table Content -->
         <div
-          class="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]"
-        >
+          class="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
           <!-- Search and Filter Controls -->
           <div class="p-4 border-b border-gray-200 dark:border-gray-700">
             <div class="flex flex-col sm:flex-row gap-4 items-center justify-between">
               <!-- Search Input -->
               <div class="flex items-center justify-end gap-2">
                 <div class="w-full sm:w-64">
-                  <Input
-                    type="text"
-                    :value="searchQuery"
-                    @input="tableHandleSearchInput"
-                    :placeholder="$t('admins.searchPlaceholder')"
-                    autocomplete="off"
-                  />
+                  <Input type="text" :value="searchQuery" @input="tableHandleSearchInput"
+                    :placeholder="$t('admins.searchPlaceholder')" autocomplete="off" />
                 </div>
 
                 <!-- Status Filter -->
                 <div class="sm:w-48">
-                  <Select
-                    v-model="statusFilter"
-                    :options="statusOptions"
-                    :buttonClass="'w-full text-left px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white flex justify-between items-center'"
-                  />
+                  <Select v-model="statusFilter" :options="statusOptions" />
                 </div>
 
                 <!-- Admin Type Filter -->
                 <div class="sm:w-48" v-if="currentUser?.isSystemAdmin()">
-                  <Select
-                    v-model="adminTypeFilter"
-                    :options="adminTypeOptions"
-                    :buttonClass="'w-full text-left px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white flex justify-between items-center'"
-                  />
+                  <Select v-model="adminTypeFilter" :options="adminTypeOptions" />
                 </div>
               </div>
 
@@ -47,7 +33,7 @@
                     {{ $t('admins.addNewAdmin') }}
                   </Button>
                   <Button :startIcon="RefreshIcon" variant="outline" @click="refreshAdmins">
-                    {{ $t('actions.refresh') }}
+                    {{ $t('common.actions.refresh') }}
                   </Button>
                 </div>
               </div>
@@ -56,9 +42,7 @@
 
           <!-- Loading State -->
           <div v-if="loading || appStore.isLoading" class="p-8 text-center">
-            <div
-              class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"
-            ></div>
+            <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
             <p class="mt-2 text-gray-600 dark:text-gray-400">{{ $t('admins.loading') }}</p>
           </div>
 
@@ -82,10 +66,7 @@
                       {{ $t('admins.status') }}
                     </p>
                   </th>
-                  <th
-                    class="px-5 py-3 text-center w-1/8 sm:px-6"
-                    v-if="currentUser?.isSystemAdmin()"
-                  >
+                  <th class="px-5 py-3 text-center w-1/8 sm:px-6" v-if="currentUser?.isSystemAdmin()">
                     <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
                       {{ $t('admins.isSystemAdmin') }}
                     </p>
@@ -113,20 +94,14 @@
                 </tr>
               </thead>
               <tbody>
-                <tr
-                  v-for="admin in filteredAdmins"
-                  :key="admin.id"
-                  class="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-white/[0.05]"
-                >
+                <tr v-for="admin in filteredAdmins" :key="admin.id"
+                  class="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-white/[0.05]">
                   <!-- Email Address -->
                   <td class="px-5 py-4 sm:px-6">
                     <div class="flex items-center">
                       <div class="flex-shrink-0 h-10 w-10">
-                        <img
-                          class="h-10 w-10 rounded-full object-cover"
-                          :src="admin.avatar || '/images/user/default-avatar.jpg'"
-                          :alt="admin.email"
-                        />
+                        <img class="h-10 w-10 rounded-full object-cover"
+                          :src="admin.avatar || '/images/user/default-avatar.jpg'" :alt="admin.email" />
                       </div>
                       <div class="ml-4">
                         <div class="text-sm font-medium text-gray-900 dark:text-white">
@@ -143,31 +118,20 @@
 
                   <!-- Status -->
                   <td class="px-5 py-4 sm:px-6">
-                    <span
-                      class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
-                      :class="
-                        admin.status === $t('admins.values.status.active')
-                          ? 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300'
-                          : 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-300'
-                      "
-                      >{{ admin.status }}</span
-                    >
+                    <Badge :size="'sm'"
+                      :color="admin.status === $t('admins.values.status.active') ? 'success' : 'error'">
+                      {{ admin.status }}
+                    </Badge>
                   </td>
 
                   <!-- Is System Admin -->
                   <td class="px-5 py-4 sm:px-6" v-if="currentUser?.isSystemAdmin()">
                     <div class="flex items-center justify-center">
-                      <svg
-                        v-if="admin.isSystemAdmin"
-                        class="w-5 h-5 text-green-500"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                      >
-                        <path
-                          fill-rule="evenodd"
+                      <svg v-if="admin.isSystemAdmin" class="w-5 h-5 text-green-500" fill="currentColor"
+                        viewBox="0 0 20 20">
+                        <path fill-rule="evenodd"
                           d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                          clip-rule="evenodd"
-                        ></path>
+                          clip-rule="evenodd"></path>
                       </svg>
                     </div>
                   </td>
@@ -199,26 +163,20 @@
                       </template>
 
                       <template #menu>
-                        <button
-                          @click="tableHandleDelete(admin)"
-                          class="flex items-center w-full px-3 py-2 text-sm text-red-700 hover:bg-gray-50 dark:text-red-400 dark:hover:bg-gray-600"
-                        >
+                        <button @click="tableHandleDelete(admin)"
+                          class="flex items-center w-full px-3 py-2 text-sm text-red-700 hover:bg-gray-50 focus:outline-none focus:ring-0 active:outline-none dark:text-red-400 dark:hover:bg-gray-600">
                           <TrashRedIcon />
                           {{ actionText.delete }}
                         </button>
 
-                        <button
-                          @click="tableHandleToggleStatus(admin)"
-                          class="flex items-center w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-700"
-                        >
-                          <ToggleOffIcon
-                            v-if="admin.status === $t('admins.values.status.active')"
-                          />
+                        <button @click="tableHandleToggleStatus(admin)"
+                          class="flex items-center w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-0 active:outline-none dark:text-gray-300 dark:hover:bg-gray-700">
+                          <ToggleOffIcon v-if="admin.status === $t('admins.values.status.active')" />
                           <ToggleOnIcon v-else />
                           {{
                             admin.status === $t('admins.values.status.active')
                               ? actionText.deactivate
-                              : actionText.activate
+                          : actionText.activate
                           }}
                         </button>
                       </template>
@@ -234,7 +192,7 @@
           <div class="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400">
             <span>{{
               $t('admins.showingResults', { count: filteredAdminsCount, total: admins.length })
-            }}</span>
+              }}</span>
             <span>{{ $t('admins.lastUpdated') }} {{ lastUpdated }}</span>
           </div>
         </template>
@@ -254,6 +212,7 @@ import ComponentCard from '@/components/common/ComponentCard.vue'
 import Button from '@/components/common/Button.vue'
 import Select from '@/components/common/Select.vue'
 import DropdownMenu from '@/components/common/DropdownMenu.vue'
+import Badge from '@/components/common/Badge.vue'
 import Input from '@/components/common/Input.vue'
 import { useModal } from '@/composables/useModal'
 import { useConfirmModal } from '@/composables/useConfirmModal'
