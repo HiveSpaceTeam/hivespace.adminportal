@@ -23,6 +23,16 @@ export interface PaginatedResponse<T = unknown> {
   }
 }
 
+// Standard pagination metadata used across the frontend
+export interface Pagination {
+  currentPage: number
+  pageSize: number
+  totalItems: number
+  totalPages: number
+  hasNextPage: boolean
+  hasPreviousPage: boolean
+}
+
 // API Error structure matching your backend
 export interface ApiError {
   code: string

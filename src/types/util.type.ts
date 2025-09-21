@@ -30,8 +30,7 @@ export type Callback<T = void> = (value: T) => void
 
 // Promise utilities
 export type PromiseType<T> = T extends Promise<infer U> ? U : T
-export type UnwrapPromise<T> = T extends Promise<infer U> ? U : T
-
+export type UnwrapPromise<T> = PromiseType<T>
 // Array utilities
 export type ArrayElement<T> = T extends (infer U)[] ? U : never
 export type NonEmptyArray<T> = [T, ...T[]]
@@ -40,8 +39,6 @@ export type NonEmptyArray<T> = [T, ...T[]]
 export type StringLiteral<T> = T extends string ? T : never
 export type EmptyString = ''
 
-// Status types commonly used across the app
-export type Status = 'idle' | 'loading' | 'success' | 'error'
 export type LoadingState = 'idle' | 'pending' | 'fulfilled' | 'rejected'
 
 // Common ID types

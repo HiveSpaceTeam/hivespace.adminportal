@@ -1,4 +1,9 @@
-import type { CreateAdminRequest, CreateAdminResponse } from '@/types'
+import type {
+  CreateAdminRequest,
+  CreateAdminResponse,
+  GetAdminsParams,
+  GetAdminsResponse,
+} from '@/types'
 import { apiService } from './api'
 import { buildApiUrl } from '@/config'
 
@@ -15,6 +20,14 @@ class AdminService {
   async createAdmin(adminData: CreateAdminRequest): Promise<CreateAdminResponse> {
     const url = buildApiUrl(ADMIN_ENDPOINTS.ADMINS)
     return await apiService.post<CreateAdminResponse>(url, adminData)
+  }
+
+  /**
+   * Get a paginated list of admins
+   */
+  async getAdmins(params?: GetAdminsParams): Promise<GetAdminsResponse> {
+    const url = buildApiUrl(ADMIN_ENDPOINTS.ADMINS)
+    return await apiService.get<GetAdminsResponse>(url, { params })
   }
 }
 

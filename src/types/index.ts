@@ -7,14 +7,14 @@
  * import type { UserData, TableColumn } from '@/types'
  */
 
-// API types - All backend interface contracts
-export type * from './api'
+// Unified Admin (store-facing) types
+export * from './admin.types'
 
-// Store types - State management interfaces
-export type * from './store'
+// API common types (kept under api for backend contracts)
+export * from './common.types'
 
 // Utility types - Helper and common types
-export type * from './utils'
+export * from './util.type'
 
 // App-specific types
 export type { AppUser } from './app-user'

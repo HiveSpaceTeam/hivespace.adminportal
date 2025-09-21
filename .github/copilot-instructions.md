@@ -285,9 +285,8 @@ Always answer in English
 - **Determine data flow**: Identify what stores, services, and API endpoints are required
 
 #### 2. Create Types First (if needed)
-- **API Types**: Add to `src/types/api/` for any new backend contracts
-- **Store Types**: Add to `src/types/store/` for state management interfaces
-- **Utility Types**: Add to `src/types/utils/` for common helpers
+- **API and store Types**: Add to `src/types/{store}/` for any new backend contracts and state management interfaces
+- **Utility Types**: Add to `src/types/util.type.ts/` for common helpers
 - **Export in index**: Update `src/types/index.ts` to export new types
 
 #### 3. Build Services & Stores

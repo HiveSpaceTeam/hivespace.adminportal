@@ -127,15 +127,15 @@
                     </div>
                   </td>
 
-                  <!-- Created Date -->
+                  <!-- Created Date (field: createdAt) -->
                   <td class="px-5 py-4 sm:px-6">
-                    <div class="text-sm text-gray-900 dark:text-white">{{ user.createdDate }}</div>
+                    <div class="text-sm text-gray-900 dark:text-white">{{ user.createdAt }}</div>
                   </td>
 
-                  <!-- Last Login Date -->
+                  <!-- Last Login Date (field: lastLoginAt) -->
                   <td class="px-5 py-4 sm:px-6">
                     <div class="text-sm text-gray-900 dark:text-white">
-                      {{ user.lastLoginDate }}
+                      {{ user.lastLoginAt }}
                     </div>
                   </td>
                   <!-- Actions -->
@@ -172,7 +172,7 @@
           <div class="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400">
             <span>{{
               $t('users.showingResults', { count: filteredUsersCount, total: users.length })
-              }}</span>
+            }}</span>
             <span>{{ $t('users.lastUpdated') }} {{ lastUpdated }}</span>
           </div>
         </div>
@@ -235,8 +235,8 @@ const users = ref([
     email: 'john.doe@example.com',
     hasSeller: true,
     status: 'Active',
-    createdDate: '2024-01-15',
-    lastLoginDate: '2024-03-20',
+    createdAt: '2024-01-15',
+    lastLoginAt: '2024-03-20',
     avatar: '/images/user/user-01.jpg',
   },
   {
@@ -246,8 +246,8 @@ const users = ref([
     email: 'jane.smith@example.com',
     hasSeller: false,
     status: 'Active',
-    createdDate: '2024-02-03',
-    lastLoginDate: '2024-03-19',
+    createdAt: '2024-02-03',
+    lastLoginAt: '2024-03-19',
     avatar: '/images/user/user-02.jpg',
   },
   {
@@ -257,8 +257,8 @@ const users = ref([
     email: 'mike.brown@example.com',
     hasSeller: true,
     status: 'Inactive',
-    createdDate: '2023-12-10',
-    lastLoginDate: '2024-02-28',
+    createdAt: '2023-12-10',
+    lastLoginAt: '2024-02-28',
     avatar: '/images/user/user-03.jpg',
   },
   {
@@ -268,8 +268,8 @@ const users = ref([
     email: 'sarah.wilson@example.com',
     hasSeller: true,
     status: 'Active',
-    createdDate: '2024-01-28',
-    lastLoginDate: '2024-03-21',
+    createdAt: '2024-01-28',
+    lastLoginAt: '2024-03-21',
     avatar: '/images/user/user-04.jpg',
   },
   {
@@ -279,8 +279,8 @@ const users = ref([
     email: 'david.lee@example.com',
     hasSeller: false,
     status: 'Active',
-    createdDate: '2024-02-14',
-    lastLoginDate: '2024-03-18',
+    createdAt: '2024-02-14',
+    lastLoginAt: '2024-03-18',
     avatar: '/images/user/user-05.jpg',
   },
 ])

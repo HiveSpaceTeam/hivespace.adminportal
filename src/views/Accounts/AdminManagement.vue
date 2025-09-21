@@ -41,7 +41,7 @@
           </div>
 
           <!-- Loading State -->
-          <div v-if="loading || appStore.isLoading" class="p-8 text-center">
+          <div v-if="appStore.isLoading" class="p-8 text-center">
             <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
             <p class="mt-2 text-gray-600 dark:text-gray-400">{{ $t('admins.loading') }}</p>
           </div>
@@ -94,14 +94,15 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="admin in filteredAdmins" :key="admin.id"
+                <tr v-for="(admin, index) in admins" :key="admin.id"
                   class="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-white/[0.05]">
                   <!-- Email Address -->
                   <td class="px-5 py-4 sm:px-6">
                     <div class="flex items-center">
                       <div class="flex-shrink-0 h-10 w-10">
                         <img class="h-10 w-10 rounded-full object-cover"
-                          :src="admin.avatar || '/images/user/default-avatar.jpg'" :alt="admin.email" />
+                          :src="admin.avatarUrl || `/images/user/user-0${(index % 9) + 1}.jpg`" :alt="admin.email"
+                          loading="lazy" />
                       </div>
                       <div class="ml-4">
                         <div class="text-sm font-medium text-gray-900 dark:text-white">
@@ -118,9 +119,9 @@
 
                   <!-- Status -->
                   <td class="px-5 py-4 sm:px-6">
-                    <Badge :size="'sm'"
-                      :color="admin.status === $t('admins.values.status.active') ? 'success' : 'error'">
-                      {{ admin.status }}
+                    <Badge :size="'sm'" :color="isAdminActive(admin) ? 'success' : 'error'">
+                      {{ isAdminActive(admin) ? t('admins.values.status.active') :
+                        t('admins.values.status.inactive') }}
                     </Badge>
                   </td>
 
@@ -136,22 +137,22 @@
                     </div>
                   </td>
 
-                  <!-- Created Date -->
+                  <!-- Created Date (field: createdAt) -->
                   <td class="px-5 py-4 sm:px-6">
-                    <div class="text-sm text-gray-900 dark:text-white">{{ admin.createdDate }}</div>
+                    <div class="text-sm text-gray-900 dark:text-white">{{ formatDate(admin.createdAt) }}</div>
                   </td>
 
-                  <!-- Last Login Date -->
+                  <!-- Last Login Date (field: lastLoginAt) -->
                   <td class="px-5 py-4 sm:px-6">
                     <div class="text-sm text-gray-900 dark:text-white">
-                      {{ admin.lastLoginDate }}
+                      {{ formatDate(admin.lastLoginAt) }}
                     </div>
                   </td>
 
-                  <!-- Last Updated Date -->
+                  <!-- Last Updated Date (field: updatedAt) -->
                   <td class="px-5 py-4 sm:px-6">
                     <div class="text-sm text-gray-900 dark:text-white">
-                      {{ admin.lastUpdatedDate }}
+                      {{ formatDate(admin.updatedAt) }}
                     </div>
                   </td>
 
@@ -171,13 +172,9 @@
 
                         <button @click="tableHandleToggleStatus(admin)"
                           class="flex items-center w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-0 active:outline-none dark:text-gray-300 dark:hover:bg-gray-700">
-                          <ToggleOffIcon v-if="admin.status === $t('admins.values.status.active')" />
+                          <ToggleOffIcon v-if="isAdminActive(admin)" />
                           <ToggleOnIcon v-else />
-                          {{
-                            admin.status === $t('admins.values.status.active')
-                              ? actionText.deactivate
-                              : actionText.activate
-                          }}
+                          {{ isAdminActive(admin) ? actionText.deactivate : actionText.activate }}
                         </button>
                       </template>
                     </DropdownMenu>
@@ -190,9 +187,11 @@
         <!-- Footer -->
         <template #footer>
           <div class="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400">
-            <span>{{
-              $t('admins.showingResults', { count: filteredAdminsCount, total: admins.length })
-            }}</span>
+            <span>
+              {{
+                $t('admins.showingResults', { count: filteredAdminsCount, total: admins.length })
+              }}
+            </span>
             <span>{{ $t('admins.lastUpdated') }} {{ lastUpdated }}</span>
           </div>
         </template>
@@ -218,8 +217,12 @@ import { useModal } from '@/composables/useModal'
 import { useConfirmModal } from '@/composables/useConfirmModal'
 import { useAppStore } from '@/stores/app'
 import AdminDetailModal from './Popups/AdminDetailModal.vue'
-import type { Admin } from '@/types'
-
+import { useAdminStore } from '@/stores/admin'
+import type { Admin, GetAdminsParams } from '@/types'
+import { RoleFilter, StatusFilter, Status } from '@/types'
+import { watch } from 'vue'
+import useFormatDate from '@/composables/useFormatDate'
+import useDebounce from '@/composables/useDebounce'
 import {
   HorizontalDots,
   TrashRedIcon,
@@ -230,29 +233,32 @@ import {
 } from '@/icons'
 import { getCurrentUser } from '@/auth/user-manager'
 import type { AppUser } from '@/types/app-user'
+// Local params for server queries
+import { storeToRefs } from 'pinia'
+
 const { t } = useI18n()
 const appStore = useAppStore()
+const adminStore = useAdminStore()
 
 const currentPageTitle = computed(() => t('pages.adminManagement'))
 
 // Options for the filter selects (i18n-backed)
 const statusOptions = computed(() => [
-  { value: 'all', label: t('admins.allStatus') },
-  { value: 'active', label: t('admins.active') },
-  { value: 'inactive', label: t('admins.inactive') },
+  { value: StatusFilter.All, label: t('admins.allStatus') },
+  { value: StatusFilter.Inactive, label: t('admins.inactive') },
+  { value: StatusFilter.Active, label: t('admins.active') },
 ])
 
 const adminTypeOptions = computed(() => [
-  { value: 'all', label: t('admins.allAdmins') },
-  { value: 'regular', label: t('admins.regularAdmin') },
-  { value: 'system', label: t('admins.systemAdmin') },
+  { value: RoleFilter.All, label: t('admins.allAdmins') },
+  { value: RoleFilter.RegularAdmin, label: t('admins.regularAdmin') },
+  { value: RoleFilter.SystemAdmin, label: t('admins.systemAdmin') },
 ])
 
 // State management
-const loading = ref(false)
 const searchQuery = ref('')
-const statusFilter = ref('all')
-const adminTypeFilter = ref('all')
+const statusFilter = ref<StatusFilter>(StatusFilter.All)
+const adminTypeFilter = ref<RoleFilter>(RoleFilter.All)
 const lastUpdated = ref('')
 
 // Global modal handlers
@@ -262,158 +268,54 @@ const { deleteConfirm } = useConfirmModal()
 // Current User (simulate current admin user)
 const currentUser = ref<AppUser | null>(null)
 
-// Sample admins data - in real app this would come from API
-const admins = ref([
-  {
-    id: '1',
-    email: 'admin.system@hivespace.com',
-    fullName: 'System Administrator',
-    adminType: 'System Admin', // This will be handled by display logic
-    status: 'Active', // This will be handled by display logic
-    isSystemAdmin: true,
-    createdDate: '2023-11-01',
-    lastLoginDate: '2024-03-22',
-    lastUpdatedDate: '2024-03-22',
-    avatar: '/images/user/user-01.jpg',
-  },
-  {
-    id: '2',
-    email: 'john.admin@hivespace.com',
-    fullName: 'John Anderson',
-    adminType: 'Regular Admin',
-    status: 'Active',
-    isSystemAdmin: false,
-    createdDate: '2024-01-15',
-    lastLoginDate: '2024-03-21',
-    lastUpdatedDate: '2024-03-21',
-    avatar: '/images/user/user-02.jpg',
-  },
-  {
-    id: '3',
-    email: 'sarah.manager@hivespace.com',
-    fullName: 'Sarah Johnson',
-    adminType: 'Regular Admin',
-    status: 'Active',
-    isSystemAdmin: false,
-    createdDate: '2024-01-20',
-    lastLoginDate: '2024-03-20',
-    lastUpdatedDate: '2024-03-20',
-    avatar: '/images/user/user-03.jpg',
-  },
-  {
-    id: '4',
-    email: 'mike.supervisor@hivespace.com',
-    fullName: 'Mike Thompson',
-    adminType: 'System Admin',
-    status: 'Active',
-    isSystemAdmin: true,
-    createdDate: '2023-12-05',
-    lastLoginDate: '2024-03-19',
-    lastUpdatedDate: '2024-03-19',
-    avatar: '/images/user/user-04.jpg',
-  },
-  {
-    id: '5',
-    email: 'lisa.admin@hivespace.com',
-    fullName: 'Lisa Wilson',
-    adminType: 'Regular Admin',
-    status: 'Inactive',
-    isSystemAdmin: false,
-    createdDate: '2024-02-10',
-    lastLoginDate: '2024-03-05',
-    lastUpdatedDate: '2024-03-15',
-    avatar: '/images/user/user-05.jpg',
-  },
-  {
-    id: '6',
-    email: 'david.tech@hivespace.com',
-    fullName: 'David Rodriguez',
-    adminType: 'System Admin',
-    status: 'Active',
-    isSystemAdmin: true,
-    createdDate: '2023-10-15',
-    lastLoginDate: '2024-03-22',
-    lastUpdatedDate: '2024-03-22',
-    avatar: '/images/user/user-06.jpg',
-  },
-  {
-    id: '7',
-    email: 'emma.support@hivespace.com',
-    fullName: 'Emma Davis',
-    adminType: 'Regular Admin',
-    status: 'Active',
-    isSystemAdmin: false,
-    createdDate: '2024-02-25',
-    lastLoginDate: '2024-03-18',
-    lastUpdatedDate: '2024-03-18',
-    avatar: '/images/user/user-07.jpg',
-  },
-])
 
-// Computed properties
-const filteredAdminsCount = computed(() => {
-  let filtered = admins.value
 
-  if (searchQuery.value) {
-    const query = searchQuery.value.toLowerCase()
-    filtered = filtered.filter((admin) => admin.email.toLowerCase().includes(query))
+const params = ref<Partial<GetAdminsParams>>({ page: 1, pageSize: 10 })
+
+// Admin list from the store with proper reactivity
+const { admins } = storeToRefs(adminStore)
+
+// Use admins directly in template instead of filteredAdmins
+const filteredAdminsCount = computed(() => admins.value.length)
+// Load admins from server using current filters
+const { formatDate } = useFormatDate()
+const { debounce } = useDebounce()
+const loadAdmins = async (paramsOverride?: Partial<GetAdminsParams>) => {
+  try {
+    // Merge overrides into local params
+    if (paramsOverride) params.value = { ...(params.value || {}), ...paramsOverride }
+
+    const mapped: GetAdminsParams = {
+      page: params.value?.page ?? 1,
+      pageSize: params.value?.pageSize ?? 10,
+      status: statusFilter.value,
+      role: adminTypeFilter.value,
+      searchTerm: (params.value?.searchTerm ?? searchQuery.value) || undefined,
+      sort: params.value?.sort,
+    }
+
+    await adminStore.fetchAdmins(mapped)
+  } catch (err) {
+    console.error('Failed to load admins:', err)
+    appStore.notifyError(t('admins.notifications.loadFailed.title'), t('admins.notifications.loadFailed.message'))
   }
+}
 
-  if (statusFilter.value !== 'all') {
-    // Compare with raw values since sample data uses raw values
-    const status = statusFilter.value === 'active' ? 'Active' : 'Inactive'
-    filtered = filtered.filter((admin) => admin.status === status)
-  }
+// Debounced search input handler will call loadAdmins (via composable)
+const tableHandleSearchInput = (event: Event) => {
+  const target = event.target as HTMLInputElement
+  searchQuery.value = target.value
+  // keep the search term in params and trigger a debounced load
+  params.value.searchTerm = searchQuery.value
+  debounce('admins-search', () => void loadAdmins({ page: 1 }), 400)
+}
 
-  if (adminTypeFilter.value !== 'all') {
-    // Compare with raw values since sample data uses raw values
-    const adminType = adminTypeFilter.value === 'system' ? 'System Admin' : 'Regular Admin'
-    filtered = filtered.filter((admin) => admin.adminType === adminType)
-  }
-
-  return filtered.length
+// Watch filters and reload when they change
+watch(statusFilter, () => {
+  loadAdmins({ page: 1 })
 })
-
-// Removed local password strength and validation computation; handled in modal
-
-// Table: filtered list + local menu state
-const filteredAdmins = computed(() => {
-  let filtered = admins.value
-
-  // Search filter
-  if (searchQuery.value) {
-    const query = searchQuery.value.toLowerCase()
-    filtered = filtered.filter((admin) => admin.email.toLowerCase().includes(query))
-  }
-
-  // Status filter
-  if (statusFilter.value !== 'all') {
-    // Compare with raw values since sample data uses raw values
-    const status = statusFilter.value === 'active' ? 'Active' : 'Inactive'
-    filtered = filtered.filter((admin) => admin.status === status)
-  }
-
-  // Admin type filter
-  if (adminTypeFilter.value !== 'all') {
-    // Compare with raw values since sample data uses raw values
-    const adminType = adminTypeFilter.value === 'system' ? 'System Admin' : 'Regular Admin'
-    filtered = filtered.filter((admin) => admin.adminType === adminType)
-  }
-
-  // Map to display format with i18n values
-  return filtered.map((admin) => ({
-    ...admin,
-    status:
-      admin.status === 'Active'
-        ? t('admins.values.status.active')
-        : t('admins.values.status.inactive'),
-    adminType:
-      admin.adminType === 'System Admin'
-        ? t('admins.values.type.system')
-        : t('admins.values.type.regular'),
-    lastLoginDate:
-      admin.lastLoginDate === 'Never' ? t('admins.values.lastLogin.never') : admin.lastLoginDate,
-  }))
+watch(adminTypeFilter, () => {
+  loadAdmins({ page: 1 })
 })
 
 const actionText = {
@@ -421,6 +323,14 @@ const actionText = {
   activate: t('admins.activate'),
   deactivate: t('admins.deactivate'),
 }
+
+// Helper to centralize active-status checks
+const isAdminActive = (admin: Admin) => {
+  // Admin.status matches the backend numeric status; treat `Status.Active` as active
+  return admin?.status === Status.Active
+}
+
+// `formatDate` provided by composable (date-only formatter)
 
 const tableHandleDelete = async (admin: Admin) => {
   const confirmed = await deleteConfirm(
@@ -437,89 +347,23 @@ const tableHandleToggleStatus = (admin: Admin) => {
   handleToggleStatus(admin.id)
 }
 
-const tableHandleSearchInput = (event: Event) => {
-  const target = event.target as HTMLInputElement
-  handleSearch(target.value)
-}
-
-// Dropdown menu is handled by DropdownMenu component which manages its own outside clicks
-
 // Event handlers
-const handleDeleteAdmin = (adminId: string) => {
-  loading.value = true
-  // Simulate API call
-  setTimeout(() => {
-    try {
-      const admin = admins.value.find((a) => a.id === adminId)
-      admins.value = admins.value.filter((admin) => admin.id !== adminId)
-      loading.value = false
-      updateLastUpdated()
-
-      appStore.notifySuccess(
-        t('admins.notifications.deleteSuccess.title'),
-        t('admins.notifications.deleteSuccess.message', {
-          email: admin?.email || t('admins.values.user'),
-        }),
-      )
-    } catch (err) {
-      loading.value = false
-      console.error('Delete error:', err)
-      appStore.notifyError(
-        t('admins.notifications.deleteFailed.title'),
-        t('admins.notifications.deleteFailed.message'),
-      )
-    }
-  }, 500)
+const handleDeleteAdmin = (_adminId: string) => {
+  void _adminId
+  // TODO: Implement delete admin API call and update store
+  // This will call the backend to delete the admin and then update `adminStore.admins` accordingly.
 }
 
-const handleToggleStatus = (adminId: string) => {
-  loading.value = true
-  // Simulate API call
-  setTimeout(() => {
-    try {
-      const admin = admins.value.find((a) => a.id === adminId)
-      if (admin) {
-        // Use raw values for data manipulation
-        const newStatus = admin.status === 'Active' ? 'Inactive' : 'Active'
-        admin.status = newStatus
-        admin.lastUpdatedDate = new Date().toISOString().split('T')[0]
-
-        appStore.notifySuccess(
-          t('admins.notifications.statusUpdateSuccess.title'),
-          t('admins.notifications.statusUpdateSuccess.message', {
-            email: admin.email,
-            status:
-              newStatus === 'Active'
-                ? t('admins.values.status.activated')
-                : t('admins.values.status.deactivated'),
-          }),
-        )
-      }
-      loading.value = false
-      updateLastUpdated()
-    } catch (err) {
-      loading.value = false
-      console.error('Status update error:', err)
-      appStore.notifyError(
-        t('admins.notifications.statusUpdateFailed.title'),
-        t('admins.notifications.statusUpdateFailed.message'),
-      )
-    }
-  }, 500)
+const handleToggleStatus = (_adminId: string) => {
+  void _adminId
+  // TODO: Implement toggle status API call and update store
+  // This will call the backend to toggle the admin's active status and update `adminStore.admins`.
 }
 
-const handleSearch = (query: string) => {
-  searchQuery.value = query
-  console.log('Search query:', query)
-}
-
-// Filters are bound via v-model on Select; no manual handlers required here.
 
 const refreshAdmins = () => {
-  loading.value = true
   // Simulate API refresh
   setTimeout(() => {
-    loading.value = false
     updateLastUpdated()
     console.log('Admins refreshed')
   }, 1000)
@@ -541,6 +385,10 @@ const openAddAdminModal = () => {
 onMounted(async () => {
   currentUser.value = await getCurrentUser()
   updateLastUpdated()
+
+  // Initial load using current filters
+  await loadAdmins({ page: 1 })
+
   console.log('AdminManagement component mounted')
 })
 </script>
