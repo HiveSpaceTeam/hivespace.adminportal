@@ -12,22 +12,12 @@
       <slot name="menu">
         <!-- Default menu items -->
         <template v-for="(item, index) in menuItems">
-          <router-link
-            v-if="item.to"
-            :key="`router-${index}`"
-            :to="item.to"
-            @click="handleMenuItemClick(item.onClick)"
-            :class="itemClass"
-          >
+          <router-link v-if="item.to" :key="`router-${index}`" :to="item.to" @click="handleMenuItemClick(item.onClick)"
+            :class="itemClass">
             {{ item.label }}
           </router-link>
 
-          <button
-            v-else
-            :key="`button-${index}`"
-            @click="handleMenuItemClick(item.onClick)"
-            :class="itemClass"
-          >
+          <button v-else :key="`button-${index}`" @click="handleMenuItemClick(item.onClick)" :class="itemClass">
             {{ item.label }}
           </button>
         </template>
@@ -64,7 +54,7 @@ withDefaults(defineProps<Props>(), {
   menuItems: () => [],
   buttonClass: 'text-gray-500 dark:text-gray-400',
   menuClass:
-    'absolute right-0 z-40 w-40 p-2 space-y-1 bg-white border border-gray-200 top-full rounded-2xl shadow-lg dark:border-gray-800 dark:bg-gray-dark',
+    'absolute right-0 z-50 w-40 p-2 space-y-1 bg-white border border-gray-200 top-full rounded-2xl shadow-lg dark:border-gray-800 dark:bg-gray-dark',
   itemClass:
     'flex w-full px-3 py-2 font-medium text-left text-gray-500 rounded-lg text-theme-xs hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300',
 })

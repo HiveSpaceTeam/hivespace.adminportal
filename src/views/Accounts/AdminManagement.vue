@@ -47,24 +47,30 @@
           </div>
 
           <!-- Table -->
-          <div v-else class="max-w-full overflow-x-auto custom-scrollbar">
+          <div v-else class="max-w-full overflow-x-auto custom-scrollbar" style="min-height: 400px;">
             <table class="min-w-full">
               <thead>
                 <tr class="border-b border-gray-200 dark:border-gray-700">
                   <th class="px-5 py-3 text-left w-1/8 sm:px-6">
-                    <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
+                    <button @click="handleSort('email')"
+                      class="flex items-center gap-1 font-medium text-gray-500 text-theme-xs dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
                       {{ $t('admins.emailAddress') }}
-                    </p>
+                      <component :is="getSortIcon('email')" v-if="getSortIcon('email')" class="w-4 h-4" />
+                    </button>
                   </th>
                   <th class="px-5 py-3 text-left w-1/8 sm:px-6">
-                    <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
+                    <button @click="handleSort('fullName')"
+                      class="flex items-center gap-1 font-medium text-gray-500 text-theme-xs dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
                       {{ $t('admins.fullName') }}
-                    </p>
+                      <component :is="getSortIcon('fullName')" v-if="getSortIcon('fullName')" class="w-4 h-4" />
+                    </button>
                   </th>
                   <th class="px-5 py-3 text-left w-1/8 sm:px-6">
-                    <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
+                    <button @click="handleSort('status')"
+                      class="flex items-center gap-1 font-medium text-gray-500 text-theme-xs dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
                       {{ $t('admins.status') }}
-                    </p>
+                      <component :is="getSortIcon('status')" v-if="getSortIcon('status')" class="w-4 h-4" />
+                    </button>
                   </th>
                   <th class="px-5 py-3 text-center w-1/8 sm:px-6" v-if="currentUser?.isSystemAdmin()">
                     <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
@@ -72,19 +78,25 @@
                     </p>
                   </th>
                   <th class="px-5 py-3 text-left w-1/8 sm:px-6">
-                    <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
+                    <button @click="handleSort('createdAt')"
+                      class="flex items-center gap-1 font-medium text-gray-500 text-theme-xs dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
                       {{ $t('admins.createdDate') }}
-                    </p>
+                      <component :is="getSortIcon('createdAt')" v-if="getSortIcon('createdAt')" class="w-4 h-4" />
+                    </button>
                   </th>
                   <th class="px-5 py-3 text-left w-1/8 sm:px-6">
-                    <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
+                    <button @click="handleSort('lastLoginAt')"
+                      class="flex items-center gap-1 font-medium text-gray-500 text-theme-xs dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
                       {{ $t('admins.lastLoginDate') }}
-                    </p>
+                      <component :is="getSortIcon('lastLoginAt')" v-if="getSortIcon('lastLoginAt')" class="w-4 h-4" />
+                    </button>
                   </th>
                   <th class="px-5 py-3 text-left w-1/8 sm:px-6">
-                    <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
+                    <button @click="handleSort('updatedAt')"
+                      class="flex items-center gap-1 font-medium text-gray-500 text-theme-xs dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
                       {{ $t('admins.lastUpdatedDate') }}
-                    </p>
+                      <component :is="getSortIcon('updatedAt')" v-if="getSortIcon('updatedAt')" class="w-4 h-4" />
+                    </button>
                   </th>
                   <th class="px-5 py-3 text-center w-1/8 sm:px-6">
                     <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
@@ -93,7 +105,16 @@
                   </th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody style="min-height: 300px;">
+                <!-- Empty state row when no data -->
+                <tr v-if="admins.length === 0">
+                  <td :colspan="currentUser?.isSystemAdmin() ? 8 : 7" class="px-5 py-12 text-center">
+                    <div class="text-gray-500 dark:text-gray-400">
+                      <p class="text-lg font-medium">{{ $t('admins.noAdminsFound') }}</p>
+                      <p class="text-sm mt-2">{{ $t('admins.noAdminsFoundDescription') }}</p>
+                    </div>
+                  </td>
+                </tr>
                 <tr v-for="(admin, index) in admins" :key="admin.id"
                   class="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-white/[0.05]">
                   <!-- Email Address -->
@@ -121,7 +142,7 @@
                   <td class="px-5 py-4 sm:px-6">
                     <Badge :size="'sm'" :color="isAdminActive(admin) ? 'success' : 'error'">
                       {{ isAdminActive(admin) ? t('admins.values.status.active') :
-                        t('admins.values.status.inactive') }}
+                      t('admins.values.status.inactive') }}
                     </Badge>
                   </td>
 
@@ -184,17 +205,16 @@
             </table>
           </div>
         </div>
+
         <!-- Footer -->
-        <template #footer>
+        <div class="mt-4">
           <div class="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400">
-            <span>
-              {{
-                $t('admins.showingResults', { count: filteredAdminsCount, total: admins.length })
-              }}
-            </span>
+            <span>{{
+              $t('admins.showingResults', { count: filteredAdminsCount, total: admins.length })
+              }}</span>
             <span>{{ $t('admins.lastUpdated') }} {{ lastUpdated }}</span>
           </div>
-        </template>
+        </div>
       </ComponentCard>
     </div>
 
@@ -230,6 +250,8 @@ import {
   ToggleOnIcon,
   BigPlusIcon,
   RefreshIcon,
+  SortAscIcon,
+  SortDescIcon,
 } from '@/icons'
 import { getCurrentUser } from '@/auth/user-manager'
 import type { AppUser } from '@/types/app-user'
@@ -261,6 +283,10 @@ const statusFilter = ref<StatusFilter>(StatusFilter.All)
 const adminTypeFilter = ref<RoleFilter>(RoleFilter.All)
 const lastUpdated = ref('')
 
+// Sorting state
+const currentSort = ref<string | null>(null)
+const sortDirection = ref<'asc' | 'desc' | null>(null)
+
 // Global modal handlers
 const { openModal } = useModal()
 const { deleteConfirm } = useConfirmModal()
@@ -268,7 +294,37 @@ const { deleteConfirm } = useConfirmModal()
 // Current User (simulate current admin user)
 const currentUser = ref<AppUser | null>(null)
 
+// Sorting functions
+const handleSort = (field: string) => {
+  if (currentSort.value === field) {
+    // Same field: cycle through asc -> desc -> none
+    if (sortDirection.value === 'asc') {
+      sortDirection.value = 'desc'
+    } else if (sortDirection.value === 'desc') {
+      currentSort.value = null
+      sortDirection.value = null
+    } else {
+      sortDirection.value = 'asc'
+    }
+  } else {
+    // Different field: start with asc
+    currentSort.value = field
+    sortDirection.value = 'asc'
+  }
 
+  // Trigger refresh with new sort params
+  loadAdmins({ page: 1 })
+}
+
+const getSortIcon = (field: string) => {
+  if (currentSort.value !== field) return null
+  return sortDirection.value === 'asc' ? SortAscIcon : SortDescIcon
+}
+
+const getSortParam = () => {
+  if (!currentSort.value || !sortDirection.value) return undefined
+  return `${currentSort.value}.${sortDirection.value}`
+}
 
 const params = ref<Partial<GetAdminsParams>>({ page: 1, pageSize: 10 })
 
@@ -291,7 +347,7 @@ const loadAdmins = async (paramsOverride?: Partial<GetAdminsParams>) => {
       status: statusFilter.value,
       role: adminTypeFilter.value,
       searchTerm: (params.value?.searchTerm ?? searchQuery.value) || undefined,
-      sort: params.value?.sort,
+      sort: params.value?.sort ?? getSortParam(),
     }
 
     await adminStore.fetchAdmins(mapped)

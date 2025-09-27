@@ -91,5 +91,7 @@
       "never": "Never"
     },
     "user": "user"
-  }
+  },
+  "noAdminsFound": "No administrators found",
+  "noAdminsFoundDescription": "Try adjusting your search filters or add new administrators to get started."
 }

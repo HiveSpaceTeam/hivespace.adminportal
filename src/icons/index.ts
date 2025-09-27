@@ -76,6 +76,8 @@ import EyeOffIcon from './EyeOffIcon.vue'
 import PaymentIcon from './PaymentIcon.vue'
 import ShowPasswordIcon from './ShowPasswordIcon.vue'
 import HidePasswordIcon from './HidePasswordIcon.vue'
+import SortAscIcon from './SortAscIcon.vue'
+import SortDescIcon from './SortDescIcon.vue'
 
 export {
   BarChartIcon,
@@ -157,4 +159,6 @@ export {
   FilterIcon,
   BreadcrumbArrowIcon,
   MenuDotsIcon,
+  SortAscIcon,
+  SortDescIcon,
 }
