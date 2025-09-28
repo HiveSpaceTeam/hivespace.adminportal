@@ -580,8 +580,9 @@ VITE_APP_POST_LOGOUT_REDIRECT_URI=http://localhost:5173
 VITE_APP_RESPONSE_TYPE=code
 VITE_APP_RESPONSE_MODE=query
 VITE_APP_SCOPE=openid profile email
-VITE_APP_AUTOMATIC_SILENT_RENEW=false
-VITE_APP_SILENT_REDIRECT_URI=http://localhost:5173/auth/silent-callback
+# Silent renew removed
+The previous iframe-based "silent renew" token refresh flow has been removed from this project.
+If you relied on automatic silent renew, migrate to a server-side refresh-token flow or other token rotation strategy.
 ```
 
 **OIDC Settings** (from `user-manager.ts`):
@@ -594,8 +595,8 @@ const oidcSettings = {
   scope: config.auth.oidc.scope,                     // Requested scopes
   post_logout_redirect_uri: config.auth.oidc.postLogoutRedirectUri,
   response_mode: config.auth.oidc.responseMode,      // How to receive tokens
-  automaticSilentRenew: config.auth.oidc.automaticSilentRenew,
-  silent_redirect_uri: config.auth.oidc.silentRedirectUri,
+  // automaticSilentRenew and silent_redirect_uri have been removed from the default configuration.
+  // Token rotation should be handled via refresh tokens or a backend session proxy.
   userStore: new WebStorageStateStore({ store: window.localStorage })
 }
 ```
