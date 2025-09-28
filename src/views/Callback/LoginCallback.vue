@@ -11,7 +11,6 @@ import { handleLoginCallback, logout } from '@/auth/user-manager';
 const router = useRouter();
 
 onMounted(async () => {
-  debugger;
   try {
     const result = await handleLoginCallback();
     let returnToUrl = '/';

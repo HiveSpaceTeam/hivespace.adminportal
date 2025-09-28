@@ -32,7 +32,7 @@ const mainRoutes = [
     path: '/',
     name: 'Default',
     component: () => import('@/views/Default.vue'),
-    meta: { title: 'HiveSpace - Seller Center' },
+    meta: { title: 'HiveSpace - Admin Portal' },
   },
   ...demoRoutes,
   {
@@ -49,6 +49,7 @@ const router = createRouter({
     return savedPosition || { left: 0, top: 0 }
   },
   routes: [
+    ...mainRoutes,
     {
       path: '/account',
       children: [
@@ -69,19 +70,13 @@ const router = createRouter({
           meta: { title: 'Admin management' },
         },
       ],
-    },
-    {
-      path: '/',
-      redirect: '/account/user-management',
-    },
-    ...mainRoutes,
+    }
   ],
 })
 
 export default router
 
 router.beforeEach(async (to, from, next) => {
-  debugger
   document.title = `${to.meta.title}`
   if (to.meta.allowAnonymous) {
     next()
@@ -96,7 +91,7 @@ router.beforeEach(async (to, from, next) => {
   // Redirect to login when the user is neither.
   if (!user.isAdmin() && !user.isSystemAdmin()) {
     login()
-    return
+    return next(false)
   }
 
   next()
