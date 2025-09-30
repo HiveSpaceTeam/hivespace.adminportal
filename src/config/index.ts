@@ -26,8 +26,6 @@ export interface AppConfig {
       readonly responseType: string
       readonly responseMode: string
       readonly scope: string
-      readonly automaticSilentRenew: boolean
-      readonly silentRedirectUri: string
     }
     readonly callbackUrl: string
   }
@@ -123,11 +121,6 @@ const createConfig = (): AppConfig => {
         responseType: getEnvVar('VITE_APP_RESPONSE_TYPE', 'code'),
         responseMode: getEnvVar('VITE_APP_RESPONSE_MODE', 'query'),
         scope: getEnvVar('VITE_APP_SCOPE', 'openid profile email'),
-        automaticSilentRenew: parseBoolean(getEnvVar('VITE_APP_AUTOMATIC_SILENT_RENEW'), false),
-        silentRedirectUri: validateUrl(
-          getEnvVar('VITE_APP_SILENT_REDIRECT_URI', 'http://localhost:5173/auth/silent-callback'),
-          'Silent Redirect URI',
-        ),
       },
       callbackUrl: validateUrl(
         getEnvVar('VITE_AUTH_CALLBACK_URL', 'http://localhost:5173/auth/callback'),
