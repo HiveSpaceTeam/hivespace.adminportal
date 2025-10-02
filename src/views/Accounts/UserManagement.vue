@@ -192,8 +192,11 @@
         <div class="mt-4">
           <div class="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400">
             <span>{{
-              $t('users.showingResults', { count: filteredUsersCount, total: users.length })
-              }}</span>
+              $t('users.showingResults', {
+                count: filteredUsersCount,
+                total: pagination?.totalItems ?? users.length
+              })
+            }}</span>
             <span>{{ $t('users.lastUpdated') }} {{ lastUpdated }}</span>
           </div>
         </div>
@@ -268,7 +271,7 @@ const { deleteConfirm } = useConfirmModal()
 const params = ref<Partial<GetUsersParams>>({ page: 1, pageSize: 10 })
 
 // Users list from the store with proper reactivity
-const { users } = storeToRefs(userStore)
+const { users, pagination } = storeToRefs(userStore)
 
 // Load users from server using current filters
 const { formatDate } = useFormatDate()

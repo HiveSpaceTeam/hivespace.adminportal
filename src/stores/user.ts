@@ -1,4 +1,4 @@
-import type { User, GetUsersParams, Pagination } from '@/types'
+import { type User, type GetUsersParams, type Pagination, Status } from '@/types'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { userService } from '@/services/user.service'
@@ -52,7 +52,7 @@ export const useUserStore = defineStore('user', () => {
       if (!user) return
 
       // Toggle status based on current status (1 = Active, 0 = Inactive)
-      const updatedUser = user.status === 1
+      const updatedUser = user.status === Status.Active
         ? await userService.deactivateUser(userId)
         : await userService.activateUser(userId)
 
