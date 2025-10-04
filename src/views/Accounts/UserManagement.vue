@@ -399,8 +399,8 @@ watch(sellerFilter, () => {
   loadUsers({ page: 1 })
 })
 
-const refreshUsers = () => {
-  loadUsers()
+const refreshUsers = async () => {
+  await loadUsers()
   updateLastUpdated()
   console.log('Users refreshed')
 }
