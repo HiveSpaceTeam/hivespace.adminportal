@@ -249,8 +249,8 @@ const statusOptions = computed(() => [
 
 const sellerOptions = computed(() => [
   { value: RoleFilter.All, label: t('users.allUsers') },
-  { value: RoleFilter.RegularAdmin, label: t('users.sellersOnly') },
-  { value: RoleFilter.SystemAdmin, label: t('users.nonSellers') },
+  { value: RoleFilter.Seller, label: t('users.sellersOnly') },
+  { value: RoleFilter.Customer, label: t('users.nonSellers') },
 ])
 
 const currentPageTitle = computed(() => t('pages.userManagement'))
@@ -300,7 +300,7 @@ const loadUsers = async (paramsOverride?: Partial<GetUsersParams>) => {
 
 // Map users to display format with i18n values
 const filteredUsers = computed(() => {
-  return users.value.map((user) => ({
+  return users.value.map((user: User) => ({
     ...user,
     displayStatus: user.status === Status.Active
       ? t('users.values.status.active')
@@ -364,12 +364,18 @@ const handleDeleteUser = async (userOrId: string | { id: string }) => {
   }
 }
 
-const handleToggleStatus = async (userOrId: string | { id: string }) => {
-  const userId = typeof userOrId === 'string' ? userOrId : userOrId.id
+const handleToggleStatus = async (user: User) => {
+  const nextStatusText = isUserActive(user)
+    ? t('users.values.status.inactive')
+    : t('users.values.status.active')
   try {
-    await userStore.toggleUserStatus(userId)
+    await userStore.toggleUserStatus(user.id)
     updateLastUpdated()
-    console.log('Status toggled for user:', userId)
+    appStore.notifySuccess(
+      t('users.notifications.statusUpdateSuccess.title'),
+      t('users.notifications.statusUpdateSuccess.message', { email: user.email, status: nextStatusText }),
+    )
+    console.log('Status toggled for user:', user.id)
   } catch (err) {
     console.error('Failed to toggle user status:', err)
     appStore.notifyError(t('users.notifications.statusUpdateFailed.title'), t('users.notifications.statusUpdateFailed.message'))
@@ -420,7 +426,7 @@ const tableHandleDelete = async (user: User) => {
 }
 
 const tableHandleToggleStatus = (user: User) => {
-  handleToggleStatus(user.id)
+  handleToggleStatus(user)
 }
 
 // Lifecycle

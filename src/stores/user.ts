@@ -39,6 +39,10 @@ export const useUserStore = defineStore('user', () => {
       await userService.deleteUser(userId)
       // Remove user from local state
       users.value = users.value.filter((user) => user.id !== userId)
+      // Update pagination total to keep UI consistent
+      if (pagination.value) {
+        pagination.value.totalItems = Math.max(0, pagination.value.totalItems - 1)
+      }
     } finally {
       appStore.setLoading(false)
     }
