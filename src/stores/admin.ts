@@ -72,6 +72,28 @@ export const useAdminStore = defineStore('admin', () => {
     }
   }
 
+  const toggleAdminStatus = async (adminId: string) => {
+    const appStore = useAppStore()
+    try {
+      appStore.setLoading(true)
+      const admin = admins.value.find((a) => a.id === adminId)
+      if (!admin) return
+
+      // Toggle status based on current status (1 = Active, 0 = Inactive)
+      const updatedAdmin = admin.status === Status.Active
+        ? await adminService.deactivateAdmin(adminId)
+        : await adminService.activateAdmin(adminId)
+
+      // Update admin in local state
+      const index = admins.value.findIndex((a) => a.id === adminId)
+      if (index !== -1) {
+        admins.value[index] = updatedAdmin
+      }
+    } finally {
+      appStore.setLoading(false)
+    }
+  }
+
   const clearState = () => {
     setCreatedAdmin(null)
   }
@@ -85,6 +107,7 @@ export const useAdminStore = defineStore('admin', () => {
     setCreatedAdmin,
     createAdmin,
     fetchAdmins,
+    toggleAdminStatus,
     clearState,
   }
 })

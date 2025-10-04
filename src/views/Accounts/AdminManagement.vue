@@ -142,7 +142,7 @@
                   <td class="px-5 py-4 sm:px-6">
                     <Badge :size="'sm'" :color="isAdminActive(admin) ? 'success' : 'error'">
                       {{ isAdminActive(admin) ? t('admins.values.status.active') :
-                      t('admins.values.status.inactive') }}
+                        t('admins.values.status.inactive') }}
                     </Badge>
                   </td>
 
@@ -400,7 +400,7 @@ const tableHandleDelete = async (admin: Admin) => {
 }
 
 const tableHandleToggleStatus = (admin: Admin) => {
-  handleToggleStatus(admin.id)
+  handleToggleStatus(admin)
 }
 
 // Event handlers
@@ -410,10 +410,22 @@ const handleDeleteAdmin = (_adminId: string) => {
   // This will call the backend to delete the admin and then update `adminStore.admins` accordingly.
 }
 
-const handleToggleStatus = (_adminId: string) => {
-  void _adminId
-  // TODO: Implement toggle status API call and update store
-  // This will call the backend to toggle the admin's active status and update `adminStore.admins`.
+const handleToggleStatus = async (admin: Admin) => {
+  const nextStatusText = isAdminActive(admin)
+    ? t('admins.values.status.inactive')
+    : t('admins.values.status.active')
+  try {
+    await adminStore.toggleAdminStatus(admin.id)
+    updateLastUpdated()
+    appStore.notifySuccess(
+      t('admins.notifications.statusUpdateSuccess.title'),
+      t('admins.notifications.statusUpdateSuccess.message', { email: admin.email, status: nextStatusText }),
+    )
+    console.log('Status toggled for admin:', admin.id)
+  } catch (err) {
+    console.error('Failed to toggle admin status:', err)
+    appStore.notifyError(t('admins.notifications.statusUpdateFailed.title'), t('admins.notifications.statusUpdateFailed.message'))
+  }
 }
 
 
