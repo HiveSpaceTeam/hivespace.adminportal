@@ -33,35 +33,43 @@
           </div>
 
           <!-- Loading State -->
-          <div v-if="loading" class="p-8 text-center">
+          <div v-if="appStore.isLoading" class="p-8 text-center">
             <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
             <p class="mt-2 text-gray-600 dark:text-gray-400">{{ $t('users.loading') }}</p>
           </div>
 
           <!-- Table -->
-          <div v-else class="max-w-full overflow-x-auto custom-scrollbar">
+          <div v-else class="max-w-full overflow-x-auto custom-scrollbar" style="min-height: 400px;">
             <table class="min-w-full">
               <thead>
                 <tr class="border-b border-gray-200 dark:border-gray-700">
                   <th class="px-5 py-3 text-left w-1/8 sm:px-6">
-                    <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
+                    <button @click="handleSort('username')"
+                      class="flex items-center gap-1 font-medium text-gray-500 text-theme-xs dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
                       {{ $t('users.username') }}
-                    </p>
+                      <component :is="getSortIcon('username')" v-if="getSortIcon('username')" class="w-4 h-4" />
+                    </button>
                   </th>
                   <th class="px-5 py-3 text-left w-1/8 sm:px-6">
-                    <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
+                    <button @click="handleSort('fullName')"
+                      class="flex items-center gap-1 font-medium text-gray-500 text-theme-xs dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
                       {{ $t('users.fullName') }}
-                    </p>
+                      <component :is="getSortIcon('fullName')" v-if="getSortIcon('fullName')" class="w-4 h-4" />
+                    </button>
                   </th>
                   <th class="px-5 py-3 text-left w-1/8 sm:px-6">
-                    <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
+                    <button @click="handleSort('email')"
+                      class="flex items-center gap-1 font-medium text-gray-500 text-theme-xs dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
                       {{ $t('users.email') }}
-                    </p>
+                      <component :is="getSortIcon('email')" v-if="getSortIcon('email')" class="w-4 h-4" />
+                    </button>
                   </th>
                   <th class="px-5 py-3 text-left w-1/8 sm:px-6">
-                    <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
+                    <button @click="handleSort('status')"
+                      class="flex items-center gap-1 font-medium text-gray-500 text-theme-xs dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
                       {{ $t('users.status') }}
-                    </p>
+                      <component :is="getSortIcon('status')" v-if="getSortIcon('status')" class="w-4 h-4" />
+                    </button>
                   </th>
                   <th class="px-5 py-3 text-center w-1/8 sm:px-6">
                     <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
@@ -69,14 +77,18 @@
                     </p>
                   </th>
                   <th class="px-5 py-3 text-left w-1/8 sm:px-6">
-                    <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
+                    <button @click="handleSort('createdAt')"
+                      class="flex items-center gap-1 font-medium text-gray-500 text-theme-xs dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
                       {{ $t('users.createdDate') }}
-                    </p>
+                      <component :is="getSortIcon('createdAt')" v-if="getSortIcon('createdAt')" class="w-4 h-4" />
+                    </button>
                   </th>
                   <th class="px-5 py-3 text-left w-1/8 sm:px-6">
-                    <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
+                    <button @click="handleSort('lastLoginAt')"
+                      class="flex items-center gap-1 font-medium text-gray-500 text-theme-xs dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
                       {{ $t('users.lastLoginDate') }}
-                    </p>
+                      <component :is="getSortIcon('lastLoginAt')" v-if="getSortIcon('lastLoginAt')" class="w-4 h-4" />
+                    </button>
                   </th>
                   <th class="px-5 py-3 text-center w-1/8 sm:px-6">
                     <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
@@ -85,7 +97,16 @@
                   </th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody style="min-height: 300px;">
+                <!-- Empty state row when no data -->
+                <tr v-if="filteredUsers.length === 0">
+                  <td colspan="8" class="px-5 py-12 text-center">
+                    <div class="text-gray-500 dark:text-gray-400">
+                      <p class="text-lg font-medium">{{ $t('users.noUsersFound') }}</p>
+                      <p class="text-sm mt-2">{{ $t('users.noUsersFoundDescription') }}</p>
+                    </div>
+                  </td>
+                </tr>
                 <tr v-for="user in filteredUsers" :key="user.id"
                   class="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-white/[0.05]">
                   <!-- Username -->
@@ -115,7 +136,7 @@
 
                   <!-- Status -->
                   <td class="px-5 py-4 sm:px-6">
-                    <Badge :size="'sm'" :color="user.status === 'Active' ? 'success' : 'error'">
+                    <Badge :size="'sm'" :color="isUserActive(user) ? 'success' : 'error'">
                       {{ user.displayStatus }}
                     </Badge>
                   </td>
@@ -129,13 +150,13 @@
 
                   <!-- Created Date (field: createdAt) -->
                   <td class="px-5 py-4 sm:px-6">
-                    <div class="text-sm text-gray-900 dark:text-white">{{ user.createdAt }}</div>
+                    <div class="text-sm text-gray-900 dark:text-white">{{ formatDate(user.createdAt) }}</div>
                   </td>
 
                   <!-- Last Login Date (field: lastLoginAt) -->
                   <td class="px-5 py-4 sm:px-6">
                     <div class="text-sm text-gray-900 dark:text-white">
-                      {{ user.lastLoginAt }}
+                      {{ formatDate(user.lastLoginAt) }}
                     </div>
                   </td>
                   <!-- Actions -->
@@ -146,17 +167,17 @@
                       </template>
 
                       <template #menu>
-                        <button @click="handleDelete(user)"
-                          class="flex items-center w-full px-3 py-2 text-sm text-red-700 hover:bg-gray-50 dark:text-red-400 dark:hover:bg-gray-600">
+                        <button @click="tableHandleDelete(user)"
+                          class="flex items-center w-full px-3 py-2 text-sm text-red-700 hover:bg-gray-50 focus:outline-none focus:ring-0 active:outline-none dark:text-red-400 dark:hover:bg-gray-600">
                           <TrashRedIcon />
                           {{ actionDelete }}
                         </button>
 
-                        <button @click="handleToggleStatus(user)"
-                          class="flex items-center w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-700">
-                          <ToggleOffIcon v-if="user.status === 'Active'" />
+                        <button @click="tableHandleToggleStatus(user)"
+                          class="flex items-center w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-0 active:outline-none dark:text-gray-300 dark:hover:bg-gray-700">
+                          <ToggleOffIcon v-if="isUserActive(user)" />
                           <ToggleOnIcon v-else />
-                          {{ user.status === 'Active' ? actionDeactivate : actionActivate }}
+                          {{ isUserActive(user) ? actionDeactivate : actionActivate }}
                         </button>
                       </template>
                     </DropdownMenu>
@@ -171,7 +192,10 @@
         <div class="mt-4">
           <div class="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400">
             <span>{{
-              $t('users.showingResults', { count: filteredUsersCount, total: users.length })
+              $t('users.showingResults', {
+                count: filteredUsersCount,
+                total: pagination?.totalItems ?? users.length
+              })
             }}</span>
             <span>{{ $t('users.lastUpdated') }} {{ lastUpdated }}</span>
           </div>
@@ -183,7 +207,7 @@
 
 <script setup lang="ts">
 defineOptions({ name: 'UserManagement' })
-import { computed, ref, onMounted } from 'vue'
+import { computed, ref, onMounted, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import PageBreadcrumb from '@/components/common/PageBreadcrumb.vue'
 import AdminLayout from '@/components/layout/AdminLayout.vue'
@@ -200,125 +224,125 @@ import {
   ToggleOnIcon,
   TrashRedIcon,
   HorizontalDots,
+  SortAscIcon,
+  SortDescIcon,
 } from '@/icons'
+import { useConfirmModal } from '@/composables/useConfirmModal'
+import { useAppStore } from '@/stores/app'
+import { useUserStore } from '@/stores/user'
+import type { GetUsersParams, User } from '@/types'
+import { RoleFilter, StatusFilter, Status } from '@/types'
+import useFormatDate from '@/composables/useFormatDate'
+import useDebounce from '@/composables/useDebounce'
+import { storeToRefs } from 'pinia'
 
 const { t } = useI18n()
+const appStore = useAppStore()
+const userStore = useUserStore()
 
 // Options for the filter selects (i18n-backed)
 const statusOptions = computed(() => [
-  { value: 'all', label: t('users.allStatus') },
-  { value: 'active', label: t('users.active') },
-  { value: 'inactive', label: t('users.inactive') },
+  { value: StatusFilter.All, label: t('users.allStatus') },
+  { value: StatusFilter.Inactive, label: t('users.inactive') },
+  { value: StatusFilter.Active, label: t('users.active') },
 ])
 
 const sellerOptions = computed(() => [
-  { value: 'all', label: t('users.allUsers') },
-  { value: 'seller', label: t('users.sellersOnly') },
-  { value: 'non-seller', label: t('users.nonSellers') },
+  { value: RoleFilter.All, label: t('users.allUsers') },
+  { value: RoleFilter.Seller, label: t('users.sellersOnly') },
+  { value: RoleFilter.Customer, label: t('users.nonSellers') },
 ])
 
 const currentPageTitle = computed(() => t('pages.userManagement'))
 
 // State management
-const loading = ref(false)
 const searchQuery = ref('')
-const statusFilter = ref('all')
-const sellerFilter = ref('all')
+const statusFilter = ref<StatusFilter>(StatusFilter.All)
+const sellerFilter = ref<RoleFilter>(RoleFilter.All)
 const lastUpdated = ref('')
 
-// Sample users data - in real app this would come from API
-const users = ref([
-  {
-    id: 1,
-    username: 'johndoe',
-    fullName: 'John Doe',
-    email: 'john.doe@example.com',
-    hasSeller: true,
-    status: 'Active',
-    createdAt: '2024-01-15',
-    lastLoginAt: '2024-03-20',
-    avatar: '/images/user/user-01.jpg',
-  },
-  {
-    id: 2,
-    username: 'janesmith',
-    fullName: 'Jane Smith',
-    email: 'jane.smith@example.com',
-    hasSeller: false,
-    status: 'Active',
-    createdAt: '2024-02-03',
-    lastLoginAt: '2024-03-19',
-    avatar: '/images/user/user-02.jpg',
-  },
-  {
-    id: 3,
-    username: 'mikebrown',
-    fullName: 'Mike Brown',
-    email: 'mike.brown@example.com',
-    hasSeller: true,
-    status: 'Inactive',
-    createdAt: '2023-12-10',
-    lastLoginAt: '2024-02-28',
-    avatar: '/images/user/user-03.jpg',
-  },
-  {
-    id: 4,
-    username: 'sarahwilson',
-    fullName: 'Sarah Wilson',
-    email: 'sarah.wilson@example.com',
-    hasSeller: true,
-    status: 'Active',
-    createdAt: '2024-01-28',
-    lastLoginAt: '2024-03-21',
-    avatar: '/images/user/user-04.jpg',
-  },
-  {
-    id: 5,
-    username: 'davidlee',
-    fullName: 'David Lee',
-    email: 'david.lee@example.com',
-    hasSeller: false,
-    status: 'Active',
-    createdAt: '2024-02-14',
-    lastLoginAt: '2024-03-18',
-    avatar: '/images/user/user-05.jpg',
-  },
-])
+// Sorting state
+const currentSort = ref<string | null>(null)
+const sortDirection = ref<'asc' | 'desc' | null>(null)
 
-// Computed properties
+// Global modal handlers
+const { deleteConfirm } = useConfirmModal()
+
+const params = ref<Partial<GetUsersParams>>({ page: 1, pageSize: 10 })
+
+// Users list from the store with proper reactivity
+const { users, pagination } = storeToRefs(userStore)
+
+// Load users from server using current filters
+const { formatDate } = useFormatDate()
+const { debounce } = useDebounce()
+
+const loadUsers = async (paramsOverride?: Partial<GetUsersParams>) => {
+  try {
+    // Merge overrides into local params
+    if (paramsOverride) params.value = { ...(params.value || {}), ...paramsOverride }
+
+    const mapped: GetUsersParams = {
+      page: params.value?.page ?? 1,
+      pageSize: params.value?.pageSize ?? 10,
+      status: statusFilter.value,
+      role: sellerFilter.value,
+      searchTerm: (params.value?.searchTerm ?? searchQuery.value) || undefined,
+      sort: params.value?.sort ?? getSortParam(),
+    }
+
+    await userStore.fetchUsers(mapped)
+  } catch (err) {
+    console.error('Failed to load users:', err)
+    appStore.notifyError(t('users.notifications.loadFailed.title'), t('users.notifications.loadFailed.message'))
+  }
+}
+
+// Map users to display format with i18n values
 const filteredUsers = computed(() => {
-  let filtered = users.value
-
-  if (searchQuery.value) {
-    const query = searchQuery.value.toLowerCase()
-    filtered = filtered.filter(
-      (user) =>
-        user.username.toLowerCase().includes(query) ||
-        user.fullName.toLowerCase().includes(query) ||
-        user.email.toLowerCase().includes(query),
-    )
-  }
-
-  if (statusFilter.value !== 'all') {
-    const status = statusFilter.value === 'active' ? 'Active' : 'Inactive'
-    filtered = filtered.filter((user) => user.status === status)
-  }
-
-  if (sellerFilter.value !== 'all') {
-    const isSeller = sellerFilter.value === 'seller'
-    filtered = filtered.filter((user) => user.hasSeller === isSeller)
-  }
-
-  // Map to display format with i18n values
-  return filtered.map((user) => ({
+  return users.value.map((user: User) => ({
     ...user,
-    displayStatus: user.status === 'Active'
+    displayStatus: user.status === Status.Active
       ? t('users.values.status.active')
       : t('users.values.status.inactive'),
+    hasSeller: user.isSeller, // Map API field to UI field
+    avatar: user.avatarUrl || '/images/user/default-avatar.jpg',
   }))
 })
 
 const filteredUsersCount = computed(() => filteredUsers.value.length)
+
+// Sorting functions
+const handleSort = (field: string) => {
+  if (currentSort.value === field) {
+    // Same field: cycle through asc -> desc -> none
+    if (sortDirection.value === 'asc') {
+      sortDirection.value = 'desc'
+    } else if (sortDirection.value === 'desc') {
+      currentSort.value = null
+      sortDirection.value = null
+    } else {
+      sortDirection.value = 'asc'
+    }
+  } else {
+    // Different field: start with asc
+    currentSort.value = field
+    sortDirection.value = 'asc'
+  }
+
+  // Trigger refresh with new sort params
+  loadUsers({ page: 1 })
+}
+
+const getSortIcon = (field: string) => {
+  if (currentSort.value !== field) return null
+  return sortDirection.value === 'asc' ? SortAscIcon : SortDescIcon
+}
+
+const getSortParam = () => {
+  if (!currentSort.value || !sortDirection.value) return undefined
+  return `${currentSort.value}.${sortDirection.value}`
+}
 
 // Event handlers
 // Dropdown menu component used per-row (handled in template)
@@ -327,69 +351,92 @@ const actionDelete = computed(() => t('common.actions.delete'))
 const actionActivate = computed(() => t('common.actions.activate'))
 const actionDeactivate = computed(() => t('common.actions.deactivate'))
 
-// Accept either an id (number) or a user object { id }
-const handleDeleteUser = (userOrId: number | { id: number }) => {
-  const userId = typeof userOrId === 'number' ? userOrId : userOrId.id
-  loading.value = true
-  // Simulate API call
-  setTimeout(() => {
-    users.value = users.value.filter((user) => user.id !== userId)
-    loading.value = false
+// Accept either an id (string) or a user object { id }
+const handleDeleteUser = async (userOrId: string | { id: string }) => {
+  const userId = typeof userOrId === 'string' ? userOrId : userOrId.id
+  try {
+    await userStore.deleteUser(userId)
     updateLastUpdated()
     console.log('User deleted:', userId)
-  }, 500)
+  } catch (err) {
+    console.error('Failed to delete user:', err)
+    appStore.notifyError(t('users.notifications.deleteFailed.title'), t('users.notifications.deleteFailed.message'))
+  }
 }
 
-const handleToggleStatus = (userOrId: number | { id: number }) => {
-  const userId = typeof userOrId === 'number' ? userOrId : userOrId.id
-  loading.value = true
-  // Simulate API call
-  setTimeout(() => {
-    const user = users.value.find((u) => u.id === userId)
-    if (user) {
-      user.status = user.status === 'Active' ? 'Inactive' : 'Active'
-    }
-    loading.value = false
+const handleToggleStatus = async (user: User) => {
+  const nextStatusText = isUserActive(user)
+    ? t('users.values.status.inactive')
+    : t('users.values.status.active')
+  try {
+    await userStore.toggleUserStatus(user.id)
     updateLastUpdated()
-    console.log('Status toggled for user:', userId)
-  }, 500)
+    appStore.notifySuccess(
+      t('users.notifications.statusUpdateSuccess.title'),
+      t('users.notifications.statusUpdateSuccess.message', { email: user.email, status: nextStatusText }),
+    )
+    console.log('Status toggled for user:', user.id)
+  } catch (err) {
+    console.error('Failed to toggle user status:', err)
+    appStore.notifyError(t('users.notifications.statusUpdateFailed.title'), t('users.notifications.statusUpdateFailed.message'))
+  }
 }
 
-const handleSearch = (query: string) => {
-  searchQuery.value = query
-  console.log('Search query:', query)
+// Debounced search input handler will call loadUsers (via composable)
+const handleSearchInput = (event: Event) => {
+  const target = event.target as HTMLInputElement
+  searchQuery.value = target.value
+  // keep the search term in params and trigger a debounced load
+  params.value.searchTerm = searchQuery.value
+  debounce('users-search', () => void loadUsers({ page: 1 }), 400)
 }
 
-function handleSearchInput(e: Event) {
-  const v = (e.target as HTMLInputElement).value
-  searchQuery.value = v
-  handleSearch(v)
-}
+// Watch filters and reload when they change
+watch(statusFilter, () => {
+  loadUsers({ page: 1 })
+})
+watch(sellerFilter, () => {
+  loadUsers({ page: 1 })
+})
 
-// Filters are bound via v-model on Select; no manual handlers required here.
-
-const refreshUsers = () => {
-  loading.value = true
-  // Simulate API refresh
-  setTimeout(() => {
-    loading.value = false
-    updateLastUpdated()
-    console.log('Users refreshed')
-  }, 1000)
+const refreshUsers = async () => {
+  await loadUsers()
+  updateLastUpdated()
+  console.log('Users refreshed')
 }
 
 const updateLastUpdated = () => {
   lastUpdated.value = new Date().toLocaleString()
 }
 
+// Helper to centralize active-status checks
+const isUserActive = (user: User) => {
+  return user?.status === Status.Active
+}
+
+const tableHandleDelete = async (user: User) => {
+  const confirmed = await deleteConfirm(
+    t('users.actions.deleteUser.title'),
+    t('users.actions.deleteUser.message', { email: user.email }),
+  )
+
+  if (confirmed) {
+    handleDeleteUser(user.id)
+  }
+}
+
+const tableHandleToggleStatus = (user: User) => {
+  handleToggleStatus(user)
+}
+
 // Lifecycle
-onMounted(() => {
+onMounted(async () => {
   updateLastUpdated()
+
+  // Initial load using current filters
+  await loadUsers({ page: 1 })
+
   console.log('UserManagement component mounted')
 })
 
-// small template-facing wrappers
-function handleDelete(user: { id: number }) {
-  handleDeleteUser(user)
-}
 </script>

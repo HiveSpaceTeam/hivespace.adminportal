@@ -1,4 +1,5 @@
 import type {
+  Admin,
   CreateAdminRequest,
   CreateAdminResponse,
   GetAdminsParams,
@@ -28,6 +29,22 @@ class AdminService {
   async getAdmins(params?: GetAdminsParams): Promise<GetAdminsResponse> {
     const url = buildApiUrl(ADMIN_ENDPOINTS.ADMINS)
     return await apiService.get<GetAdminsResponse>(url, { params })
+  }
+
+  /**
+   * Activate an admin user
+   */
+  async activateAdmin(adminId: string): Promise<Admin> {
+    const url = buildApiUrl(`${ADMIN_ENDPOINTS.ADMINS}/users/${adminId}/activate`)
+    return await apiService.post<Admin>(url)
+  }
+
+  /**
+   * Deactivate an admin user
+   */
+  async deactivateAdmin(adminId: string): Promise<Admin> {
+    const url = buildApiUrl(`${ADMIN_ENDPOINTS.ADMINS}/users/${adminId}/deactivate`)
+    return await apiService.post<Admin>(url)
   }
 }
 

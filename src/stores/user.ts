@@ -1,121 +1,89 @@
-import type { UserData, UserListParams } from '@/services/user.service'
+import { type User, type GetUsersParams, type Pagination, Status } from '@/types'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
+import { userService } from '@/services/user.service'
+import { useAppStore } from './app'
 
 export const useUserStore = defineStore('user', () => {
   // State
-  const users = ref<UserData[]>([])
-  const isLoading = ref(false)
-  const error = ref<string | null>(null)
+  const users = ref<User[]>([])
+  const pagination = ref<Pagination | null>(null)
 
-  // Actions
-  function setLoading(loading: boolean) {
-    isLoading.value = loading
+  const setUsers = (data: User[]) => {
+    users.value = data
   }
 
-  function setError(errorMessage: string | null) {
-    error.value = errorMessage
-  }
-
-  function setUsers(userList: UserData[]) {
-    users.value = userList
-  }
-
-  function removeUser(userId: string) {
-    const index = users.value.findIndex((user) => user.id === userId)
-    if (index !== -1) {
-      users.value.splice(index, 1)
-    }
-  }
-
-  function updateUserInList(updatedUser: UserData) {
-    const index = users.value.findIndex((user) => user.id === updatedUser.id)
-    if (index !== -1) {
-      users.value[index] = updatedUser
-    }
-  }
-
-  async function fetchUsers(params?: UserListParams) {
-    setLoading(true)
-    setError(null)
+  /**
+   * Fetch paginated user list from backend and update state
+   */
+  const fetchUsers = async (params?: GetUsersParams) => {
+    const appStore = useAppStore()
     try {
-      const { userService } = await import('@/services/user.service')
+      appStore.setLoading(true)
       const response = await userService.getUsers(params)
-      setUsers(response.users)
+      // Response contains API-shaped User objects; store them directly
+      const apiUsers = response?.users || []
+      users.value = apiUsers as User[]
+
+      pagination.value = response?.pagination || null
       return response
-    } catch (error) {
-      console.error('Error fetching users:', error)
-      setError('Failed to fetch users')
-      throw error
     } finally {
-      setLoading(false)
+      appStore.setLoading(false)
     }
   }
 
-  async function deleteUser(userId: string) {
-    setLoading(true)
-    setError(null)
+  const deleteUser = async (userId: string) => {
+    const appStore = useAppStore()
     try {
-      const { userService } = await import('@/services/user.service')
+      appStore.setLoading(true)
       await userService.deleteUser(userId)
-      removeUser(userId)
-    } catch (error) {
-      console.error('Error deleting user:', error)
-      setError('Failed to delete user')
-      throw error
+      // Remove user from local state
+      users.value = users.value.filter((user) => user.id !== userId)
+      // Update pagination total to keep UI consistent
+      if (pagination.value) {
+        pagination.value.totalItems = Math.max(0, pagination.value.totalItems - 1)
+      }
     } finally {
-      setLoading(false)
+      appStore.setLoading(false)
     }
   }
 
-  async function activateUser(userId: string) {
-    setLoading(true)
-    setError(null)
+  const toggleUserStatus = async (userId: string) => {
+    const appStore = useAppStore()
     try {
-      const { userService } = await import('@/services/user.service')
-      const updatedUser = await userService.activateUser(userId)
-      updateUserInList(updatedUser)
-      return updatedUser
-    } catch (error) {
-      console.error('Error activating user:', error)
-      setError('Failed to activate user')
-      throw error
+      appStore.setLoading(true)
+      const user = users.value.find((u) => u.id === userId)
+      if (!user) return
+
+      // Toggle status based on current status (1 = Active, 0 = Inactive)
+      const updatedUser = user.status === Status.Active
+        ? await userService.deactivateUser(userId)
+        : await userService.activateUser(userId)
+
+      // Update user in local state
+      const index = users.value.findIndex((u) => u.id === userId)
+      if (index !== -1) {
+        users.value[index] = updatedUser
+      }
     } finally {
-      setLoading(false)
+      appStore.setLoading(false)
     }
   }
 
-  async function deactivateUser(userId: string) {
-    setLoading(true)
-    setError(null)
-    try {
-      const { userService } = await import('@/services/user.service')
-      const updatedUser = await userService.deactivateUser(userId)
-      updateUserInList(updatedUser)
-      return updatedUser
-    } catch (error) {
-      console.error('Error deactivating user:', error)
-      setError('Failed to deactivate user')
-      throw error
-    } finally {
-      setLoading(false)
-    }
+  const clearState = () => {
+    setUsers([])
+    pagination.value = null
   }
 
   return {
     // State
     users,
-    isLoading,
-    error,
+    pagination,
     // Actions
-    setLoading,
-    setError,
     setUsers,
-    removeUser,
-    updateUserInList,
     fetchUsers,
     deleteUser,
-    activateUser,
-    deactivateUser,
+    toggleUserStatus,
+    clearState,
   }
 })
