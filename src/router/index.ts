@@ -1,4 +1,4 @@
-import { getCurrentUser, login } from '@/auth/user-manager'
+import { getCurrentUser, login, logout } from '@/auth/user-manager'
 import { createRouter, createWebHistory } from 'vue-router'
 import demoRoutes from './demoRoutes'
 
@@ -32,7 +32,7 @@ const mainRoutes = [
     path: '/',
     name: 'Default',
     component: () => import('@/views/Default.vue'),
-    meta: { title: 'HiveSpace - Admin Portal' },
+    meta: { title: 'HiveSpace - Admin Portal', allowAnonymous: true },
   },
   ...demoRoutes,
   {
@@ -49,7 +49,6 @@ const router = createRouter({
     return savedPosition || { left: 0, top: 0 }
   },
   routes: [
-    ...mainRoutes,
     {
       path: '/account',
       children: [
@@ -70,7 +69,8 @@ const router = createRouter({
           meta: { title: 'Admin management' },
         },
       ],
-    }
+    },
+    ...mainRoutes,
   ],
 })
 
@@ -90,7 +90,7 @@ router.beforeEach(async (to, from, next) => {
   // Allow access if the user is an admin OR a system admin.
   // Redirect to login when the user is neither.
   if (!user.isAdmin() && !user.isSystemAdmin()) {
-    login()
+    await logout()
     return next(false)
   }
 

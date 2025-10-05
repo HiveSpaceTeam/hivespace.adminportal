@@ -15,9 +15,6 @@
       <Button :disabled="isSigningIn" @click="signIn" variant="primary">
         {{ t('pages.default.signIn') }}
       </Button>
-      <Button class="ml-4" @click="signIn" variant="outline">
-        {{ t('pages.default.signUp') }}
-      </Button>
     </div>
 
     <p class="absolute text-sm text-center text-gray-500 -translate-x-1/2 bottom-6 left-1/2 dark:text-gray-400"> © 2025
