@@ -13,7 +13,7 @@ const router = useRouter();
 onMounted(async () => {
   try {
     const result = await handleLoginCallback();
-    let returnToUrl = '/';
+    let returnToUrl = '/account/user-management';
     if (result.state !== undefined) {
       returnToUrl = result.state;
     }
