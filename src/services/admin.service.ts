@@ -1,9 +1,10 @@
-import type {
-  Admin,
-  CreateAdminRequest,
-  CreateAdminResponse,
-  GetAdminsParams,
-  GetAdminsResponse,
+import {
+  UserType,
+  type Admin,
+  type CreateAdminRequest,
+  type CreateAdminResponse,
+  type GetAdminsParams,
+  type GetAdminsResponse,
 } from '@/types'
 import { apiService } from './api'
 import { buildApiUrl } from '@/config'
@@ -32,19 +33,11 @@ class AdminService {
   }
 
   /**
-   * Activate an admin user
+   * Activate/Deactivate an admin user
    */
-  async activateAdmin(adminId: string): Promise<Admin> {
-    const url = buildApiUrl(`${ADMIN_ENDPOINTS.ADMINS}/users/${adminId}/activate`)
-    return await apiService.post<Admin>(url)
-  }
-
-  /**
-   * Deactivate an admin user
-   */
-  async deactivateAdmin(adminId: string): Promise<Admin> {
-    const url = buildApiUrl(`${ADMIN_ENDPOINTS.ADMINS}/users/${adminId}/deactivate`)
-    return await apiService.post<Admin>(url)
+  async updateAdminStatus(userId: string, isActive: boolean): Promise<Admin> {
+    const url = buildApiUrl(`${ADMIN_ENDPOINTS.ADMINS}/users/status`)
+    return await apiService.put<Admin>(url, { userId, isActive, responseType: UserType.Admin })
   }
 }
 

@@ -29,5 +29,3 @@ export interface GetUsersResponse {
   pagination: Pagination
 }
 
-// Legacy interface for backward compatibility
-export interface UserData extends User { }

@@ -84,3 +84,29 @@ export interface UploadProgress {
   total: number
   percentage: number
 }
+
+
+export enum Status {
+  Inactive = 0,
+  Active = 1,
+}
+
+export enum StatusFilter {
+  All = -1,
+  Inactive = 0,
+  Active = 1,
+}
+
+// Role filter enum matching backend role definitions
+export enum RoleFilter {
+  All = -1,
+  Customer = 0,
+  Seller = 1,
+  RegularAdmin = 2,
+  SystemAdmin = 3,
+}
+
+export enum UserType {
+  User = 1,
+  Admin = 2,
+}

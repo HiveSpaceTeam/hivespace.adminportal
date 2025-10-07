@@ -1,5 +1,5 @@
 
-import type { Pagination } from '@/types'
+import type { Pagination, Status } from '@/types'
 export interface CreateAdminRequest {
   fullName: string
   email: string
@@ -18,26 +18,6 @@ export interface CreateAdminResponse {
   lastLoginAt?: string
   updatedAt?: string
   avatarUrl?: string
-}
-
-export enum Status {
-  Inactive = 0,
-  Active = 1,
-}
-
-export enum StatusFilter {
-  All = -1,
-  Inactive = 0,
-  Active = 1,
-}
-
-// Role filter enum matching backend role definitions
-export enum RoleFilter {
-  All = -1,
-  Customer = 0,
-  Seller = 1,
-  RegularAdmin = 2,
-  SystemAdmin = 3,
 }
 
 export interface Admin {
