@@ -56,9 +56,7 @@ export const useUserStore = defineStore('user', () => {
       if (!user) return
 
       // Toggle status based on current status (1 = Active, 0 = Inactive)
-      const updatedUser = user.status === Status.Active
-        ? await userService.deactivateUser(userId)
-        : await userService.activateUser(userId)
+      const updatedUser = await userService.updateUserStatus(userId, !(user.status === Status.Active))
 
       // Update user in local state
       const index = users.value.findIndex((u) => u.id === userId)

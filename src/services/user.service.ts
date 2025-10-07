@@ -1,7 +1,8 @@
-import type {
-  GetUsersParams,
-  GetUsersResponse,
-  UserData,
+import {
+  UserType,
+  type GetUsersParams,
+  type GetUsersResponse,
+  type User,
 } from '@/types'
 import { apiService } from './api'
 import { buildApiUrl } from '@/config'
@@ -30,19 +31,11 @@ class UserService {
   }
 
   /**
-   * Activate a user
+   * Activate/Deactivate an user
    */
-  async activateUser(userId: string): Promise<UserData> {
-    const url = buildApiUrl(`${USER_ENDPOINTS.USERS}/${userId}/activate`)
-    return await apiService.post<UserData>(url)
-  }
-
-  /**
-   * Deactivate a user
-   */
-  async deactivateUser(userId: string): Promise<UserData> {
-    const url = buildApiUrl(`${USER_ENDPOINTS.USERS}/${userId}/deactivate`)
-    return await apiService.post<UserData>(url)
+  async updateUserStatus(userId: string, isActive: boolean): Promise<User> {
+    const url = buildApiUrl(`${USER_ENDPOINTS.USERS}/status`)
+    return await apiService.put<User>(url, { userId, isActive, responseType: UserType.User })
   }
 }
 
