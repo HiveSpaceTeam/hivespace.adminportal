@@ -31,7 +31,7 @@ class UserService {
   }
 
   /**
-   * Activate/Deactivate an admin user
+   * Activate/Deactivate an user
    */
   async updateUserStatus(userId: string, isActive: boolean): Promise<User> {
     const url = buildApiUrl(`${USER_ENDPOINTS.USERS}/status`)
