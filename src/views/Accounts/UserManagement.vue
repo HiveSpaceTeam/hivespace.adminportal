@@ -357,6 +357,10 @@ const handleDeleteUser = async (userOrId: string | { id: string }) => {
   try {
     await userStore.deleteUser(userId)
     updateLastUpdated()
+    appStore.notifySuccess(
+      t('users.notifications.deleteSuccess.title'),
+      t('users.notifications.deleteSuccess.message')
+    )
     console.log('User deleted:', userId)
   } catch (err) {
     console.error('Failed to delete user:', err)

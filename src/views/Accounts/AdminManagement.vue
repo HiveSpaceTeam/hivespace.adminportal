@@ -404,10 +404,19 @@ const tableHandleToggleStatus = (admin: Admin) => {
 }
 
 // Event handlers
-const handleDeleteAdmin = (_adminId: string) => {
-  void _adminId
-  // TODO: Implement delete admin API call and update store
-  // This will call the backend to delete the admin and then update `adminStore.admins` accordingly.
+const handleDeleteAdmin = async (adminId: string) => {
+  try {
+    await adminStore.deleteUser(adminId)
+    updateLastUpdated()
+    appStore.notifySuccess(
+      t('admins.notifications.deleteSuccess.title'),
+      t('admins.notifications.deleteSuccess.message')
+    )
+    console.log('Admin deleted:', adminId)
+  } catch (err) {
+    console.error('Failed to delete admin:', err)
+    appStore.notifyError(t('admins.notifications.deleteFailed.title'), t('admins.notifications.deleteFailed.message'))
+  }
 }
 
 const handleToggleStatus = async (admin: Admin) => {

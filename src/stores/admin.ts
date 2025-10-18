@@ -92,6 +92,22 @@ export const useAdminStore = defineStore('admin', () => {
     }
   }
 
+  const deleteUser = async (userId: string) => {
+    const appStore = useAppStore()
+    try {
+      appStore.setLoading(true)
+      await adminService.deleteUser(userId)
+
+      // Remove user from local state
+      const index = admins.value.findIndex((a) => a.id === userId)
+      if (index !== -1) {
+        admins.value.splice(index, 1)
+      }
+    } finally {
+      appStore.setLoading(false)
+    }
+  }
+
   const clearState = () => {
     setCreatedAdmin(null)
   }
@@ -106,6 +122,7 @@ export const useAdminStore = defineStore('admin', () => {
     createAdmin,
     fetchAdmins,
     toggleAdminStatus,
+    deleteUser,
     clearState,
   }
 })
