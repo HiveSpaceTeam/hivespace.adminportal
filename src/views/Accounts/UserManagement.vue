@@ -47,28 +47,28 @@
                     <button @click="handleSort('username')"
                       class="flex items-center gap-1 font-medium text-gray-500 text-theme-xs dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
                       {{ $t('users.username') }}
-                      <component :is="getSortIcon('username')" v-if="getSortIcon('username')" class="w-4 h-4" />
+                      <component :is="getSortIcon('username')" class="w-4 h-4 text-gray-500" />
                     </button>
                   </th>
                   <th class="px-5 py-3 text-left w-1/8 sm:px-6">
                     <button @click="handleSort('fullName')"
                       class="flex items-center gap-1 font-medium text-gray-500 text-theme-xs dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
                       {{ $t('users.fullName') }}
-                      <component :is="getSortIcon('fullName')" v-if="getSortIcon('fullName')" class="w-4 h-4" />
+                      <component :is="getSortIcon('fullName')" class="w-4 h-4 text-gray-500" />
                     </button>
                   </th>
                   <th class="px-5 py-3 text-left w-1/8 sm:px-6">
                     <button @click="handleSort('email')"
                       class="flex items-center gap-1 font-medium text-gray-500 text-theme-xs dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
                       {{ $t('users.email') }}
-                      <component :is="getSortIcon('email')" v-if="getSortIcon('email')" class="w-4 h-4" />
+                      <component :is="getSortIcon('email')" class="w-4 h-4 text-gray-500" />
                     </button>
                   </th>
                   <th class="px-5 py-3 text-left w-1/8 sm:px-6">
                     <button @click="handleSort('status')"
                       class="flex items-center gap-1 font-medium text-gray-500 text-theme-xs dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
                       {{ $t('users.status') }}
-                      <component :is="getSortIcon('status')" v-if="getSortIcon('status')" class="w-4 h-4" />
+                      <component :is="getSortIcon('status')" class="w-4 h-4 text-gray-500" />
                     </button>
                   </th>
                   <th class="px-5 py-3 text-center w-1/8 sm:px-6">
@@ -80,14 +80,14 @@
                     <button @click="handleSort('createdAt')"
                       class="flex items-center gap-1 font-medium text-gray-500 text-theme-xs dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
                       {{ $t('users.createdDate') }}
-                      <component :is="getSortIcon('createdAt')" v-if="getSortIcon('createdAt')" class="w-4 h-4" />
+                      <component :is="getSortIcon('createdAt')" class="w-4 h-4 text-gray-500" />
                     </button>
                   </th>
                   <th class="px-5 py-3 text-left w-1/8 sm:px-6">
                     <button @click="handleSort('lastLoginAt')"
                       class="flex items-center gap-1 font-medium text-gray-500 text-theme-xs dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
                       {{ $t('users.lastLoginDate') }}
-                      <component :is="getSortIcon('lastLoginAt')" v-if="getSortIcon('lastLoginAt')" class="w-4 h-4" />
+                      <component :is="getSortIcon('lastLoginAt')" class="w-4 h-4 text-gray-500" />
                     </button>
                   </th>
                   <th class="px-5 py-3 text-center w-1/8 sm:px-6">
@@ -226,6 +226,7 @@ import {
   HorizontalDots,
   SortAscIcon,
   SortDescIcon,
+  SortIcon,
 } from '@/icons'
 import { useConfirmModal } from '@/composables/useConfirmModal'
 import { useAppStore } from '@/stores/app'
@@ -335,7 +336,7 @@ const handleSort = (field: string) => {
 }
 
 const getSortIcon = (field: string) => {
-  if (currentSort.value !== field) return null
+  if (currentSort.value !== field) return SortIcon
   return sortDirection.value === 'asc' ? SortAscIcon : SortDescIcon
 }
 

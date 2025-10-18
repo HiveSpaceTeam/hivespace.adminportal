@@ -55,21 +55,21 @@
                     <button @click="handleSort('email')"
                       class="flex items-center gap-1 font-medium text-gray-500 text-theme-xs dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
                       {{ $t('admins.emailAddress') }}
-                      <component :is="getSortIcon('email')" v-if="getSortIcon('email')" class="w-4 h-4" />
+                      <component :is="getSortIcon('email')" class="w-4 h-4 text-gray-500" />
                     </button>
                   </th>
                   <th class="px-5 py-3 text-left w-1/8 sm:px-6">
                     <button @click="handleSort('fullName')"
                       class="flex items-center gap-1 font-medium text-gray-500 text-theme-xs dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
                       {{ $t('admins.fullName') }}
-                      <component :is="getSortIcon('fullName')" v-if="getSortIcon('fullName')" class="w-4 h-4" />
+                      <component :is="getSortIcon('fullName')" class="w-4 h-4 text-gray-500" />
                     </button>
                   </th>
                   <th class="px-5 py-3 text-left w-1/8 sm:px-6">
                     <button @click="handleSort('status')"
                       class="flex items-center gap-1 font-medium text-gray-500 text-theme-xs dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
                       {{ $t('admins.status') }}
-                      <component :is="getSortIcon('status')" v-if="getSortIcon('status')" class="w-4 h-4" />
+                      <component :is="getSortIcon('status')" class="w-4 h-4 text-gray-500" />
                     </button>
                   </th>
                   <th class="px-5 py-3 text-center w-1/8 sm:px-6" v-if="currentUser?.isSystemAdmin()">
@@ -81,21 +81,21 @@
                     <button @click="handleSort('createdAt')"
                       class="flex items-center gap-1 font-medium text-gray-500 text-theme-xs dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
                       {{ $t('admins.createdDate') }}
-                      <component :is="getSortIcon('createdAt')" v-if="getSortIcon('createdAt')" class="w-4 h-4" />
+                      <component :is="getSortIcon('createdAt')" class="w-4 h-4 text-gray-500" />
                     </button>
                   </th>
                   <th class="px-5 py-3 text-left w-1/8 sm:px-6">
                     <button @click="handleSort('lastLoginAt')"
                       class="flex items-center gap-1 font-medium text-gray-500 text-theme-xs dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
                       {{ $t('admins.lastLoginDate') }}
-                      <component :is="getSortIcon('lastLoginAt')" v-if="getSortIcon('lastLoginAt')" class="w-4 h-4" />
+                      <component :is="getSortIcon('lastLoginAt')" class="w-4 h-4 text-gray-500" />
                     </button>
                   </th>
                   <th class="px-5 py-3 text-left w-1/8 sm:px-6">
                     <button @click="handleSort('updatedAt')"
                       class="flex items-center gap-1 font-medium text-gray-500 text-theme-xs dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
                       {{ $t('admins.lastUpdatedDate') }}
-                      <component :is="getSortIcon('updatedAt')" v-if="getSortIcon('updatedAt')" class="w-4 h-4" />
+                      <component :is="getSortIcon('updatedAt')" class="w-4 h-4 text-gray-500" />
                     </button>
                   </th>
                   <th class="px-5 py-3 text-center w-1/8 sm:px-6">
@@ -211,7 +211,7 @@
           <div class="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400">
             <span>{{
               $t('admins.showingResults', { count: filteredAdminsCount, total: admins.length })
-              }}</span>
+            }}</span>
             <span>{{ $t('admins.lastUpdated') }} {{ lastUpdated }}</span>
           </div>
         </div>
@@ -252,6 +252,7 @@ import {
   RefreshIcon,
   SortAscIcon,
   SortDescIcon,
+  SortIcon,
 } from '@/icons'
 import { getCurrentUser } from '@/auth/user-manager'
 import type { AppUser } from '@/types/app-user'
@@ -317,7 +318,7 @@ const handleSort = (field: string) => {
 }
 
 const getSortIcon = (field: string) => {
-  if (currentSort.value !== field) return null
+  if (currentSort.value !== field) return SortIcon
   return sortDirection.value === 'asc' ? SortAscIcon : SortDescIcon
 }
 
