@@ -1,35 +1,28 @@
-# .github/workflows/ci-pipeline.yml
-
 name: AdminPortal CI/CD Pipeline
 
 on:
   push:
     branches:
-      - main # Chạy workflow khi có push lên nhánh main
-      - develop # Hoặc nhánh phát triển khác của bạn
+      - master
   pull_request:
     branches:
-      - main
-      - develop
+      - master
 
 jobs:
   build_and_test:
-    runs-on: ubuntu-latest # Môi trường chạy job
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4 # Clone mã nguồn từ repository
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20' # Sử dụng Node.js phiên bản 20
+          node-version: '20'
 
       - name: Install dependencies
-        run: npm ci # Cài đặt các gói phụ thuộc một cách sạch sẽ (từ package-lock.json)
+        run: npm ci
 
       - name: Build Vue.js app
-        run: npm run build # Chạy lệnh build của dự án Vue.js
-
-
-      # Các bước kiểm thử (test, lint) sẽ được thêm vào sau
+        run: npm run build
