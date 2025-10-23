@@ -39,6 +39,14 @@ class AdminService {
     const url = buildApiUrl(`${ADMIN_ENDPOINTS.ADMINS}/users/status`)
     return await apiService.put<Admin>(url, { userId, isActive, responseType: UserType.Admin })
   }
+
+  /**
+   * Delete an admin user (soft delete)
+   */
+  async deleteUser(userId: string): Promise<void> {
+    const url = buildApiUrl(`${ADMIN_ENDPOINTS.ADMINS}/users/${userId}`)
+    await apiService.delete(url)
+  }
 }
 
 // Create and export the admin service instance

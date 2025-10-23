@@ -23,11 +23,11 @@ class UserService {
   }
 
   /**
-   * Delete a user
+   * Delete a user (soft delete)
    */
   async deleteUser(userId: string): Promise<void> {
     const url = buildApiUrl(`${USER_ENDPOINTS.USERS}/${userId}`)
-    return await apiService.delete(url)
+    await apiService.delete(url)
   }
 
   /**
