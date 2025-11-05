@@ -13,6 +13,9 @@ export * from './admin.types'
 // User types
 export * from './user.types'
 
+// User settings types
+export * from './user-settings.types'
+
 // API common types (kept under api for backend contracts)
 export * from './common.types'
 

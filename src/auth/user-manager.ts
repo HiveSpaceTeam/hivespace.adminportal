@@ -1,6 +1,8 @@
 import { User, UserManager, WebStorageStateStore } from 'oidc-client-ts'
 import type { AppUser } from '@/types/app-user'
 import { toAppUser } from '@/types/app-user'
+import type { CultureText } from '@/types'
+import { CULTURE_TEXT } from '@/types'
 import { config } from '@/config'
 
 const oidcSettings = {
@@ -62,12 +64,12 @@ export const getCurrentUser = async (): Promise<AppUser | null> => {
 
 // Ensure we push a safe in-app history entry before navigating to the IdP.
 // This prevents the browser Back button from landing on the IdP URL or error pages.
-export const login = (): Promise<void> => {
+export const login = async (): Promise<void> => {
   try {
     // Use history.replaceState to avoid adding an extra entry if already on a transient route,
     // then push a known internal transition state so Back returns into the SPA.
-    // We choose '/auth/transition' as a lightweight internal route that the app can handle.
-    const transitionPath = '/auth/transition'
+    // We choose '/' as the transition path since it's the Default.vue route that handles auth gracefully.
+    const transitionPath = '/'
     if (window && window.history && window.location) {
       // Only push if the current location isn't already the transition path.
       if (window.location.pathname !== transitionPath) {
@@ -78,7 +80,17 @@ export const login = (): Promise<void> => {
     // ignore — best-effort history manipulation
   }
 
-  return userManager.signinRedirect()
+  // Get current locale from i18n
+  const i18n = (await import('@/i18n')).default
+  const currentCulture = i18n.global.locale.value as CultureText || CULTURE_TEXT.VIETNAMESE
+
+  const extraArgs = {
+    extraQueryParams: {
+      culture: currentCulture
+    }
+  }
+
+  return userManager.signinRedirect(extraArgs)
 }
 
 export const logout = (redirectTo?: string, useState = true): Promise<void> => {
@@ -86,7 +98,7 @@ export const logout = (redirectTo?: string, useState = true): Promise<void> => {
 
   // Best-effort: push an internal transition entry so Back doesn't go to the IdP URL.
   try {
-    const transitionPath = '/auth/transition'
+    const transitionPath = '/'
     if (window && window.history && window.location) {
       if (window.location.pathname !== transitionPath) {
         window.history.pushState({}, '', transitionPath)

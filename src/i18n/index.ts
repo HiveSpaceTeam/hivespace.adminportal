@@ -1,4 +1,5 @@
 import { createI18n } from 'vue-i18n'
+import { CULTURE_TEXT } from '@/types'
 
 // Import English translation files
 import enCommon from './locales/en/common.json'
@@ -41,11 +42,11 @@ const vi = {
 
 const i18n = createI18n({
   legacy: false,
-  locale: 'vi', // default locale
-  fallbackLocale: 'en',
+  locale: CULTURE_TEXT.VIETNAMESE, // default locale
+  fallbackLocale: CULTURE_TEXT.ENGLISH,
   messages: {
-    vi,
-    en,
+    [CULTURE_TEXT.VIETNAMESE]: vi,
+    [CULTURE_TEXT.ENGLISH]: en,
   },
 })
 

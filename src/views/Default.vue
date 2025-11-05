@@ -1,5 +1,11 @@
 <template>
   <div class="relative flex flex-col items-center justify-center min-h-screen p-6 overflow-hidden z-1">
+    <!-- Language Switcher and Theme Toggler - Top Right -->
+    <div class="absolute top-4 right-4 z-10 flex items-center gap-3">
+      <ThemeToggler />
+      <LanguageSwitcher />
+    </div>
+
     <div>
       <div class="absolute right-0 top-0 -z-1 w-full max-w-[250px] xl:max-w-[450px]">
         <img src="/images/shape/grid-01.svg" alt="grid" />
@@ -10,7 +16,8 @@
     </div>
 
     <div class="mx-auto w-full max-w-[242px] text-center sm:max-w-[562px]">
-      <img src="/images/logo/logo-light.svg" alt="home" class="w-full h-auto" />
+      <img class="dark:hidden" src="/images/logo/logo-light.svg" alt="home" />
+      <img class="hidden dark:block" src="/images/logo/logo-dark.svg" alt="home" />
       <p class="mt-10 mb-6 text-base text-gray-700 dark:text-gray-400 sm:text-lg"> {{ t('pages.default.welcome') }} </p>
       <Button :disabled="isSigningIn" @click="signIn" variant="primary">
         {{ t('pages.default.signIn') }}
@@ -26,6 +33,8 @@
 import { login, getCurrentUser } from '@/auth/user-manager'
 import { useRouter } from 'vue-router'
 import Button from '@/components/common/Button.vue'
+import LanguageSwitcher from '@/components/layout/header/LanguageSwitcher.vue'
+import ThemeToggler from '@/components/common/ThemeToggler.vue'
 import { onMounted, ref } from 'vue'
 import type { AppUser } from '@/types/app-user'
 import { useI18n } from 'vue-i18n'
