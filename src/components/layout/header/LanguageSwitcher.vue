@@ -50,12 +50,12 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useUserStore } from '@/stores/user';
 import { getCurrentUser } from '@/auth/user-manager';
-import { stringToNumericCulture, CULTURE_TEXT } from '@/types';
+import { stringToNumericCulture, CULTURE_TEXT, type CultureText } from '@/types';
 import { setCookie, getCookie } from '@/utils/cookie';
 
 const userStore = useUserStore();
@@ -68,7 +68,7 @@ const toggleLanguageMenu = () => {
   isOpen.value = !isOpen.value;
 };
 
-const changeLanguage = async (lang) => {
+const changeLanguage = async (lang: CultureText) => {
   // Update i18n locale immediately for UI
   locale.value = lang;
 
@@ -84,8 +84,9 @@ const changeLanguage = async (lang) => {
   isOpen.value = false;
 };
 
-const handleClickOutside = (event) => {
-  if (!event.target.closest('.language-switcher')) {
+const handleClickOutside = (event: Event) => {
+  const target = event.target as Element;
+  if (!target.closest('.language-switcher')) {
     isOpen.value = false;
   }
 };

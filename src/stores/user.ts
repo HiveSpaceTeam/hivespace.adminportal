@@ -96,17 +96,33 @@ export const useUserStore = defineStore('user', () => {
    * Fetch user settings and update state
    */
   const fetchUserSettings = async () => {
-    const settings = await userService.getUserSetting()
-    setUserSettings(settings)
-    return settings
+    const appStore = useAppStore()
+    try {
+      appStore.setLoading(true)
+      const settings = await userService.getUserSetting()
+      setUserSettings(settings)
+      return settings
+    } catch (error) {
+      throw error
+    } finally {
+      appStore.setLoading(false)
+    }
   }
 
   /**
    * Update user settings
    */
   const updateUserSettings = async (newSettings: UserSettings) => {
-    await userService.setUserSetting(newSettings)
-    setUserSettings(newSettings) // Update local state on success (204 response)
+    const appStore = useAppStore()
+    try {
+      appStore.setLoading(true)
+      await userService.setUserSetting(newSettings)
+      setUserSettings(newSettings) // Update local state on success
+    } catch (error) {
+      throw error
+    } finally {
+      appStore.setLoading(false)
+    }
   }
 
   /**

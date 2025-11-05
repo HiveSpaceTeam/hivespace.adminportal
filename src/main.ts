@@ -19,6 +19,7 @@ import { useUserStore } from '@/stores/user'
 import { getCurrentUser } from '@/auth/user-manager'
 import { CULTURE_TEXT, THEME_TEXT, stringToNumericCulture, numericToStringCulture, stringToNumericTheme, numericToStringTheme } from '@/types'
 import { getCookie } from '@/utils/cookie'
+import { applyThemeToDOM } from '@/utils/theme'
 
 const initializeApp = async () => {
   const app = createApp(App)
@@ -35,15 +36,14 @@ const initializeApp = async () => {
   const user = await getCurrentUser()
   if (user) {
     const userStore = useUserStore()
-    await userStore.fetchUserSettings()
+    const settings = await userStore.fetchUserSettings()
 
-    // Initialize culture (i18n sync is handled in the store)
-    const culture = userStore.userSettings.culture
-    await userStore.updateCulture(culture)
+    const cultureText = numericToStringCulture(settings.culture)
+    i18n.global.locale.value = cultureText
 
-    // Initialize theme (DOM sync is handled in the store)
-    const theme = userStore.userSettings.theme
-    await userStore.updateTheme(theme)
+    const themeText = numericToStringTheme(settings.theme)
+    // Apply theme to DOM using centralized helper
+    applyThemeToDOM(themeText)
   } else {
     // For unauthenticated users, read from cookies or use defaults
 
@@ -60,12 +60,8 @@ const initializeApp = async () => {
     const numericTheme = stringToNumericTheme(themeText)
     const validThemeText = numericToStringTheme(numericTheme)
 
-    // Apply theme to DOM
-    if (validThemeText === 'dark') {
-      document.documentElement.classList.add('dark')
-    } else {
-      document.documentElement.classList.remove('dark')
-    }
+    // Apply theme to DOM using centralized helper
+    applyThemeToDOM(validThemeText)
   }
 
   // Initialize router after i18n is ready

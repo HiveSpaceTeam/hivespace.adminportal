@@ -8,6 +8,7 @@ import { useUserStore } from '@/stores/user'
 import { getCurrentUser } from '@/auth/user-manager'
 import { THEME_TEXT, stringToNumericTheme } from '@/types'
 import { setCookie } from '@/utils/cookie'
+import { applyThemeToDOM } from '@/utils/theme'
 
 interface ThemeContext {
   isDarkMode: ReturnType<typeof computed<boolean>>
@@ -19,7 +20,6 @@ const userStore = useUserStore()
 const isDarkMode = computed(() => userStore.getCurrentTheme() === THEME_TEXT.DARK)
 
 const toggleTheme = async () => {
-  debugger
   const currentTheme = userStore.getCurrentTheme()
   const newTheme = currentTheme === THEME_TEXT.LIGHT ? THEME_TEXT.DARK : THEME_TEXT.LIGHT
   const numericTheme = stringToNumericTheme(newTheme)
@@ -31,13 +31,8 @@ const toggleTheme = async () => {
     await userStore.updateTheme(numericTheme)
   }
   setCookie('theme', newTheme, 365) // Store for 1 year
-
   // Apply theme to DOM
-  if (newTheme === THEME_TEXT.DARK) {
-    document.documentElement.classList.add('dark')
-  } else {
-    document.documentElement.classList.remove('dark')
-  }
+  applyThemeToDOM(newTheme)
 }
 
 provide('theme', {
