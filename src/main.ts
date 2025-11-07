@@ -20,6 +20,7 @@ import { getCurrentUser } from '@/auth/user-manager'
 import { CULTURE_TEXT, THEME_TEXT, stringToNumericCulture, numericToStringCulture, stringToNumericTheme, numericToStringTheme } from '@/types'
 import { getCookie } from '@/utils/cookie'
 import { applyThemeToDOM } from '@/utils/theme'
+import { themeText as appThemeText } from '@/state/theme.state'
 
 const initializeApp = async () => {
   const app = createApp(App)
@@ -42,6 +43,8 @@ const initializeApp = async () => {
     i18n.global.locale.value = cultureText
 
     const themeText = numericToStringTheme(settings.theme)
+    // Initialize app-level theme ref
+    appThemeText.value = themeText
     // Apply theme to DOM using centralized helper
     applyThemeToDOM(themeText)
   } else {
@@ -60,7 +63,8 @@ const initializeApp = async () => {
     const numericTheme = stringToNumericTheme(themeText)
     const validThemeText = numericToStringTheme(numericTheme)
 
-    // Apply theme to DOM using centralized helper
+    // Initialize app-level theme ref and apply to DOM using centralized helper
+    appThemeText.value = validThemeText
     applyThemeToDOM(validThemeText)
   }
 

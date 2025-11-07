@@ -16,8 +16,8 @@
     </div>
 
     <div class="mx-auto w-full max-w-[242px] text-center sm:max-w-[562px]">
-      <img class="dark:hidden" src="/images/logo/logo-light.svg" alt="home" />
-      <img class="hidden dark:block" src="/images/logo/logo-dark.svg" alt="home" />
+      <img class="dark:hidden w-full h-auto" src="/images/logo/logo-light.svg" alt="home" />
+      <img class="hidden dark:block w-full h-auto" src="/images/logo/logo-dark.svg" alt="home" />
       <p class="mt-10 mb-6 text-base text-gray-700 dark:text-gray-400 sm:text-lg"> {{ t('pages.default.welcome') }} </p>
       <Button :disabled="isSigningIn" @click="signIn" variant="primary">
         {{ t('pages.default.signIn') }}
