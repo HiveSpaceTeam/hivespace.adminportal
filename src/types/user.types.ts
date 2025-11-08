@@ -28,4 +28,3 @@ export interface GetUsersResponse {
   users: User[]
   pagination: Pagination
 }
-

@@ -2,8 +2,11 @@
   <div class="w-full max-w-[700px] overflow-y-auto">
     <form class="space-y-4" @submit.prevent="onCreate">
       <!-- Common/General Error -->
-      <div v-if="errors.common.length > 0"
-        class="p-4 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800" role="alert">
+      <div
+        v-if="errors.common.length > 0"
+        class="p-4 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800"
+        role="alert"
+      >
         <div class="font-medium">{{ t('common.error') }}</div>
         <template v-if="errors.common.length === 1">
           <div>{{ errors.common[0] }}</div>
@@ -19,34 +22,62 @@
 
       <!-- Full Name Field (Input component) -->
       <div>
-        <Input id="adminFullName" v-model="form.fullName" type="text" :label="t('admins.fullName')"
-          :placeholder="t('admins.fullNamePlaceholder')" required :error="errors.fullName" />
+        <Input
+          id="adminFullName"
+          v-model="form.fullName"
+          type="text"
+          :label="t('admins.fullName')"
+          :placeholder="t('admins.fullNamePlaceholder')"
+          required
+          :error="errors.fullName"
+        />
       </div>
       <!-- Email Field (Input component) -->
       <div>
-        <Input id="adminEmail" v-model="form.email" type="email" :label="t('admins.email')"
-          :placeholder="t('admins.emailPlaceholder')" required :error="errors.email" autocomplete="off" />
+        <Input
+          id="adminEmail"
+          v-model="form.email"
+          type="email"
+          :label="t('admins.email')"
+          :placeholder="t('admins.emailPlaceholder')"
+          required
+          :error="errors.email"
+          autocomplete="off"
+        />
       </div>
 
       <!-- Password Field (Input component + append slot for toggle) -->
       <div>
-        <Input id="adminPassword" v-model="form.password" :type="showPassword ? 'text' : 'password'"
-          :label="t('admins.password')" :placeholder="t('admins.passwordPlaceholder')" inputClass="pr-10" required
-          autocomplete="new-password" :error="errors.password" @update:modelValue="validatePassword">
-        <template #append>
-          <button type="button" @click="showPassword = !showPassword"
-            class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400">
-            <ShowPasswordIcon v-if="showPassword" />
-            <HidePasswordIcon v-else />
-          </button>
-        </template>
+        <Input
+          id="adminPassword"
+          v-model="form.password"
+          :type="showPassword ? 'text' : 'password'"
+          :label="t('admins.password')"
+          :placeholder="t('admins.passwordPlaceholder')"
+          inputClass="pr-10"
+          required
+          autocomplete="new-password"
+          :error="errors.password"
+          @update:modelValue="validatePassword"
+        >
+          <template #append>
+            <button
+              type="button"
+              @click="showPassword = !showPassword"
+              class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400"
+            >
+              <ShowPasswordIcon v-if="showPassword" />
+              <HidePasswordIcon v-else />
+            </button>
+          </template>
         </Input>
         <div v-if="form.password" class="mt-1">
           <div class="flex items-center space-x-1">
             <div class="flex-1 h-2 bg-gray-200 rounded-full">
-              <div :class="['h-2 rounded-full transition-all', passwordStrengthColor]"
-                :style="`width: ${passwordStrength}%`">
-              </div>
+              <div
+                :class="['h-2 rounded-full transition-all', passwordStrengthColor]"
+                :style="`width: ${passwordStrength}%`"
+              ></div>
             </div>
             <span :class="['text-xs', passwordStrengthTextColor]">{{ passwordStrengthText }}</span>
           </div>
@@ -55,22 +86,36 @@
 
       <!-- Confirm Password Field (Input component) -->
       <div>
-        <Input id="confirmPassword" v-model="form.confirmPassword" :type="showConfirmPassword ? 'text' : 'password'"
-          :label="t('admins.confirmPassword')" :placeholder="t('admins.confirmPasswordPlaceholder')" required
-          inputClass="pr-10" :error="errors.confirmPassword">
-        <template #append>
-          <button type="button" @click="showConfirmPassword = !showConfirmPassword"
-            class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400">
-            <ShowPasswordIcon v-if="showConfirmPassword" />
-            <HidePasswordIcon v-else />
-          </button>
-        </template>
+        <Input
+          id="confirmPassword"
+          v-model="form.confirmPassword"
+          :type="showConfirmPassword ? 'text' : 'password'"
+          :label="t('admins.confirmPassword')"
+          :placeholder="t('admins.confirmPasswordPlaceholder')"
+          required
+          inputClass="pr-10"
+          :error="errors.confirmPassword"
+        >
+          <template #append>
+            <button
+              type="button"
+              @click="showConfirmPassword = !showConfirmPassword"
+              class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400"
+            >
+              <ShowPasswordIcon v-if="showConfirmPassword" />
+              <HidePasswordIcon v-else />
+            </button>
+          </template>
         </Input>
       </div>
 
       <!-- Admin Type Field (only for System Admins) -->
       <div v-if="currentUserIsSystemAdmin">
-        <Checkbox v-model="form.isSystemAdmin" :label="t('admins.systemAdmin')" id="is-system-admin" />
+        <Checkbox
+          v-model="form.isSystemAdmin"
+          :label="t('admins.systemAdmin')"
+          id="is-system-admin"
+        />
       </div>
 
       <!-- Actions -->
@@ -120,11 +165,11 @@ const form = reactive({
 
 // Form error types
 interface FormErrors {
-  common: string[],
-  fullName: string,
-  email: string,
-  password: string,
-  confirmPassword: string,
+  common: string[]
+  fullName: string
+  email: string
+  password: string
+  confirmPassword: string
 }
 
 const errors = reactive<FormErrors>({
@@ -132,10 +177,11 @@ const errors = reactive<FormErrors>({
   fullName: '',
   password: '',
   confirmPassword: '',
-  common: [] // Array for general/non-field-specific errors
+  common: [], // Array for general/non-field-specific errors
 })
 
-const { handleFieldValidationErrors: handleValidationErrors, clearFieldErrors: clearErrors } = useFieldValidation()
+const { handleFieldValidationErrors: handleValidationErrors, clearFieldErrors: clearErrors } =
+  useFieldValidation()
 
 const showPassword = ref(false)
 const showConfirmPassword = ref(false)
@@ -200,10 +246,7 @@ const showSuccessNotification = (email: string) => {
 }
 
 const showErrorNotification = () => {
-  appStore.notifyError(
-    t('admins.alerts.error.title'),
-    t('admins.alerts.error.message')
-  )
+  appStore.notifyError(t('admins.alerts.error.title'), t('admins.alerts.error.message'))
 }
 
 const validateAllFields = (): boolean => {

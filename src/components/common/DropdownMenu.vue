@@ -12,12 +12,22 @@
       <slot name="menu">
         <!-- Default menu items -->
         <template v-for="(item, index) in menuItems">
-          <router-link v-if="item.to" :key="`router-${index}`" :to="item.to" @click="handleMenuItemClick(item.onClick)"
-            :class="itemClass">
+          <router-link
+            v-if="item.to"
+            :key="`router-${index}`"
+            :to="item.to"
+            @click="handleMenuItemClick(item.onClick)"
+            :class="itemClass"
+          >
             {{ item.label }}
           </router-link>
 
-          <button v-else :key="`button-${index}`" @click="handleMenuItemClick(item.onClick)" :class="itemClass">
+          <button
+            v-else
+            :key="`button-${index}`"
+            @click="handleMenuItemClick(item.onClick)"
+            :class="itemClass"
+          >
             {{ item.label }}
           </button>
         </template>

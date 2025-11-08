@@ -17,7 +17,14 @@ import VueApexCharts from 'vue3-apexcharts'
 import { createPinia } from 'pinia'
 import { useUserStore } from '@/stores/user'
 import { getCurrentUser } from '@/auth/user-manager'
-import { CULTURE_TEXT, THEME_TEXT, stringToNumericCulture, numericToStringCulture, stringToNumericTheme, numericToStringTheme } from '@/types'
+import {
+  CULTURE_TEXT,
+  THEME_TEXT,
+  stringToNumericCulture,
+  numericToStringCulture,
+  stringToNumericTheme,
+  numericToStringTheme,
+} from '@/types'
 import { getCookie } from '@/utils/cookie'
 import { applyThemeToDOM } from '@/utils/theme'
 import { themeText as appThemeText } from '@/state/theme.state'

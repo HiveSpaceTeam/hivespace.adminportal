@@ -83,9 +83,9 @@ const createConfig = (): AppConfig => {
   // Base API URL with validation
   const apiBaseUrl = validateUrl(
     getEnvVar('VITE_GATEWAY_BASE_URL') ||
-    getEnvVar('VITE_API_BASE_URL') ||
-    getEnvVar('VITE_API_URL') ||
-    'https://localhost:7001/api',
+      getEnvVar('VITE_API_BASE_URL') ||
+      getEnvVar('VITE_API_URL') ||
+      'https://localhost:7001/api',
     'API Base URL',
   )
 

@@ -1,28 +1,42 @@
 name: AdminPortal CI/CD Pipeline
 
 on:
-  push:
-    branches:
-      - master
   pull_request:
-    branches:
-      - master
+    branches: [master]
 
 jobs:
-  build_and_test:
+  build-app:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout Code
         uses: actions/checkout@v4
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
+          cache: "npm"
 
-      - name: Install dependencies
+      - name: Install Dependencies
         run: npm ci
 
-      - name: Build Vue.js app
+      - name: Run Linter
+        run: npm run lint
+
+      - name: Build App
         run: npm run build
+
+      # - name: SonarCloud Scan
+      #   # Use the supported Sonar scanner action (drop-in replacement)
+      #   uses: sonarsource/sonarqube-scan-action@v5.0.0
+      #   with:
+      #     # Pass scanner properties via args. These are required so the scanner knows the project and organization.
+      #     args: >
+      #       -Dsonar.organization=hivespaceteam
+      #       -Dsonar.projectKey=HiveSpaceTeam_hivespace.adminportal
+      #       -Dsonar.sources=src
+      #       -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
+      #   env:
+      #     # Add SONAR_TOKEN to repo secrets (SonarCloud personal token)
+      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
