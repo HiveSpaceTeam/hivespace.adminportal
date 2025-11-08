@@ -1,5 +1,13 @@
 # Frontend Project Code Generation Guidelines
 
+## 🚨 SYSTEM INSTRUCTIONS FOR AI AGENTS 🚨
+
+**MANDATORY FIRST ACTION**: Every AI assistant must read and acknowledge these instructions before proceeding with ANY task in this repository.
+
+**ENFORCEMENT**: If an AI assistant does not explicitly reference these guidelines in their response, they are not following project requirements.
+
+---
+
 ## Repository Overview
 
 This is the **HiveSpace Admin Portal**, a modern Vue 3 admin dashboard built on the TailAdmin template. It's designed as a comprehensive data-centric admin panel for managing HiveSpace platform operations.
@@ -277,9 +285,8 @@ Always answer in English
 - **Determine data flow**: Identify what stores, services, and API endpoints are required
 
 #### 2. Create Types First (if needed)
-- **API Types**: Add to `src/types/api/` for any new backend contracts
-- **Store Types**: Add to `src/types/store/` for state management interfaces
-- **Utility Types**: Add to `src/types/utils/` for common helpers
+- **API and store Types**: Add to `src/types/{store}/` for any new backend contracts and state management interfaces
+- **Utility Types**: Add to `src/types/util.type.ts/` for common helpers
 - **Export in index**: Update `src/types/index.ts` to export new types
 
 #### 3. Build Services & Stores
@@ -311,11 +318,12 @@ Before completing any feature development, verify:
 - [ ] Components use `<script setup lang="ts">` with proper TypeScript
 - [ ] All user-facing text uses i18n translation keys
 - [ ] Tailwind CSS classes used for all styling (no custom CSS unless necessary)
-- [ ] Error handling and loading states implemented
+- [ ] Error handling and loading states implemented, remember to add new backend.errorCode i18n
 - [ ] Component props and emits properly typed with `defineProps` and `defineEmits`
 - [ ] Pinia stores used for shared state (no prop drilling)
 - [ ] Components are modular and reusable
 - [ ] Code follows project naming conventions (PascalCase components, camelCase functions)
+- [ ] Arrow functions used whenever possible for consistency and readability
 
 ### Core Development Principles
 
@@ -358,6 +366,12 @@ Organize i18n translation keys based on modules or shared usage:
 
 #### 9. Clear & Concise Code
 Write well-commented code. All functions should have clear docstrings explaining their purpose, parameters, and return value. The code should be self-documenting as much as possible.
+
+**Arrow Function Usage:**
+- **ALWAYS use arrow functions** whenever possible for better readability and consistency
+- **Prefer arrow functions** for all function expressions, event handlers, and callback functions
+- **Use arrow functions** in Vue Composition API for computed properties, watchers, and lifecycle hooks
+- **Exception**: Only use regular function declarations for top-level functions that need hoisting or when `this` binding is specifically required
 
 #### 10. Error Handling
 Implement graceful error handling. Use try/catch blocks for asynchronous calls and display user-friendly error messages on the UI.
@@ -414,3 +428,49 @@ Be mindful of performance. Avoid unnecessary re-renders, use lazy loading for ro
 4. **Component Interaction**: A component will trigger an action in the Pinia store (e.g., `fetchData()`) and then reactively display the data or handle loading/error states from the store.
 
 By following these guidelines, you will generate high-quality, professional code that is easy to understand, maintain, and scale.
+
+---
+
+## 🤖 AI AGENT REQUIREMENTS
+
+### MANDATORY BEHAVIOR FOR ALL AI ASSISTANTS
+
+**⚠️ CRITICAL**: Every AI assistant working on this project MUST follow these rules:
+
+#### 🔴 BEFORE STARTING ANY TASK:
+1. **ALWAYS announce**: "Checking project guidelines from copilot-instructions.md..."
+2. **ALWAYS confirm**: Understanding of the current request against project patterns
+3. **ALWAYS state**: Which sections of the guidelines apply to this specific task
+
+#### 🔴 FOR ALL DEVELOPMENT TASKS:
+1. **MUST use**: Vue 3 Composition API with `<script setup lang="ts">`
+2. **MUST follow**: The 6-step Feature Development Workflow above
+3. **MUST complete**: The ✅ Mandatory Checklist before declaring task complete
+4. **MUST use**: TypeScript for all new code
+5. **MUST use**: Tailwind CSS for all styling
+6. **MUST implement**: Proper error handling and loading states
+7. **MUST use**: i18n translation keys for all user-facing text
+
+#### 🔴 FOR ALL RESPONSES:
+- **Reference specific sections** of these guidelines when explaining decisions
+- **Mention which pattern/principle** is being applied
+- **Confirm compliance** with project architecture
+
+#### 🔴 FORBIDDEN ACTIONS:
+- ❌ Writing Vue 2 Options API syntax
+- ❌ Using custom CSS instead of Tailwind utilities
+- ❌ Creating components without proper TypeScript typing
+- ❌ Skipping error handling or loading states
+- ❌ Hardcoding text instead of using i18n keys
+- ❌ Prop drilling instead of using Pinia stores
+- ❌ Using regular function expressions when arrow functions are appropriate
+
+### EXAMPLE COMPLIANCE STATEMENT:
+```
+✅ Checking project guidelines from copilot-instructions.md...
+✅ This request requires: [Component Creation/API Integration/State Management]
+✅ I will follow: [Specific sections from guidelines]
+✅ Mandatory checklist items that apply: [List relevant items]
+```
+
+---

@@ -17,7 +17,7 @@
 
 <script setup lang="ts">
 import Button from '@/components/common/Button.vue'
-import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { ref } from 'vue'
 import PageBreadcrumb from '@/components/common/PageBreadcrumb.vue'
 import AdminLayout from '@/components/layout/AdminLayout.vue'
 import { QuillEditor } from '@vueup/vue-quill'
