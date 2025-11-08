@@ -128,4 +128,4 @@ export const useAdminStore = defineStore('admin', () => {
     deleteUser,
     clearState,
   }
-}
+})
