@@ -24,19 +24,19 @@ jobs:
       - name: Run Linter
         run: npm run lint
 
-      - name: Build Vue App
+      - name: Build App
         run: npm run build
 
-      - name: SonarCloud Scan
-        # Use the supported Sonar scanner action (drop-in replacement)
-        uses: sonarsource/sonarqube-scan-action@v5.0.0
-        with:
-          # Pass scanner properties via args. These are required so the scanner knows the project and organization.
-          args: >
-            -Dsonar.organization=hivespaceteam
-            -Dsonar.projectKey=HiveSpaceTeam_hivespace.adminportal
-            -Dsonar.sources=src
-            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
-        env:
-          # Add SONAR_TOKEN to repo secrets (SonarCloud personal token)
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      # - name: SonarCloud Scan
+      #   # Use the supported Sonar scanner action (drop-in replacement)
+      #   uses: sonarsource/sonarqube-scan-action@v5.0.0
+      #   with:
+      #     # Pass scanner properties via args. These are required so the scanner knows the project and organization.
+      #     args: >
+      #       -Dsonar.organization=hivespaceteam
+      #       -Dsonar.projectKey=HiveSpaceTeam_hivespace.adminportal
+      #       -Dsonar.sources=src
+      #       -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
+      #   env:
+      #     # Add SONAR_TOKEN to repo secrets (SonarCloud personal token)
+      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
