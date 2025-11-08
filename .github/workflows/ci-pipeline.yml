@@ -19,10 +19,21 @@ jobs:
           cache: "npm"
 
       - name: Install Dependencies
-        run: npm install
+        run: npm ci
 
       - name: Run Linter
         run: npm run lint
 
       - name: Build Vue App
         run: npm run build
+
+      - name: SonarCloud Scan
+        uses: sonarsource/sonarcloud-github-action@master
+        with:
+          # Replace with your SonarCloud organization (required for SonarCloud)
+          organization: hivespaceteam
+          # Use a unique project key (recommended: <github-org>_<repo>)
+          projectKey: hivespace.adminportal
+        env:
+          # Add SONAR_TOKEN to repo secrets (SonarCloud personal token)
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
