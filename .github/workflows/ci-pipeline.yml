@@ -28,12 +28,15 @@ jobs:
         run: npm run build
 
       - name: SonarCloud Scan
-        uses: sonarsource/sonarcloud-github-action@master
+        # Use the supported Sonar scanner action (drop-in replacement)
+        uses: sonarsource/sonarqube-scan-action@v5.0.0
         with:
-          # Replace with your SonarCloud organization (required for SonarCloud)
-          organization: hivespaceteam
-          # Use a unique project key (recommended: <github-org>_<repo>)
-          projectKey: hivespace.adminportal
+          # Pass scanner properties via args. These are required so the scanner knows the project and organization.
+          args: >
+            -Dsonar.organization=hivespaceteam
+            -Dsonar.projectKey=HiveSpaceTeam_hivespace.adminportal
+            -Dsonar.sources=src
+            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
         env:
           # Add SONAR_TOKEN to repo secrets (SonarCloud personal token)
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
