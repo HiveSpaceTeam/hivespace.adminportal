@@ -149,19 +149,19 @@ const handleHttpError = (status: number, appStore: ReturnType<typeof useAppStore
     case 403:
       appStore.notifyError(
         i18n.global.t('errors.ACCESS_DENIED.title'),
-        i18n.global.t('errors.ACCESS_DENIED.message')
+        i18n.global.t('errors.ACCESS_DENIED.message'),
       )
       break
     case 429:
       appStore.notifyError(
         i18n.global.t('errors.TOO_MANY_REQUESTS.title'),
-        i18n.global.t('errors.TOO_MANY_REQUESTS.message')
+        i18n.global.t('errors.TOO_MANY_REQUESTS.message'),
       )
       break
     case 500:
       appStore.notifyError(
         i18n.global.t('errors.SERVER_ERROR.title'),
-        i18n.global.t('errors.SERVER_ERROR.message')
+        i18n.global.t('errors.SERVER_ERROR.message'),
       )
       break
     case 502:
@@ -169,7 +169,7 @@ const handleHttpError = (status: number, appStore: ReturnType<typeof useAppStore
     case 504:
       appStore.notifyError(
         i18n.global.t('errors.SERVICE_UNAVAILABLE.title'),
-        i18n.global.t('errors.SERVICE_UNAVAILABLE.message')
+        i18n.global.t('errors.SERVICE_UNAVAILABLE.message'),
       )
       break
   }
@@ -226,11 +226,11 @@ class ApiService {
       headers: { 'Content-Type': 'multipart/form-data' },
       onUploadProgress: onUploadProgress
         ? (progressEvent) => {
-          if (progressEvent.total) {
-            const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total)
-            onUploadProgress(progress)
+            if (progressEvent.total) {
+              const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total)
+              onUploadProgress(progress)
+            }
           }
-        }
         : undefined,
     })
   }

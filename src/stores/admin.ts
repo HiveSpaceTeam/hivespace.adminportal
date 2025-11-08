@@ -80,7 +80,10 @@ export const useAdminStore = defineStore('admin', () => {
       if (!admin) return
 
       // Toggle status based on current status (1 = Active, 0 = Inactive)
-      const updatedAdmin = await adminService.updateAdminStatus(adminId, !(admin.status === Status.Active))
+      const updatedAdmin = await adminService.updateAdminStatus(
+        adminId,
+        !(admin.status === Status.Active),
+      )
 
       // Update admin in local state
       const index = admins.value.findIndex((a) => a.id === adminId)

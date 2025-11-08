@@ -1,19 +1,32 @@
 <template>
-  <div v-if="labelPosition === 'left'" :class="[
-    'flex items-center gap-4'
-  ]">
-    <label v-if="label" :for="id" :class="[
-      'text-sm font-medium text-gray-700 dark:text-gray-400 min-w-0 whitespace-nowrap',
-      required ? 'required-label' : ''
-    ]">
+  <div v-if="labelPosition === 'left'" :class="['flex items-center gap-4']">
+    <label
+      v-if="label"
+      :for="id"
+      :class="[
+        'text-sm font-medium text-gray-700 dark:text-gray-400 min-w-0 whitespace-nowrap',
+        required ? 'required-label' : '',
+      ]"
+    >
       {{ label }}
     </label>
     <div class="flex-1">
       <div class="relative">
         <slot name="prepend" />
 
-        <input :id="id" :type="type" :placeholder="placeholder" :value="modelValue" :disabled="disabled"
-          :required="required" @input="onInput" @focus="onFocus" @blur="onBlur" :class="computedClass" v-bind="attrs" />
+        <input
+          :id="id"
+          :type="type"
+          :placeholder="placeholder"
+          :value="modelValue"
+          :disabled="disabled"
+          :required="required"
+          @input="onInput"
+          @focus="onFocus"
+          @blur="onBlur"
+          :class="computedClass"
+          v-bind="attrs"
+        />
 
         <slot name="append" />
       </div>
@@ -26,17 +39,32 @@
   </div>
 
   <div v-else>
-    <label v-if="label" :for="id" :class="[
-      'mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400',
-      required ? 'required-label' : '',
-    ]">
+    <label
+      v-if="label"
+      :for="id"
+      :class="[
+        'mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400',
+        required ? 'required-label' : '',
+      ]"
+    >
       {{ label }}
     </label>
     <div class="relative">
       <slot name="prepend" />
 
-      <input :id="id" :type="type" :placeholder="placeholder" :value="modelValue" :disabled="disabled"
-        :required="required" @input="onInput" @focus="onFocus" @blur="onBlur" :class="computedClass" v-bind="attrs" />
+      <input
+        :id="id"
+        :type="type"
+        :placeholder="placeholder"
+        :value="modelValue"
+        :disabled="disabled"
+        :required="required"
+        @input="onInput"
+        @focus="onFocus"
+        @blur="onBlur"
+        :class="computedClass"
+        v-bind="attrs"
+      />
 
       <slot name="append" />
     </div>

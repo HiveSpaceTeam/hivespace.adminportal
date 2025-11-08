@@ -12,43 +12,43 @@ export interface UserSettings {
 // API response types (GET returns UserSettings directly)
 export type GetUserSettingResponse = UserSettings
 
-// API request types (PUT request body)  
+// API request types (PUT request body)
 export type SetUserSettingRequest = UserSettings
 
 // Theme constants
 export const THEME_VALUES = {
   LIGHT: 0,
-  DARK: 1
+  DARK: 1,
 } as const
 
-// Culture constants  
+// Culture constants
 export const CULTURE_VALUES = {
   VIETNAMESE: 0,
-  ENGLISH: 1
+  ENGLISH: 1,
 } as const
 
 // Culture text constants
 export const CULTURE_TEXT = {
   VIETNAMESE: 'vi',
-  ENGLISH: 'en'
+  ENGLISH: 'en',
 } as const
 
 // Theme text constants
 export const THEME_TEXT = {
   LIGHT: 'light',
-  DARK: 'dark'
+  DARK: 'dark',
 } as const
 
 // Type helpers
-export type ThemeValue = typeof THEME_VALUES[keyof typeof THEME_VALUES]
-export type CultureValue = typeof CULTURE_VALUES[keyof typeof CULTURE_VALUES]
-export type CultureText = typeof CULTURE_TEXT[keyof typeof CULTURE_TEXT]
-export type ThemeText = typeof THEME_TEXT[keyof typeof THEME_TEXT]
+export type ThemeValue = (typeof THEME_VALUES)[keyof typeof THEME_VALUES]
+export type CultureValue = (typeof CULTURE_VALUES)[keyof typeof CULTURE_VALUES]
+export type CultureText = (typeof CULTURE_TEXT)[keyof typeof CULTURE_TEXT]
+export type ThemeText = (typeof THEME_TEXT)[keyof typeof THEME_TEXT]
 
 // Default settings
 export const DEFAULT_USER_SETTINGS: UserSettings = {
   theme: THEME_VALUES.LIGHT, // Light theme
-  culture: CULTURE_VALUES.VIETNAMESE // Vietnamese
+  culture: CULTURE_VALUES.VIETNAMESE, // Vietnamese
 }
 
 // Culture conversion methods

@@ -4,14 +4,20 @@
     <div class="space-y-5 sm:space-y-6">
       <ComponentCard :title="$t('pages.listOfUsers')">
         <div
-          class="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+          class="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]"
+        >
           <!-- Search and Filter Controls -->
           <div class="p-4 border-b border-gray-200 dark:border-gray-700">
             <div class="flex flex-col sm:flex-row gap-4 items-center">
               <!-- Search Input -->
               <div class="w-full sm:w-64">
-                <Input type="text" :value="searchQuery" @input="handleSearchInput"
-                  :placeholder="$t('users.searchPlaceholder')" autocomplete="off" />
+                <Input
+                  type="text"
+                  :value="searchQuery"
+                  @input="handleSearchInput"
+                  :placeholder="$t('users.searchPlaceholder')"
+                  autocomplete="off"
+                />
               </div>
 
               <!-- Status Filter -->
@@ -34,39 +40,49 @@
 
           <!-- Loading State -->
           <div v-if="appStore.isLoading" class="p-8 text-center">
-            <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+            <div
+              class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"
+            ></div>
             <p class="mt-2 text-gray-600 dark:text-gray-400">{{ $t('users.loading') }}</p>
           </div>
 
           <!-- Table -->
-          <div v-else class="max-w-full overflow-x-auto custom-scrollbar" style="min-height: 400px;">
+          <div v-else class="max-w-full overflow-x-auto custom-scrollbar" style="min-height: 400px">
             <table class="min-w-full">
               <thead>
                 <tr class="border-b border-gray-200 dark:border-gray-700">
                   <th class="px-5 py-3 text-left w-1/8 sm:px-6">
-                    <button @click="handleSort('username')"
-                      class="flex items-center gap-1 font-medium text-gray-500 text-theme-xs dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
+                    <button
+                      @click="handleSort('username')"
+                      class="flex items-center gap-1 font-medium text-gray-500 text-theme-xs dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
+                    >
                       {{ $t('users.username') }}
                       <component :is="getSortIcon('username')" class="w-4 h-4 text-gray-500" />
                     </button>
                   </th>
                   <th class="px-5 py-3 text-left w-1/8 sm:px-6">
-                    <button @click="handleSort('fullName')"
-                      class="flex items-center gap-1 font-medium text-gray-500 text-theme-xs dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
+                    <button
+                      @click="handleSort('fullName')"
+                      class="flex items-center gap-1 font-medium text-gray-500 text-theme-xs dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
+                    >
                       {{ $t('users.fullName') }}
                       <component :is="getSortIcon('fullName')" class="w-4 h-4 text-gray-500" />
                     </button>
                   </th>
                   <th class="px-5 py-3 text-left w-1/8 sm:px-6">
-                    <button @click="handleSort('email')"
-                      class="flex items-center gap-1 font-medium text-gray-500 text-theme-xs dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
+                    <button
+                      @click="handleSort('email')"
+                      class="flex items-center gap-1 font-medium text-gray-500 text-theme-xs dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
+                    >
                       {{ $t('users.email') }}
                       <component :is="getSortIcon('email')" class="w-4 h-4 text-gray-500" />
                     </button>
                   </th>
                   <th class="px-5 py-3 text-left w-1/8 sm:px-6">
-                    <button @click="handleSort('status')"
-                      class="flex items-center gap-1 font-medium text-gray-500 text-theme-xs dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
+                    <button
+                      @click="handleSort('status')"
+                      class="flex items-center gap-1 font-medium text-gray-500 text-theme-xs dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
+                    >
                       {{ $t('users.status') }}
                       <component :is="getSortIcon('status')" class="w-4 h-4 text-gray-500" />
                     </button>
@@ -77,15 +93,19 @@
                     </p>
                   </th>
                   <th class="px-5 py-3 text-left w-1/8 sm:px-6">
-                    <button @click="handleSort('createdAt')"
-                      class="flex items-center gap-1 font-medium text-gray-500 text-theme-xs dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
+                    <button
+                      @click="handleSort('createdAt')"
+                      class="flex items-center gap-1 font-medium text-gray-500 text-theme-xs dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
+                    >
                       {{ $t('users.createdDate') }}
                       <component :is="getSortIcon('createdAt')" class="w-4 h-4 text-gray-500" />
                     </button>
                   </th>
                   <th class="px-5 py-3 text-left w-1/8 sm:px-6">
-                    <button @click="handleSort('lastLoginAt')"
-                      class="flex items-center gap-1 font-medium text-gray-500 text-theme-xs dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
+                    <button
+                      @click="handleSort('lastLoginAt')"
+                      class="flex items-center gap-1 font-medium text-gray-500 text-theme-xs dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
+                    >
                       {{ $t('users.lastLoginDate') }}
                       <component :is="getSortIcon('lastLoginAt')" class="w-4 h-4 text-gray-500" />
                     </button>
@@ -97,7 +117,7 @@
                   </th>
                 </tr>
               </thead>
-              <tbody style="min-height: 300px;">
+              <tbody style="min-height: 300px">
                 <!-- Empty state row when no data -->
                 <tr v-if="filteredUsers.length === 0">
                   <td colspan="8" class="px-5 py-12 text-center">
@@ -107,14 +127,20 @@
                     </div>
                   </td>
                 </tr>
-                <tr v-for="user in filteredUsers" :key="user.id"
-                  class="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-white/[0.05]">
+                <tr
+                  v-for="user in filteredUsers"
+                  :key="user.id"
+                  class="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-white/[0.05]"
+                >
                   <!-- Username -->
                   <td class="px-5 py-4 sm:px-6">
                     <div class="flex items-center">
                       <div class="flex-shrink-0 h-10 w-10">
-                        <img class="h-10 w-10 rounded-full object-cover"
-                          :src="user.avatar || '/images/user/default-avatar.jpg'" :alt="user.username" />
+                        <img
+                          class="h-10 w-10 rounded-full object-cover"
+                          :src="user.avatar || '/images/user/default-avatar.jpg'"
+                          :alt="user.username"
+                        />
                       </div>
                       <div class="ml-4">
                         <div class="text-sm font-medium text-gray-900 dark:text-white">
@@ -150,7 +176,9 @@
 
                   <!-- Created Date (field: createdAt) -->
                   <td class="px-5 py-4 sm:px-6">
-                    <div class="text-sm text-gray-900 dark:text-white">{{ formatDate(user.createdAt) }}</div>
+                    <div class="text-sm text-gray-900 dark:text-white">
+                      {{ formatDate(user.createdAt) }}
+                    </div>
                   </td>
 
                   <!-- Last Login Date (field: lastLoginAt) -->
@@ -167,14 +195,18 @@
                       </template>
 
                       <template #menu>
-                        <button @click="tableHandleDelete(user)"
-                          class="flex items-center w-full px-3 py-2 text-sm text-red-700 hover:bg-gray-50 focus:outline-none focus:ring-0 active:outline-none dark:text-red-400 dark:hover:bg-gray-600">
+                        <button
+                          @click="tableHandleDelete(user)"
+                          class="flex items-center w-full px-3 py-2 text-sm text-red-700 hover:bg-gray-50 focus:outline-none focus:ring-0 active:outline-none dark:text-red-400 dark:hover:bg-gray-600"
+                        >
                           <TrashRedIcon />
                           {{ actionDelete }}
                         </button>
 
-                        <button @click="tableHandleToggleStatus(user)"
-                          class="flex items-center w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-0 active:outline-none dark:text-gray-300 dark:hover:bg-gray-700">
+                        <button
+                          @click="tableHandleToggleStatus(user)"
+                          class="flex items-center w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-0 active:outline-none dark:text-gray-300 dark:hover:bg-gray-700"
+                        >
                           <ToggleOffIcon v-if="isUserActive(user)" />
                           <ToggleOnIcon v-else />
                           {{ isUserActive(user) ? actionDeactivate : actionActivate }}
@@ -194,7 +226,7 @@
             <span>{{
               $t('users.showingResults', {
                 count: filteredUsersCount,
-                total: pagination?.totalItems ?? users.length
+                total: pagination?.totalItems ?? users.length,
               })
             }}</span>
             <span>{{ $t('users.lastUpdated') }} {{ lastUpdated }}</span>
@@ -295,7 +327,10 @@ const loadUsers = async (paramsOverride?: Partial<GetUsersParams>) => {
     await userStore.fetchUsers(mapped)
   } catch (err) {
     console.error('Failed to load users:', err)
-    appStore.notifyError(t('users.notifications.loadFailed.title'), t('users.notifications.loadFailed.message'))
+    appStore.notifyError(
+      t('users.notifications.loadFailed.title'),
+      t('users.notifications.loadFailed.message'),
+    )
   }
 }
 
@@ -303,9 +338,10 @@ const loadUsers = async (paramsOverride?: Partial<GetUsersParams>) => {
 const filteredUsers = computed(() => {
   return users.value.map((user: User) => ({
     ...user,
-    displayStatus: user.status === Status.Active
-      ? t('users.values.status.active')
-      : t('users.values.status.inactive'),
+    displayStatus:
+      user.status === Status.Active
+        ? t('users.values.status.active')
+        : t('users.values.status.inactive'),
     hasSeller: user.isSeller, // Map API field to UI field
     avatar: user.avatarUrl || '/images/user/default-avatar.jpg',
   }))
@@ -360,12 +396,15 @@ const handleDeleteUser = async (userOrId: string | { id: string }) => {
     updateLastUpdated()
     appStore.notifySuccess(
       t('users.notifications.deleteSuccess.title'),
-      t('users.notifications.deleteSuccess.message')
+      t('users.notifications.deleteSuccess.message'),
     )
     console.log('User deleted:', userId)
   } catch (err) {
     console.error('Failed to delete user:', err)
-    appStore.notifyError(t('users.notifications.deleteFailed.title'), t('users.notifications.deleteFailed.message'))
+    appStore.notifyError(
+      t('users.notifications.deleteFailed.title'),
+      t('users.notifications.deleteFailed.message'),
+    )
   }
 }
 
@@ -378,12 +417,18 @@ const handleToggleStatus = async (user: User) => {
     updateLastUpdated()
     appStore.notifySuccess(
       t('users.notifications.statusUpdateSuccess.title'),
-      t('users.notifications.statusUpdateSuccess.message', { email: user.email, status: nextStatusText }),
+      t('users.notifications.statusUpdateSuccess.message', {
+        email: user.email,
+        status: nextStatusText,
+      }),
     )
     console.log('Status toggled for user:', user.id)
   } catch (err) {
     console.error('Failed to toggle user status:', err)
-    appStore.notifyError(t('users.notifications.statusUpdateFailed.title'), t('users.notifications.statusUpdateFailed.message'))
+    appStore.notifyError(
+      t('users.notifications.statusUpdateFailed.title'),
+      t('users.notifications.statusUpdateFailed.message'),
+    )
   }
 }
 
@@ -443,5 +488,4 @@ onMounted(async () => {
 
   console.log('UserManagement component mounted')
 })
-
 </script>

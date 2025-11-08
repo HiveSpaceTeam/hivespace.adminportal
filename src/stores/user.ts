@@ -8,7 +8,7 @@ import {
   DEFAULT_USER_SETTINGS,
   numericToStringCulture,
   numericToStringTheme,
-  Status
+  Status,
 } from '@/types'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
@@ -70,7 +70,10 @@ export const useUserStore = defineStore('user', () => {
       if (!user) return
 
       // Toggle status based on current status (1 = Active, 0 = Inactive)
-      const updatedUser = await userService.updateUserStatus(userId, !(user.status === Status.Active))
+      const updatedUser = await userService.updateUserStatus(
+        userId,
+        !(user.status === Status.Active),
+      )
 
       // Update user in local state
       const index = users.value.findIndex((u) => u.id === userId)
@@ -166,7 +169,7 @@ export const useUserStore = defineStore('user', () => {
     // State
     users,
     pagination,
-    // User Settings State  
+    // User Settings State
     userSettings,
     // Actions
     setUsers,

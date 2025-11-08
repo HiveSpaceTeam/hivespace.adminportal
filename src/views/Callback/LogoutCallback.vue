@@ -22,7 +22,11 @@ onMounted(async () => {
     let redirectTo = userState?.redirectTo ?? '/'
 
     // Sanitize redirectTo: only allow internal paths starting with '/'
-    if (typeof redirectTo !== 'string' || !redirectTo.startsWith('/') || redirectTo.includes('//')) {
+    if (
+      typeof redirectTo !== 'string' ||
+      !redirectTo.startsWith('/') ||
+      redirectTo.includes('//')
+    ) {
       redirectTo = '/'
     }
 
