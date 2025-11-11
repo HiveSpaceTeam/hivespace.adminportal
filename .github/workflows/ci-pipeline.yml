@@ -61,7 +61,7 @@ jobs:
           # --- Loaded from GitHub Secrets ---
           VITE_API_URL: ${{ secrets.VITE_API_URL }}
           VITE_APP_CLIENT_ID: ${{ secrets.VITE_APP_CLIENT_ID }}
-          VITE_AUTH_AUTHORITY_URL: ${{ secret.VITE_AUTH_AUTHORITY_URL }}
+          VITE_AUTH_AUTHORITY_URL: ${{ secrets.VITE_AUTH_AUTHORITY_URL }}
 
           # --- Loaded from GitHub Variables ---
           VITE_APP_ENV: ${{ vars.VITE_APP_ENV }}
