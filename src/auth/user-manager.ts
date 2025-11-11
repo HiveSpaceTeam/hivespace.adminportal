@@ -6,7 +6,7 @@ import { CULTURE_TEXT } from '@/types'
 import { config } from '@/config'
 
 const oidcSettings = {
-  authority: config.api.baseUrl + '/identity',
+  authority: config.auth.oidc.authority,
   client_id: config.auth.oidc.clientId,
   redirect_uri: config.auth.oidc.redirectUri,
   response_type: config.auth.oidc.responseType,

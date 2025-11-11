@@ -26,6 +26,7 @@ export interface AppConfig {
       readonly responseType: string
       readonly responseMode: string
       readonly scope: string
+      readonly authority: string
     }
     readonly callbackUrl: string
   }
@@ -121,6 +122,12 @@ const createConfig = (): AppConfig => {
         responseType: getEnvVar('VITE_APP_RESPONSE_TYPE', 'code'),
         responseMode: getEnvVar('VITE_APP_RESPONSE_MODE', 'query'),
         scope: getEnvVar('VITE_APP_SCOPE', 'openid profile email'),
+        authority: validateUrl(
+          getEnvVar('VITE_AUTH_AUTHORITY_URL') ||
+            getEnvVar('VITE_IDENTITY_SERVER_URL') ||
+            `${apiBaseUrl}/identity`,
+          'Authority URL',
+        ),
       },
       callbackUrl: validateUrl(
         getEnvVar('VITE_AUTH_CALLBACK_URL', 'http://localhost:5173/auth/callback'),
