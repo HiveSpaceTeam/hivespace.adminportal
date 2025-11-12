@@ -60,7 +60,6 @@ const onBind = async () => {
 }
 const onClick = async () => {
   rawHtml.value = (quillRef?.value as QuillEditorInstance)?.getHTML?.() ?? ''
-  debugger
 }
 </script>
 <style>
