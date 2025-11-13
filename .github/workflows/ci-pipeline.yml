@@ -46,8 +46,6 @@ jobs:
 
       - name: Build App
         run: npm run build
-        # --- FIX: MOVED THE ENV BLOCK HERE ---
-        # Vite reads these variables during the build, so they must be here.
         env:
           # --- Loaded from GitHub Secrets ---
           VITE_API_URL: ${{ secrets.VITE_API_URL }}
