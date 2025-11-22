@@ -54,8 +54,8 @@ jobs:
 
           # --- Loaded from GitHub Variables ---
           VITE_APP_ENV: ${{ vars.VITE_APP_ENV }}
-          VITE_APP_REDIRECT_URI: ${{ vars.VITE_APP_REDIRECT_URI }}
-          VITE_APP_POST_LOGOUT_REDIRECT_URI: ${{ vars.VITE_APP_POST_LOGOUT_REDIRECT_URI }}
+          VITE_APP_REDIRECT_URI: ${{ secrets.VITE_APP_REDIRECT_URI }}
+          VITE_APP_POST_LOGOUT_REDIRECT_URI: ${{ secrets.VITE_APP_POST_LOGOUT_REDIRECT_URI }}
           VITE_APP_SCOPE: ${{ vars.VITE_APP_SCOPE }}
           VITE_APP_RESPONSE_TYPE: ${{ vars.VITE_APP_RESPONSE_TYPE }}
           VITE_APP_RESPONSE_MODE: ${{ vars.VITE_APP_RESPONSE_MODE }}
