@@ -27,7 +27,7 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue'
-import Tabs from '@/components/common/Tabs.vue'
+import { Tabs } from '@hivespace/shared'
 
 const options = [
   { value: 'monthly', label: 'Monthly' },

@@ -24,10 +24,8 @@
 
 <script setup>
 import { ref } from 'vue'
-import PageBreadcrumb from '@/components/common/PageBreadcrumb.vue'
 import AdminLayout from '@/components/layout/AdminLayout.vue'
-import ComponentCard from '@/components/common/ComponentCard.vue'
-import YouTubeEmbed from '@/components/common/YouTubeEmbed.vue'
+import { PageBreadcrumb, ComponentCard, YouTubeEmbed } from '@hivespace/shared'
 const currentPageTitle = ref('Videos')
 </script>
 

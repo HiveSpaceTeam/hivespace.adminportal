@@ -14,13 +14,13 @@ export * from './admin.types'
 export * from './user.types'
 
 // User settings types
-export * from './user-settings.types'
+export * from '@hivespace/shared'
 
 // API common types (kept under api for backend contracts)
-export * from './common.types'
+export * from '@hivespace/shared'
 
 // Utility types - Helper and common types
-export * from './util.type'
+export * from '@hivespace/shared'
 
 // App-specific types
-export type { AppUser } from './app-user'
+export type { AppUser } from '@hivespace/shared'

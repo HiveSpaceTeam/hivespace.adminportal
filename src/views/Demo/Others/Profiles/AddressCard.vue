@@ -47,7 +47,7 @@
 <script setup>
 import EditIcon from '@/icons/EditIcon.vue'
 import AddressDetailModal from './Popups/AddressDetailModal.vue'
-import { useModal } from '@/composables/useModal'
+import { useModal } from '@hivespace/shared'
 
 const { openModal } = useModal()
 

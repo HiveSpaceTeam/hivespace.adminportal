@@ -1,5 +1,7 @@
+import { isDevelopment } from '@/config'
+
 // Demo routes (development-only). Extracted from router/index.ts to keep index small.
-export const demoRoutes = import.meta.env.DEV
+export const demoRoutes = isDevelopment()
   ? [
       {
         path: '/demo',

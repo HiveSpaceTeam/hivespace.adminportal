@@ -5,21 +5,15 @@
       <ComponentCard :title="$t('pages.listOfAdmins')">
         <!-- Table Content -->
         <div
-          class="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]"
-        >
+          class="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
           <!-- Search and Filter Controls -->
           <div class="p-4 border-b border-gray-200 dark:border-gray-700">
             <div class="flex flex-col sm:flex-row gap-4 items-center justify-between">
               <!-- Search Input -->
               <div class="flex items-center justify-end gap-2">
                 <div class="w-full sm:w-64">
-                  <Input
-                    type="text"
-                    :value="searchQuery"
-                    @input="tableHandleSearchInput"
-                    :placeholder="$t('admins.searchPlaceholder')"
-                    autocomplete="off"
-                  />
+                  <Input type="text" :value="searchQuery" @input="tableHandleSearchInput"
+                    :placeholder="$t('admins.searchPlaceholder')" autocomplete="off" />
                 </div>
 
                 <!-- Status Filter -->
@@ -48,9 +42,7 @@
 
           <!-- Loading State -->
           <div v-if="appStore.isLoading" class="p-8 text-center">
-            <div
-              class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"
-            ></div>
+            <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
             <p class="mt-2 text-gray-600 dark:text-gray-400">{{ $t('admins.loading') }}</p>
           </div>
 
@@ -60,63 +52,48 @@
               <thead>
                 <tr class="border-b border-gray-200 dark:border-gray-700">
                   <th class="px-5 py-3 text-left w-1/8 sm:px-6">
-                    <button
-                      @click="handleSort('email')"
-                      class="flex items-center gap-1 font-medium text-gray-500 text-theme-xs dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
-                    >
+                    <button @click="handleSort('email')"
+                      class="flex items-center gap-1 font-medium text-gray-500 text-theme-xs dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
                       {{ $t('admins.emailAddress') }}
                       <component :is="getSortIcon('email')" class="w-4 h-4 text-gray-500" />
                     </button>
                   </th>
                   <th class="px-5 py-3 text-left w-1/8 sm:px-6">
-                    <button
-                      @click="handleSort('fullName')"
-                      class="flex items-center gap-1 font-medium text-gray-500 text-theme-xs dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
-                    >
+                    <button @click="handleSort('fullName')"
+                      class="flex items-center gap-1 font-medium text-gray-500 text-theme-xs dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
                       {{ $t('admins.fullName') }}
                       <component :is="getSortIcon('fullName')" class="w-4 h-4 text-gray-500" />
                     </button>
                   </th>
                   <th class="px-5 py-3 text-left w-1/8 sm:px-6">
-                    <button
-                      @click="handleSort('status')"
-                      class="flex items-center gap-1 font-medium text-gray-500 text-theme-xs dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
-                    >
+                    <button @click="handleSort('status')"
+                      class="flex items-center gap-1 font-medium text-gray-500 text-theme-xs dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
                       {{ $t('admins.status') }}
                       <component :is="getSortIcon('status')" class="w-4 h-4 text-gray-500" />
                     </button>
                   </th>
-                  <th
-                    class="px-5 py-3 text-center w-1/8 sm:px-6"
-                    v-if="currentUser?.isSystemAdmin()"
-                  >
+                  <th class="px-5 py-3 text-center w-1/8 sm:px-6" v-if="currentUser?.isSystemAdmin()">
                     <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
                       {{ $t('admins.isSystemAdmin') }}
                     </p>
                   </th>
                   <th class="px-5 py-3 text-left w-1/8 sm:px-6">
-                    <button
-                      @click="handleSort('createdAt')"
-                      class="flex items-center gap-1 font-medium text-gray-500 text-theme-xs dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
-                    >
+                    <button @click="handleSort('createdAt')"
+                      class="flex items-center gap-1 font-medium text-gray-500 text-theme-xs dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
                       {{ $t('admins.createdDate') }}
                       <component :is="getSortIcon('createdAt')" class="w-4 h-4 text-gray-500" />
                     </button>
                   </th>
                   <th class="px-5 py-3 text-left w-1/8 sm:px-6">
-                    <button
-                      @click="handleSort('lastLoginAt')"
-                      class="flex items-center gap-1 font-medium text-gray-500 text-theme-xs dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
-                    >
+                    <button @click="handleSort('lastLoginAt')"
+                      class="flex items-center gap-1 font-medium text-gray-500 text-theme-xs dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
                       {{ $t('admins.lastLoginDate') }}
                       <component :is="getSortIcon('lastLoginAt')" class="w-4 h-4 text-gray-500" />
                     </button>
                   </th>
                   <th class="px-5 py-3 text-left w-1/8 sm:px-6">
-                    <button
-                      @click="handleSort('updatedAt')"
-                      class="flex items-center gap-1 font-medium text-gray-500 text-theme-xs dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
-                    >
+                    <button @click="handleSort('updatedAt')"
+                      class="flex items-center gap-1 font-medium text-gray-500 text-theme-xs dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
                       {{ $t('admins.lastUpdatedDate') }}
                       <component :is="getSortIcon('updatedAt')" class="w-4 h-4 text-gray-500" />
                     </button>
@@ -131,31 +108,22 @@
               <tbody style="min-height: 300px">
                 <!-- Empty state row when no data -->
                 <tr v-if="admins.length === 0">
-                  <td
-                    :colspan="currentUser?.isSystemAdmin() ? 8 : 7"
-                    class="px-5 py-12 text-center"
-                  >
+                  <td :colspan="currentUser?.isSystemAdmin() ? 8 : 7" class="px-5 py-12 text-center">
                     <div class="text-gray-500 dark:text-gray-400">
                       <p class="text-lg font-medium">{{ $t('admins.noAdminsFound') }}</p>
                       <p class="text-sm mt-2">{{ $t('admins.noAdminsFoundDescription') }}</p>
                     </div>
                   </td>
                 </tr>
-                <tr
-                  v-for="(admin, index) in admins"
-                  :key="admin.id"
-                  class="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-white/[0.05]"
-                >
+                <tr v-for="(admin, index) in admins" :key="admin.id"
+                  class="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-white/[0.05]">
                   <!-- Email Address -->
                   <td class="px-5 py-4 sm:px-6">
                     <div class="flex items-center">
                       <div class="flex-shrink-0 h-10 w-10">
-                        <img
-                          class="h-10 w-10 rounded-full object-cover"
-                          :src="admin.avatarUrl || `/images/user/user-0${(index % 9) + 1}.jpg`"
-                          :alt="admin.email"
-                          loading="lazy"
-                        />
+                        <img class="h-10 w-10 rounded-full object-cover"
+                          :src="admin.avatarUrl || `/images/user/user-0${(index % 9) + 1}.jpg`" :alt="admin.email"
+                          loading="lazy" />
                       </div>
                       <div class="ml-4">
                         <div class="text-sm font-medium text-gray-900 dark:text-white">
@@ -184,17 +152,11 @@
                   <!-- Is System Admin -->
                   <td class="px-5 py-4 sm:px-6" v-if="currentUser?.isSystemAdmin()">
                     <div class="flex items-center justify-center">
-                      <svg
-                        v-if="admin.isSystemAdmin"
-                        class="w-5 h-5 text-green-500"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                      >
-                        <path
-                          fill-rule="evenodd"
+                      <svg v-if="admin.isSystemAdmin" class="w-5 h-5 text-green-500" fill="currentColor"
+                        viewBox="0 0 20 20">
+                        <path fill-rule="evenodd"
                           d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                          clip-rule="evenodd"
-                        ></path>
+                          clip-rule="evenodd"></path>
                       </svg>
                     </div>
                   </td>
@@ -228,18 +190,14 @@
                       </template>
 
                       <template #menu>
-                        <button
-                          @click="tableHandleDelete(admin)"
-                          class="flex items-center w-full px-3 py-2 text-sm text-red-700 hover:bg-gray-50 focus:outline-none focus:ring-0 active:outline-none dark:text-red-400 dark:hover:bg-gray-600"
-                        >
+                        <button @click="tableHandleDelete(admin)"
+                          class="flex items-center w-full px-3 py-2 text-sm text-red-700 hover:bg-gray-50 focus:outline-none focus:ring-0 active:outline-none dark:text-red-400 dark:hover:bg-gray-600">
                           <TrashRedIcon />
                           {{ actionText.delete }}
                         </button>
 
-                        <button
-                          @click="tableHandleToggleStatus(admin)"
-                          class="flex items-center w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-0 active:outline-none dark:text-gray-300 dark:hover:bg-gray-700"
-                        >
+                        <button @click="tableHandleToggleStatus(admin)"
+                          class="flex items-center w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-0 active:outline-none dark:text-gray-300 dark:hover:bg-gray-700">
                           <ToggleOffIcon v-if="isAdminActive(admin)" />
                           <ToggleOnIcon v-else />
                           {{ isAdminActive(admin) ? actionText.deactivate : actionText.activate }}
@@ -258,7 +216,7 @@
           <div class="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400">
             <span>{{
               $t('admins.showingResults', { count: filteredAdminsCount, total: admins.length })
-            }}</span>
+              }}</span>
             <span>{{ $t('admins.lastUpdated') }} {{ lastUpdated }}</span>
           </div>
         </div>
@@ -272,24 +230,23 @@
 <script setup lang="ts">
 import { computed, ref, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import PageBreadcrumb from '@/components/common/PageBreadcrumb.vue'
 import AdminLayout from '@/components/layout/AdminLayout.vue'
-import ComponentCard from '@/components/common/ComponentCard.vue'
-import Button from '@/components/common/Button.vue'
-import Select from '@/components/common/Select.vue'
-import DropdownMenu from '@/components/common/DropdownMenu.vue'
-import Badge from '@/components/common/Badge.vue'
-import Input from '@/components/common/Input.vue'
-import { useModal } from '@/composables/useModal'
-import { useConfirmModal } from '@/composables/useConfirmModal'
+import {
+  PageBreadcrumb,
+  ComponentCard,
+  Button,
+  Select,
+  DropdownMenu,
+  Badge,
+  Input,
+} from '@hivespace/shared'
+import { useModal, useConfirmModal, useFormatDate, useDebounce } from '@hivespace/shared'
 import { useAppStore } from '@/stores/app'
 import AdminDetailModal from './Popups/AdminDetailModal.vue'
 import { useAdminStore } from '@/stores/admin'
 import type { Admin, GetAdminsParams } from '@/types'
 import { RoleFilter, StatusFilter, Status } from '@/types'
 import { watch } from 'vue'
-import useFormatDate from '@/composables/useFormatDate'
-import useDebounce from '@/composables/useDebounce'
 import {
   HorizontalDots,
   TrashRedIcon,
@@ -301,11 +258,12 @@ import {
   SortDescIcon,
   SortIcon,
 } from '@/icons'
-import { getCurrentUser } from '@/auth/user-manager'
-import type { AppUser } from '@/types/app-user'
+import { useAuth } from '@hivespace/shared'
+import type { AppUser } from '@/types'
 // Local params for server queries
 import { storeToRefs } from 'pinia'
 
+const { getCurrentUser } = useAuth()
 const { t } = useI18n()
 const appStore = useAppStore()
 const adminStore = useAdminStore()

@@ -3,6 +3,8 @@
  * Centralized configuration for API endpoints, authentication, and application settings
  */
 
+import type { AuthConfig } from '@hivespace/shared'
+
 // Environment type for better type safety
 type Environment = 'development' | 'staging' | 'production'
 
@@ -19,15 +21,7 @@ export interface AppConfig {
     readonly version: string
   }
   readonly auth: {
-    readonly oidc: {
-      readonly clientId: string
-      readonly redirectUri: string
-      readonly postLogoutRedirectUri: string
-      readonly responseType: string
-      readonly responseMode: string
-      readonly scope: string
-      readonly authority: string
-    }
+    readonly oidc: AuthConfig
     readonly callbackUrl: string
   }
   readonly features: {
@@ -120,7 +114,10 @@ const createConfig = (): AppConfig => {
           'Post Logout Redirect URI',
         ),
         responseType: getEnvVar('VITE_APP_RESPONSE_TYPE', 'code'),
-        responseMode: getEnvVar('VITE_APP_RESPONSE_MODE', 'query'),
+        responseMode: getEnvVar('VITE_APP_RESPONSE_MODE', 'query') as
+          | 'query'
+          | 'fragment'
+          | undefined,
         scope: getEnvVar('VITE_APP_SCOPE', 'openid profile email'),
         authority: validateUrl(
           getEnvVar('VITE_AUTH_AUTHORITY_URL') ||

@@ -15,7 +15,7 @@
 
 <script setup>
 import AdminLayout from '@/components/layout/AdminLayout.vue'
-import PageBreadcrumb from '@/components/common/PageBreadcrumb.vue'
+import { PageBreadcrumb } from '@hivespace/shared'
 import { ref } from 'vue'
 import ProfileCard from './Profiles/ProfileCard.vue'
 import PersonalInfoCard from './Profiles/PersonalInfoCard.vue'

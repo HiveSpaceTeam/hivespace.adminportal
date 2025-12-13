@@ -37,15 +37,13 @@
 </template>
 
 <script setup lang="ts">
-import { login, getCurrentUser } from '@/auth/user-manager'
 import { useRouter } from 'vue-router'
-import Button from '@/components/common/Button.vue'
-import LanguageSwitcher from '@/components/layout/header/LanguageSwitcher.vue'
-import ThemeToggler from '@/components/common/ThemeToggler.vue'
+import { ThemeToggler, useAuth, Button, LanguageSwitcher } from '@hivespace/shared'
 import { onMounted, ref } from 'vue'
-import type { AppUser } from '@/types/app-user'
+import type { AppUser } from '@/types'
 import { useI18n } from 'vue-i18n'
 
+const { login, isAuthenticated, currentUser } = useAuth()
 const router = useRouter()
 const isSigningIn = ref(false)
 const { t } = useI18n()
@@ -53,11 +51,10 @@ const { t } = useI18n()
 // Helper: check current local user once and navigate to account if present.
 async function checkUserAndRedirect(): Promise<AppUser | null> {
   try {
-    const user = await getCurrentUser()
-    if (user) {
+    if (await isAuthenticated.value) {
       // If the user already appears signed in locally, go to user management
       await router.push('/account/user-management')
-      return user
+      return currentUser.value
     }
     return null
   } catch (err) {

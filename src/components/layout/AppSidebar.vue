@@ -8,7 +8,7 @@
       '-translate-x-full': !isMobileOpen,
       'lg:translate-x-0': true,
     },
-  ]" @mouseenter="!isExpanded && (isHovered = true)" @mouseleave="isHovered = false">
+  ]" @mouseenter="!isExpanded && handleHover(true)" @mouseleave="handleHover(false)">
     <div :class="['py-8 flex', !isExpanded && !isHovered ? 'lg:justify-center' : 'justify-start']">
       <router-link to="/demo">
         <img v-if="isExpanded || isHovered || isMobileOpen" class="dark:hidden" src="/images/logo/logo-light.svg"
@@ -50,7 +50,7 @@
                   </span>
                   <span v-if="isExpanded || isHovered || isMobileOpen" class="menu-item-text">{{
                     item.name
-                    }}</span>
+                  }}</span>
                   <ChevronDownIcon v-if="isExpanded || isHovered || isMobileOpen" :class="[
                     'ml-auto w-5 h-5 transition-transform duration-200',
                     {
@@ -72,7 +72,7 @@
                   </span>
                   <span v-if="isExpanded || isHovered || isMobileOpen" class="menu-item-text">{{
                     item.name
-                    }}</span>
+                  }}</span>
                 </router-link>
                 <transition @enter="startTransition" @after-enter="endTransition" @before-leave="startTransition"
                   @after-leave="endTransition">
@@ -128,8 +128,7 @@ import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { GridIcon, ChevronDownIcon, HorizontalDots, TableIcon } from '@/icons'
-import SidebarWidget from '@/components/layout/SidebarWidget.vue'
-import { useSidebar } from '@/composables/useSidebar'
+import { useSidebar, SidebarWidget } from '@hivespace/shared'
 import { isDevelopment } from '@/config'
 
 interface SubMenuItem {
@@ -232,6 +231,10 @@ const isSubmenuOpen = (groupIndex: number, itemIndex: number) => {
         isActive(subItem.path),
       ))
   )
+}
+
+const handleHover = (value: boolean) => {
+  isHovered.value = value
 }
 
 const startTransition = (el: Element) => {

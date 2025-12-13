@@ -1,4 +1,4 @@
-import { getCurrentUser, login, logout } from '@/auth/user-manager'
+import { useAuth } from '@hivespace/shared'
 import { createRouter, createWebHistory } from 'vue-router'
 import demoRoutes from './demoRoutes'
 
@@ -82,6 +82,10 @@ router.beforeEach(async (to, from, next) => {
     next()
     return
   }
+
+  // Use the composable for auth operations
+  const { getCurrentUser, login, logout } = useAuth()
+
   const user = await getCurrentUser()
   if (!user) {
     login()

@@ -134,14 +134,11 @@
 <script setup lang="ts">
 import { computed, reactive, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import Input from '@/components/common/Input.vue'
-import Button from '@/components/common/Button.vue'
-import Checkbox from '@/components/common/Checkbox.vue'
 import { ShowPasswordIcon, HidePasswordIcon } from '@/icons'
 import type { CreateAdminRequest, ErrorResponse } from '@/types'
 import { useAppStore } from '@/stores/app'
 import { useAdminStore } from '@/stores/admin'
-import { useFieldValidation } from '@/composables/useFieldValidation'
+import { useFieldValidation, Input, Button, Checkbox } from '@hivespace/shared'
 
 const { t } = useI18n()
 const appStore = useAppStore()

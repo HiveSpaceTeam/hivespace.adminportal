@@ -52,7 +52,7 @@
 <script setup>
 import EditIcon from '@/icons/EditIcon.vue'
 import PersonalInfoDetailModal from './Popups/PersonalInfoDetailModal.vue'
-import { useModal } from '@/composables/useModal'
+import { useModal } from '@hivespace/shared'
 
 const { openModal } = useModal()
 const showPersonalInfoModal = () => {

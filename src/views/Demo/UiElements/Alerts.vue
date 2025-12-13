@@ -72,10 +72,8 @@
 
 <script setup>
 import { ref } from 'vue'
-import PageBreadcrumb from '@/components/common/PageBreadcrumb.vue'
 import AdminLayout from '@/components/layout/AdminLayout.vue'
-import ComponentCard from '@/components/common/ComponentCard.vue'
-import Alert from '@/components/common/Alert.vue'
+import { PageBreadcrumb, ComponentCard, Alert } from '@hivespace/shared'
 const currentPageTitle = ref('Alerts')
 </script>
 

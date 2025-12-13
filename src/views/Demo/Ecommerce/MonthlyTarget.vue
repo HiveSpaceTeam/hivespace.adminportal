@@ -82,7 +82,7 @@
 
 <script setup>
 import { computed } from 'vue'
-import DropdownMenu from '@/components/common/DropdownMenu.vue'
+import { DropdownMenu } from '@hivespace/shared'
 import MenuDotsIcon from '@/icons/MenuDotsIcon.vue'
 import ArrowDownRedIcon from '@/icons/ArrowDownRedIcon.vue'
 import ArrowUpGreenIcon from '@/icons/ArrowUpGreenIcon.vue'

@@ -21,7 +21,7 @@
 <script setup>
 import { ref } from 'vue'
 import AdminLayout from '@/components/layout/AdminLayout.vue'
-import PageBreadcrumb from '@/components/common/PageBreadcrumb.vue'
+import { PageBreadcrumb } from '@hivespace/shared'
 
 const currentPageTitle = ref('Blank Page')
 </script>

@@ -50,8 +50,7 @@
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
-import LanguageSwitcher from '@/components/layout/header/LanguageSwitcher.vue'
-import ThemeToggler from '@/components/common/ThemeToggler.vue'
+import { LanguageSwitcher, ThemeToggler } from '@hivespace/shared'
 
 const { t } = useI18n()
 </script>
