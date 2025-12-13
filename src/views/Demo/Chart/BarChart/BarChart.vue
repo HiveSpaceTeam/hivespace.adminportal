@@ -10,7 +10,7 @@
 </template>
 
 <script setup>
-import { ComponentCard, PageBreadcrumb } from '@hivespace/shared';
+import { ComponentCard, PageBreadcrumb, BarChartOne } from '@hivespace/shared';
 import AdminLayout from '@/components/layout/AdminLayout.vue';
 import { ref } from 'vue';
 const currentPageTitle = ref('Bar Chart');
