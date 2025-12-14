@@ -7,6 +7,7 @@ import enUsers from './locales/en/users.json'
 import enPages from './locales/en/pages.json'
 import enErrors from './locales/en/errors.json'
 import enBackendErrors from './locales/en/backend-errors.json'
+import enLayout from './locales/en/layout.json'
 
 // Import Vietnamese translation files
 import viAdmins from './locales/vi/admins.json'
@@ -14,6 +15,7 @@ import viUsers from './locales/vi/users.json'
 import viPages from './locales/vi/pages.json'
 import viErrors from './locales/vi/errors.json'
 import viBackendErrors from './locales/vi/backend-errors.json'
+import viLayout from './locales/vi/layout.json'
 
 // Merge translations for each language
 const en = {
@@ -23,6 +25,7 @@ const en = {
   pages: enPages,
   errors: enErrors,
   backendErrors: enBackendErrors,
+  ...enLayout, // Merges sidebar and header keys at root level
 }
 
 const vi = {
@@ -32,6 +35,7 @@ const vi = {
   pages: viPages,
   errors: viErrors,
   backendErrors: viBackendErrors,
+  ...viLayout,
 }
 
 const i18n = createI18n({

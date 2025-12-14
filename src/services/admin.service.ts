@@ -1,5 +1,4 @@
 import {
-  UserType,
   type Admin,
   type CreateAdminRequest,
   type CreateAdminResponse,
@@ -8,6 +7,7 @@ import {
 } from '@/types'
 import { apiService } from './api'
 import { buildApiUrl } from '@/config'
+import { UserType } from '@hivespace/shared'
 
 // Admin API endpoints (without version prefix since buildApiUrl handles versioning)
 const ADMIN_ENDPOINTS = {

@@ -1,4 +1,5 @@
-import type { Pagination } from '@/types'
+import type { Pagination } from '@hivespace/shared'
+export { RoleFilter, StatusFilter } from '@hivespace/shared'
 
 export interface User {
   id: string

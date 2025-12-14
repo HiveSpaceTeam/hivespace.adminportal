@@ -12,3 +12,8 @@ export * from './admin.types'
 
 // User types
 export * from './user.types'
+
+// User settings types
+export * from './user-settings.types'
+
+export type { ErrorResponse } from '@hivespace/shared'

@@ -4,32 +4,31 @@
   </div>
 </template>
 <script setup>
-import { onMounted } from 'vue'
-import { useRouter } from 'vue-router'
-import { useAuth } from '@hivespace/shared'
-import { useUserStore } from '@/stores/user'
-import i18n from '@/i18n'
-import { numericToStringCulture } from '@/types'
+import { onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+import { useAuth, numericToStringCulture } from '@hivespace/shared';
+import { useUserStore } from '@/stores/user';
+import i18n from '@/i18n';
 
-const { handleLoginCallback, logout } = useAuth()
-const router = useRouter()
+const { handleLoginCallback, logout } = useAuth();
+const router = useRouter();
 
 onMounted(async () => {
   try {
-    const result = await handleLoginCallback()
+    const result = await handleLoginCallback();
 
-    let returnToUrl = '/account/user-management'
+    let returnToUrl = '/account/user-management';
     if (result.state !== undefined) {
-      returnToUrl = result.state
+      returnToUrl = result.state;
     }
-    const userStore = useUserStore()
-    const settings = await userStore.fetchUserSettings()
-    i18n.global.locale.value = numericToStringCulture(settings.culture)
-    router.push({ path: returnToUrl })
+    const userStore = useUserStore();
+    const settings = await userStore.fetchUserSettings();
+    i18n.global.locale.value = numericToStringCulture(settings.culture);
+    router.push({ path: returnToUrl });
   } catch (error) {
     // Handle error, e.g., redirect to error page or show message
-    await logout()
-    console.error('Callback error:', error)
+    await logout();
+    console.error('Callback error:', error);
   }
-})
+});
 </script>

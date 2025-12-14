@@ -1,6 +1,4 @@
 import {
-  type User,
-  type GetUsersParams,
   type Pagination,
   type UserSettings,
   type CultureText,
@@ -9,11 +7,12 @@ import {
   numericToStringCulture,
   numericToStringTheme,
   Status,
-} from '@/types'
+} from '@hivespace/shared'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { userService } from '@/services/user.service'
 import { useAppStore } from './app'
+import { type GetUsersParams, type User } from '@/types'
 
 export const useUserStore = defineStore('user', () => {
   // State

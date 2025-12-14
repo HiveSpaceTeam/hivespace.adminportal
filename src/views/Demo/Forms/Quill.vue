@@ -3,10 +3,10 @@
     <PageBreadcrumb :pageTitle="currentPageTitle" />
     <div class="quill-container">
       <div class="quill-content">
-        <div>
+        <div class="mb-2">
           <QuillEditor :style="'height:300px'" ref="quillRef" :modules="modules" toolbar="full" />
         </div>
-        <Button size="sm" @click="onClick" variant="primary"> Submit</Button>
+        <Button size="sm" class="mr-2" @click="onClick" variant="primary"> Submit</Button>
         <Button size="sm" @click="onBind" variant="primary"> Bind</Button>
 
         <div v-html="rawHtml"></div>

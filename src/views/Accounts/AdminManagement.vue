@@ -4,8 +4,7 @@
     <div class="space-y-5 sm:space-y-6">
       <ComponentCard :title="$t('pages.listOfAdmins')">
         <!-- Table Content -->
-        <div
-          class="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+        <div class="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/3">
           <!-- Search and Filter Controls -->
           <div class="p-4 border-b border-gray-200 dark:border-gray-700">
             <div class="flex flex-col sm:flex-row gap-4 items-center justify-between">
@@ -116,11 +115,11 @@
                   </td>
                 </tr>
                 <tr v-for="(admin, index) in admins" :key="admin.id"
-                  class="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-white/[0.05]">
+                  class="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-white/5">
                   <!-- Email Address -->
                   <td class="px-5 py-4 sm:px-6">
                     <div class="flex items-center">
-                      <div class="flex-shrink-0 h-10 w-10">
+                      <div class="shrink-0 h-10 w-10">
                         <img class="h-10 w-10 rounded-full object-cover"
                           :src="admin.avatarUrl || `/images/user/user-0${(index % 9) + 1}.jpg`" :alt="admin.email"
                           loading="lazy" />
@@ -216,7 +215,7 @@
           <div class="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400">
             <span>{{
               $t('admins.showingResults', { count: filteredAdminsCount, total: admins.length })
-              }}</span>
+            }}</span>
             <span>{{ $t('admins.lastUpdated') }} {{ lastUpdated }}</span>
           </div>
         </div>
@@ -259,7 +258,6 @@ import {
   SortIcon,
 } from '@/icons'
 import { useAuth } from '@hivespace/shared'
-import type { AppUser } from '@/types'
 // Local params for server queries
 import { storeToRefs } from 'pinia'
 
@@ -298,7 +296,8 @@ const { openModal } = useModal()
 const { deleteConfirm } = useConfirmModal()
 
 // Current User (simulate current admin user)
-const currentUser = ref<AppUser | null>(null)
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const currentUser = ref<any>(null)
 
 // Sorting functions
 const handleSort = (field: string) => {
