@@ -27,7 +27,7 @@
     </div>
 
     <p class="absolute text-sm text-center text-gray-500 -translate-x-1/2 bottom-6 left-1/2 dark:text-gray-400">
-      © 2025 - HiveSpace
+      © {{ new Date().getFullYear() }} - HiveSpace
     </p>
   </div>
 </template>

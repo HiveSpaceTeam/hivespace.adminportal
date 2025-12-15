@@ -215,7 +215,7 @@
           <div class="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400">
             <span>{{
               $t('admins.showingResults', { count: filteredAdminsCount, total: admins.length })
-            }}</span>
+              }}</span>
             <span>{{ $t('admins.lastUpdated') }} {{ lastUpdated }}</span>
           </div>
         </div>
@@ -238,6 +238,7 @@ import {
   DropdownMenu,
   Badge,
   Input,
+  type AppUser,
 } from '@hivespace/shared'
 import { useModal, useConfirmModal, useFormatDate, useDebounce } from '@hivespace/shared'
 import { useAppStore } from '@/stores/app'
@@ -296,8 +297,8 @@ const { openModal } = useModal()
 const { deleteConfirm } = useConfirmModal()
 
 // Current User (simulate current admin user)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const currentUser = ref<any>(null)
+
+const currentUser = ref<AppUser | null>(null)
 
 // Sorting functions
 const handleSort = (field: string) => {

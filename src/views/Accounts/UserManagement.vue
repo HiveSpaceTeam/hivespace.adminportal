@@ -3,8 +3,7 @@
     <PageBreadcrumb :pageTitle="currentPageTitle" />
     <div class="space-y-5 sm:space-y-6">
       <ComponentCard :title="$t('pages.listOfUsers')">
-        <div
-          class="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+        <div class="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/3">
           <!-- Search and Filter Controls -->
           <div class="p-4 border-b border-gray-200 dark:border-gray-700">
             <div class="flex flex-col sm:flex-row gap-4 items-center">
@@ -108,11 +107,11 @@
                   </td>
                 </tr>
                 <tr v-for="user in filteredUsers" :key="user.id"
-                  class="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-white/[0.05]">
+                  class="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-white/5">
                   <!-- Username -->
                   <td class="px-5 py-4 sm:px-6">
                     <div class="flex items-center">
-                      <div class="flex-shrink-0 h-10 w-10">
+                      <div class="shrink-0 h-10 w-10">
                         <img class="h-10 w-10 rounded-full object-cover"
                           :src="user.avatar || '/images/user/default-avatar.jpg'" :alt="user.username" />
                       </div>
