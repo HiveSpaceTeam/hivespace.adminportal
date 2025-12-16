@@ -1,7 +1,5 @@
 <template>
-  <div
-    class="relative flex flex-col items-center justify-center min-h-screen p-6 overflow-hidden z-1"
-  >
+  <div class="relative flex flex-col items-center justify-center min-h-screen p-6 overflow-hidden z-1">
     <!-- Language Switcher and Theme Toggler - Top Right -->
     <div class="absolute top-4 right-4 z-10 flex items-center gap-3">
       <ThemeToggler />
@@ -28,36 +26,30 @@
       </Button>
     </div>
 
-    <p
-      class="absolute text-sm text-center text-gray-500 -translate-x-1/2 bottom-6 left-1/2 dark:text-gray-400"
-    >
-      © 2025 - HiveSpace
+    <p class="absolute text-sm text-center text-gray-500 -translate-x-1/2 bottom-6 left-1/2 dark:text-gray-400">
+      © {{ new Date().getFullYear() }} - HiveSpace
     </p>
   </div>
 </template>
 
 <script setup lang="ts">
-import { login, getCurrentUser } from '@/auth/user-manager'
 import { useRouter } from 'vue-router'
-import Button from '@/components/common/Button.vue'
-import LanguageSwitcher from '@/components/layout/header/LanguageSwitcher.vue'
-import ThemeToggler from '@/components/common/ThemeToggler.vue'
+import { ThemeToggler, useAuth, Button, LanguageSwitcher } from '@hivespace/shared'
 import { onMounted, ref } from 'vue'
-import type { AppUser } from '@/types/app-user'
 import { useI18n } from 'vue-i18n'
 
+const { login, isAuthenticated, currentUser } = useAuth()
 const router = useRouter()
 const isSigningIn = ref(false)
 const { t } = useI18n()
 
 // Helper: check current local user once and navigate to account if present.
-async function checkUserAndRedirect(): Promise<AppUser | null> {
+async function checkUserAndRedirect() {
   try {
-    const user = await getCurrentUser()
-    if (user) {
+    if (await isAuthenticated.value) {
       // If the user already appears signed in locally, go to user management
       await router.push('/account/user-management')
-      return user
+      return currentUser.value
     }
     return null
   } catch (err) {

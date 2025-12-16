@@ -1,5 +1,5 @@
-import type { Admin, CreateAdminRequest, GetAdminsParams, Pagination } from '@/types'
-import { Status } from '@/types'
+import type { Admin, CreateAdminRequest, GetAdminsParams } from '@/types'
+import { Status, type Pagination } from '@hivespace/shared'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { adminService } from '@/services/admin.service'

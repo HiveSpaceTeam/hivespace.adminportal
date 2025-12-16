@@ -1,4 +1,7 @@
-import type { Pagination, Status } from '@/types'
+import type { Pagination } from '@hivespace/shared'
+import { Status } from '@hivespace/shared'
+
+export { Status } from '@hivespace/shared'
 export interface CreateAdminRequest {
   fullName: string
   email: string

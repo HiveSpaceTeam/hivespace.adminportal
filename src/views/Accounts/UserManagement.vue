@@ -3,21 +3,14 @@
     <PageBreadcrumb :pageTitle="currentPageTitle" />
     <div class="space-y-5 sm:space-y-6">
       <ComponentCard :title="$t('pages.listOfUsers')">
-        <div
-          class="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]"
-        >
+        <div class="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/3">
           <!-- Search and Filter Controls -->
           <div class="p-4 border-b border-gray-200 dark:border-gray-700">
             <div class="flex flex-col sm:flex-row gap-4 items-center">
               <!-- Search Input -->
               <div class="w-full sm:w-64">
-                <Input
-                  type="text"
-                  :value="searchQuery"
-                  @input="handleSearchInput"
-                  :placeholder="$t('users.searchPlaceholder')"
-                  autocomplete="off"
-                />
+                <Input type="text" :value="searchQuery" @input="handleSearchInput"
+                  :placeholder="$t('users.searchPlaceholder')" autocomplete="off" />
               </div>
 
               <!-- Status Filter -->
@@ -40,9 +33,7 @@
 
           <!-- Loading State -->
           <div v-if="appStore.isLoading" class="p-8 text-center">
-            <div
-              class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"
-            ></div>
+            <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
             <p class="mt-2 text-gray-600 dark:text-gray-400">{{ $t('users.loading') }}</p>
           </div>
 
@@ -52,37 +43,29 @@
               <thead>
                 <tr class="border-b border-gray-200 dark:border-gray-700">
                   <th class="px-5 py-3 text-left w-1/8 sm:px-6">
-                    <button
-                      @click="handleSort('username')"
-                      class="flex items-center gap-1 font-medium text-gray-500 text-theme-xs dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
-                    >
+                    <button @click="handleSort('username')"
+                      class="flex items-center gap-1 font-medium text-gray-500 text-theme-xs dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
                       {{ $t('users.username') }}
                       <component :is="getSortIcon('username')" class="w-4 h-4 text-gray-500" />
                     </button>
                   </th>
                   <th class="px-5 py-3 text-left w-1/8 sm:px-6">
-                    <button
-                      @click="handleSort('fullName')"
-                      class="flex items-center gap-1 font-medium text-gray-500 text-theme-xs dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
-                    >
+                    <button @click="handleSort('fullName')"
+                      class="flex items-center gap-1 font-medium text-gray-500 text-theme-xs dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
                       {{ $t('users.fullName') }}
                       <component :is="getSortIcon('fullName')" class="w-4 h-4 text-gray-500" />
                     </button>
                   </th>
                   <th class="px-5 py-3 text-left w-1/8 sm:px-6">
-                    <button
-                      @click="handleSort('email')"
-                      class="flex items-center gap-1 font-medium text-gray-500 text-theme-xs dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
-                    >
+                    <button @click="handleSort('email')"
+                      class="flex items-center gap-1 font-medium text-gray-500 text-theme-xs dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
                       {{ $t('users.email') }}
                       <component :is="getSortIcon('email')" class="w-4 h-4 text-gray-500" />
                     </button>
                   </th>
                   <th class="px-5 py-3 text-left w-1/8 sm:px-6">
-                    <button
-                      @click="handleSort('status')"
-                      class="flex items-center gap-1 font-medium text-gray-500 text-theme-xs dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
-                    >
+                    <button @click="handleSort('status')"
+                      class="flex items-center gap-1 font-medium text-gray-500 text-theme-xs dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
                       {{ $t('users.status') }}
                       <component :is="getSortIcon('status')" class="w-4 h-4 text-gray-500" />
                     </button>
@@ -93,19 +76,15 @@
                     </p>
                   </th>
                   <th class="px-5 py-3 text-left w-1/8 sm:px-6">
-                    <button
-                      @click="handleSort('createdAt')"
-                      class="flex items-center gap-1 font-medium text-gray-500 text-theme-xs dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
-                    >
+                    <button @click="handleSort('createdAt')"
+                      class="flex items-center gap-1 font-medium text-gray-500 text-theme-xs dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
                       {{ $t('users.createdDate') }}
                       <component :is="getSortIcon('createdAt')" class="w-4 h-4 text-gray-500" />
                     </button>
                   </th>
                   <th class="px-5 py-3 text-left w-1/8 sm:px-6">
-                    <button
-                      @click="handleSort('lastLoginAt')"
-                      class="flex items-center gap-1 font-medium text-gray-500 text-theme-xs dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
-                    >
+                    <button @click="handleSort('lastLoginAt')"
+                      class="flex items-center gap-1 font-medium text-gray-500 text-theme-xs dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
                       {{ $t('users.lastLoginDate') }}
                       <component :is="getSortIcon('lastLoginAt')" class="w-4 h-4 text-gray-500" />
                     </button>
@@ -127,20 +106,14 @@
                     </div>
                   </td>
                 </tr>
-                <tr
-                  v-for="user in filteredUsers"
-                  :key="user.id"
-                  class="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-white/[0.05]"
-                >
+                <tr v-for="user in filteredUsers" :key="user.id"
+                  class="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-white/5">
                   <!-- Username -->
                   <td class="px-5 py-4 sm:px-6">
                     <div class="flex items-center">
-                      <div class="flex-shrink-0 h-10 w-10">
-                        <img
-                          class="h-10 w-10 rounded-full object-cover"
-                          :src="user.avatar || '/images/user/default-avatar.jpg'"
-                          :alt="user.username"
-                        />
+                      <div class="shrink-0 h-10 w-10">
+                        <img class="h-10 w-10 rounded-full object-cover"
+                          :src="user.avatar || '/images/user/default-avatar.jpg'" :alt="user.username" />
                       </div>
                       <div class="ml-4">
                         <div class="text-sm font-medium text-gray-900 dark:text-white">
@@ -195,18 +168,14 @@
                       </template>
 
                       <template #menu>
-                        <button
-                          @click="tableHandleDelete(user)"
-                          class="flex items-center w-full px-3 py-2 text-sm text-red-700 hover:bg-gray-50 focus:outline-none focus:ring-0 active:outline-none dark:text-red-400 dark:hover:bg-gray-600"
-                        >
+                        <button @click="tableHandleDelete(user)"
+                          class="flex items-center w-full px-3 py-2 text-sm text-red-700 hover:bg-gray-50 focus:outline-none focus:ring-0 active:outline-none dark:text-red-400 dark:hover:bg-gray-600">
                           <TrashRedIcon />
                           {{ actionDelete }}
                         </button>
 
-                        <button
-                          @click="tableHandleToggleStatus(user)"
-                          class="flex items-center w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-0 active:outline-none dark:text-gray-300 dark:hover:bg-gray-700"
-                        >
+                        <button @click="tableHandleToggleStatus(user)"
+                          class="flex items-center w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-0 active:outline-none dark:text-gray-300 dark:hover:bg-gray-700">
                           <ToggleOffIcon v-if="isUserActive(user)" />
                           <ToggleOnIcon v-else />
                           {{ isUserActive(user) ? actionDeactivate : actionActivate }}
@@ -241,14 +210,16 @@
 defineOptions({ name: 'UserManagement' })
 import { computed, ref, onMounted, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import PageBreadcrumb from '@/components/common/PageBreadcrumb.vue'
 import AdminLayout from '@/components/layout/AdminLayout.vue'
-import ComponentCard from '@/components/common/ComponentCard.vue'
-import DropdownMenu from '@/components/common/DropdownMenu.vue'
-import Select from '@/components/common/Select.vue'
-import Button from '@/components/common/Button.vue'
-import Badge from '@/components/common/Badge.vue'
-import Input from '@/components/common/Input.vue'
+import {
+  PageBreadcrumb,
+  ComponentCard,
+  DropdownMenu,
+  Select,
+  Button,
+  Badge,
+  Input,
+} from '@hivespace/shared'
 import {
   RefreshIcon,
   CheckGreenIcon,
@@ -260,13 +231,11 @@ import {
   SortDescIcon,
   SortIcon,
 } from '@/icons'
-import { useConfirmModal } from '@/composables/useConfirmModal'
+import { useConfirmModal, useFormatDate, useDebounce } from '@hivespace/shared'
 import { useAppStore } from '@/stores/app'
 import { useUserStore } from '@/stores/user'
 import type { GetUsersParams, User } from '@/types'
 import { RoleFilter, StatusFilter, Status } from '@/types'
-import useFormatDate from '@/composables/useFormatDate'
-import useDebounce from '@/composables/useDebounce'
 import { storeToRefs } from 'pinia'
 
 const { t } = useI18n()

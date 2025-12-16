@@ -1,4 +1,4 @@
-import { getCurrentUser, login } from '@/auth/user-manager'
+import { useAuth } from '@hivespace/shared'
 import axios from 'axios'
 import type {
   AxiosInstance,
@@ -10,6 +10,9 @@ import type {
 import { useAppStore } from '@/stores/app'
 import { config } from '@/config'
 import i18n from '@/i18n'
+
+// Get auth functions from composable
+const { getCurrentUser, login } = useAuth()
 
 // Extended request config for retry functionality
 interface ExtendedAxiosRequestConfig extends InternalAxiosRequestConfig {

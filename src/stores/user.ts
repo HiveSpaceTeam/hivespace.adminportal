@@ -1,6 +1,4 @@
 import {
-  type User,
-  type GetUsersParams,
   type Pagination,
   type UserSettings,
   type CultureText,
@@ -9,11 +7,12 @@ import {
   numericToStringCulture,
   numericToStringTheme,
   Status,
-} from '@/types'
+} from '@hivespace/shared'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { userService } from '@/services/user.service'
 import { useAppStore } from './app'
+import { type GetUsersParams, type User } from '@/types'
 
 export const useUserStore = defineStore('user', () => {
   // State
@@ -144,11 +143,6 @@ export const useUserStore = defineStore('user', () => {
   const updateCulture = async (cultureValue: number) => {
     const newSettings = { ...userSettings.value, culture: cultureValue }
     await updateUserSettings(newSettings)
-
-    // Sync with i18n locale using conversion method
-    const i18n = (await import('@/i18n')).default
-    const culture = numericToStringCulture(cultureValue)
-    i18n.global.locale.value = culture
   }
 
   /**

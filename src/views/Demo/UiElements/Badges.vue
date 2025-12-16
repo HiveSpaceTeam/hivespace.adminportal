@@ -62,10 +62,8 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import Badge from '@/components/common/Badge.vue'
-import PageBreadcrumb from '@/components/common/PageBreadcrumb.vue'
 import AdminLayout from '@/components/layout/AdminLayout.vue'
-import ComponentCard from '@/components/common/ComponentCard.vue'
+import { Badge, PageBreadcrumb, ComponentCard } from '@hivespace/shared'
 import { PlusIcon } from '@/icons'
 const currentPageTitle = ref('Badge')
 

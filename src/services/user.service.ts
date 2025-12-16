@@ -1,5 +1,4 @@
 import {
-  UserType,
   type GetUsersParams,
   type GetUsersResponse,
   type User,
@@ -8,6 +7,7 @@ import {
 } from '@/types'
 import { apiService } from './api'
 import { buildApiUrl } from '@/config'
+import { UserType } from '@hivespace/shared'
 
 // User API endpoints
 const USER_ENDPOINTS = {

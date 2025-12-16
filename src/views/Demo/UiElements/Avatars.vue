@@ -34,10 +34,8 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import PageBreadcrumb from '@/components/common/PageBreadcrumb.vue'
 import AdminLayout from '@/components/layout/AdminLayout.vue'
-import ComponentCard from '@/components/common/ComponentCard.vue'
-import Avatar from '@/components/common/Avatar.vue'
+import { PageBreadcrumb, ComponentCard, Avatar } from '@hivespace/shared'
 const currentPageTitle = ref('Avatars')
 
 const avatarSrc = '/images/user/user-01.jpg'

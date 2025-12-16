@@ -61,7 +61,7 @@ import LinkedInIcon from '@/icons/LinkedInIcon.vue'
 import InstagramIcon from '@/icons/InstagramIcon.vue'
 import EditIcon from '@/icons/EditIcon.vue'
 import ProfileDetailModal from './Popups/ProfileDetailModal.vue'
-import { useModal } from '@/composables/useModal'
+import { useModal } from '@hivespace/shared'
 const { openModal } = useModal()
 const showProfileDetailModal = () => {
   openModal(ProfileDetailModal, {

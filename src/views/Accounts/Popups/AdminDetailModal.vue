@@ -2,11 +2,8 @@
   <div class="w-full max-w-[700px] overflow-y-auto">
     <form class="space-y-4" @submit.prevent="onCreate">
       <!-- Common/General Error -->
-      <div
-        v-if="errors.common.length > 0"
-        class="p-4 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800"
-        role="alert"
-      >
+      <div v-if="errors.common.length > 0"
+        class="p-4 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800" role="alert">
         <div class="font-medium">{{ t('common.error') }}</div>
         <template v-if="errors.common.length === 1">
           <div>{{ errors.common[0] }}</div>
@@ -22,50 +19,23 @@
 
       <!-- Full Name Field (Input component) -->
       <div>
-        <Input
-          id="adminFullName"
-          v-model="form.fullName"
-          type="text"
-          :label="t('admins.fullName')"
-          :placeholder="t('admins.fullNamePlaceholder')"
-          required
-          :error="errors.fullName"
-        />
+        <Input id="adminFullName" v-model="form.fullName" type="text" :label="t('admins.fullName')"
+          :placeholder="t('admins.fullNamePlaceholder')" required :error="errors.fullName" />
       </div>
       <!-- Email Field (Input component) -->
       <div>
-        <Input
-          id="adminEmail"
-          v-model="form.email"
-          type="email"
-          :label="t('admins.email')"
-          :placeholder="t('admins.emailPlaceholder')"
-          required
-          :error="errors.email"
-          autocomplete="off"
-        />
+        <Input id="adminEmail" v-model="form.email" type="email" :label="t('admins.email')"
+          :placeholder="t('admins.emailPlaceholder')" required :error="errors.email" autocomplete="off" />
       </div>
 
       <!-- Password Field (Input component + append slot for toggle) -->
       <div>
-        <Input
-          id="adminPassword"
-          v-model="form.password"
-          :type="showPassword ? 'text' : 'password'"
-          :label="t('admins.password')"
-          :placeholder="t('admins.passwordPlaceholder')"
-          inputClass="pr-10"
-          required
-          autocomplete="new-password"
-          :error="errors.password"
-          @update:modelValue="validatePassword"
-        >
+        <Input id="adminPassword" v-model="form.password" :type="showPassword ? 'text' : 'password'"
+          :label="t('admins.password')" :placeholder="t('admins.passwordPlaceholder')" inputClass="pr-10" required
+          autocomplete="new-password" :error="errors.password" @update:modelValue="validatePassword">
           <template #append>
-            <button
-              type="button"
-              @click="showPassword = !showPassword"
-              class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400"
-            >
+            <button type="button" @click="showPassword = !showPassword"
+              class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400">
               <ShowPasswordIcon v-if="showPassword" />
               <HidePasswordIcon v-else />
             </button>
@@ -74,10 +44,9 @@
         <div v-if="form.password" class="mt-1">
           <div class="flex items-center space-x-1">
             <div class="flex-1 h-2 bg-gray-200 rounded-full">
-              <div
-                :class="['h-2 rounded-full transition-all', passwordStrengthColor]"
-                :style="`width: ${passwordStrength}%`"
-              ></div>
+              <div :class="['h-2 rounded-full transition-all', passwordStrengthColor]"
+                :style="`width: ${passwordStrength}%`">
+              </div>
             </div>
             <span :class="['text-xs', passwordStrengthTextColor]">{{ passwordStrengthText }}</span>
           </div>
@@ -86,22 +55,12 @@
 
       <!-- Confirm Password Field (Input component) -->
       <div>
-        <Input
-          id="confirmPassword"
-          v-model="form.confirmPassword"
-          :type="showConfirmPassword ? 'text' : 'password'"
-          :label="t('admins.confirmPassword')"
-          :placeholder="t('admins.confirmPasswordPlaceholder')"
-          required
-          inputClass="pr-10"
-          :error="errors.confirmPassword"
-        >
+        <Input id="confirmPassword" v-model="form.confirmPassword" :type="showConfirmPassword ? 'text' : 'password'"
+          :label="t('admins.confirmPassword')" :placeholder="t('admins.confirmPasswordPlaceholder')" required
+          inputClass="pr-10" :error="errors.confirmPassword">
           <template #append>
-            <button
-              type="button"
-              @click="showConfirmPassword = !showConfirmPassword"
-              class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400"
-            >
+            <button type="button" @click="showConfirmPassword = !showConfirmPassword"
+              class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400">
               <ShowPasswordIcon v-if="showConfirmPassword" />
               <HidePasswordIcon v-else />
             </button>
@@ -111,11 +70,7 @@
 
       <!-- Admin Type Field (only for System Admins) -->
       <div v-if="currentUserIsSystemAdmin">
-        <Checkbox
-          v-model="form.isSystemAdmin"
-          :label="t('admins.systemAdmin')"
-          id="is-system-admin"
-        />
+        <Checkbox v-model="form.isSystemAdmin" :label="t('admins.systemAdmin')" id="is-system-admin" />
       </div>
 
       <!-- Actions -->
@@ -134,14 +89,11 @@
 <script setup lang="ts">
 import { computed, reactive, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import Input from '@/components/common/Input.vue'
-import Button from '@/components/common/Button.vue'
-import Checkbox from '@/components/common/Checkbox.vue'
 import { ShowPasswordIcon, HidePasswordIcon } from '@/icons'
-import type { CreateAdminRequest, ErrorResponse } from '@/types'
+import type { CreateAdminRequest } from '@/types'
 import { useAppStore } from '@/stores/app'
 import { useAdminStore } from '@/stores/admin'
-import { useFieldValidation } from '@/composables/useFieldValidation'
+import { useFieldValidation, Input, Button, Checkbox, type ErrorResponse } from '@hivespace/shared'
 
 const { t } = useI18n()
 const appStore = useAppStore()
