@@ -10,7 +10,7 @@
     },
   ]" @mouseenter="!isExpanded && handleHover(true)" @mouseleave="handleHover(false)">
     <div :class="['py-8 flex', !isExpanded && !isHovered ? 'lg:justify-center' : 'justify-start']">
-      <router-link to="/demo">
+      <router-link to="/">
         <img v-if="isExpanded || isHovered || isMobileOpen" class="dark:hidden" src="/images/logo/logo-light.svg"
           alt="Logo" width="150" height="40" />
         <img v-if="isExpanded || isHovered || isMobileOpen" class="hidden dark:block" src="/images/logo/logo-dark.svg"
@@ -50,7 +50,7 @@
                   </span>
                   <span v-if="isExpanded || isHovered || isMobileOpen" class="menu-item-text">{{
                     item.name
-                  }}</span>
+                    }}</span>
                   <ChevronDownIcon v-if="isExpanded || isHovered || isMobileOpen" :class="[
                     'ml-auto w-5 h-5 transition-transform duration-200',
                     {
@@ -72,7 +72,7 @@
                   </span>
                   <span v-if="isExpanded || isHovered || isMobileOpen" class="menu-item-text">{{
                     item.name
-                  }}</span>
+                    }}</span>
                 </router-link>
                 <transition @enter="startTransition" @after-enter="endTransition" @before-leave="startTransition"
                   @after-leave="endTransition">
@@ -88,26 +88,6 @@
                           },
                         ]">
                           {{ subItem.name }}
-                          <span class="flex items-center gap-1 ml-auto">
-                            <span v-if="subItem.new" :class="[
-                              'menu-dropdown-badge',
-                              {
-                                'menu-dropdown-badge-active': isActive(subItem.path),
-                                'menu-dropdown-badge-inactive': !isActive(subItem.path),
-                              },
-                            ]">
-                              new
-                            </span>
-                            <span v-if="subItem.pro" :class="[
-                              'menu-dropdown-badge',
-                              {
-                                'menu-dropdown-badge-active': isActive(subItem.path),
-                                'menu-dropdown-badge-inactive': !isActive(subItem.path),
-                              },
-                            ]">
-                              pro
-                            </span>
-                          </span>
                         </router-link>
                       </li>
                     </ul>
@@ -127,7 +107,7 @@
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { GridIcon, ChevronDownIcon, HorizontalDots, TableIcon } from '@/icons'
+import { GridIcon, ChevronDownIcon, HorizontalDots, TableIcon } from '@hivespace/shared'
 import { useSidebar, SidebarWidget } from '@hivespace/shared'
 import { isDevelopment } from '@/config'
 
@@ -173,7 +153,7 @@ const menuGroups = computed<MenuGroup[]>(() => {
       icon: GridIcon,
       name: 'Demo',
       subItems: [
-        { name: 'Component', path: '/demo/components', new: true },
+        { name: 'Component', path: '/demo/components' },
         { name: 'Ecommerce', path: '/demo' },
         { name: 'Calendar', path: '/demo/calendar' },
         { name: 'User Profile', path: '/demo/profile' },
@@ -185,15 +165,13 @@ const menuGroups = computed<MenuGroup[]>(() => {
         { name: 'Line Chart', path: '/demo/line-chart' },
         { name: 'Bar Chart', path: '/demo/bar-chart' },
         { name: 'Alerts', path: '/demo/alerts' },
-        { name: 'Toast Notifications', path: '/demo/toast', new: true },
-        { name: 'Modal Popups', path: '/demo/modal', new: true },
+        { name: 'Toast Notifications', path: '/demo/toast' },
+        { name: 'Modal Popups', path: '/demo/modal' },
         { name: 'Avatars', path: '/demo/avatars' },
         { name: 'Badge', path: '/demo/badge' },
         { name: 'Buttons', path: '/demo/buttons' },
         { name: 'Images', path: '/demo/images' },
         { name: 'Videos', path: '/demo/videos' },
-        { name: 'Signin', path: '/demo/signin' },
-        { name: 'Signup', path: '/demo/signup' },
         { name: 'Icons', path: '/demo/icons' },
       ] as SubMenuItem[],
     })

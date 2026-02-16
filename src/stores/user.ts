@@ -11,7 +11,7 @@ import {
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { userService } from '@/services/user.service'
-import { useAppStore } from './app'
+import { useAppStore } from '@hivespace/shared'
 import { type GetUsersParams, type User } from '@/types'
 
 export const useUserStore = defineStore('user', () => {

@@ -106,14 +106,15 @@
                     </div>
                   </td>
                 </tr>
-                <tr v-for="user in filteredUsers" :key="user.id"
+                <tr v-for="(user, index) in filteredUsers" :key="user.id"
                   class="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-white/5">
                   <!-- Username -->
                   <td class="px-5 py-4 sm:px-6">
                     <div class="flex items-center">
                       <div class="shrink-0 h-10 w-10">
                         <img class="h-10 w-10 rounded-full object-cover"
-                          :src="user.avatar || '/images/user/default-avatar.jpg'" :alt="user.username" />
+                          :src="user.avatarUrl || `/images/user/user-0${(index % 9) + 1}.jpg`" :alt="user.email"
+                          loading="lazy" />
                       </div>
                       <div class="ml-4">
                         <div class="text-sm font-medium text-gray-900 dark:text-white">
@@ -230,9 +231,9 @@ import {
   SortAscIcon,
   SortDescIcon,
   SortIcon,
-} from '@/icons'
+} from '@hivespace/shared'
 import { useConfirmModal, useFormatDate, useDebounce } from '@hivespace/shared'
-import { useAppStore } from '@/stores/app'
+import { useAppStore } from '@hivespace/shared'
 import { useUserStore } from '@/stores/user'
 import type { GetUsersParams, User } from '@/types'
 import { RoleFilter, StatusFilter, Status } from '@/types'

@@ -1,9 +1,8 @@
 import type { Admin, CreateAdminRequest, GetAdminsParams } from '@/types'
-import { Status, type Pagination } from '@hivespace/shared'
+import { Status, type Pagination, useAppStore } from '@hivespace/shared'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { adminService } from '@/services/admin.service'
-import { useAppStore } from './app'
 
 export const useAdminStore = defineStore('admin', () => {
   // State

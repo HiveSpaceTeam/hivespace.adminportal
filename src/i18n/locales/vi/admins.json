@@ -1,7 +1,7 @@
 {
   "showingResults": "Hiển thị {count} trên tổng số {total} kết quả",
   "lastUpdated": "Cập nhật lần cuối:",
-  "addNewAdmin": "Thêm Quản trị viên Mới",
+  "addNewAdmin": "Thêm mới",
   "email": "Email",
   "password": "Mật khẩu",
   "confirmPassword": "Xác nhận mật khẩu",

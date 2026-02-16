@@ -241,7 +241,7 @@ import {
   type AppUser,
 } from '@hivespace/shared'
 import { useModal, useConfirmModal, useFormatDate, useDebounce } from '@hivespace/shared'
-import { useAppStore } from '@/stores/app'
+import { useAppStore } from '@hivespace/shared'
 import AdminDetailModal from './Popups/AdminDetailModal.vue'
 import { useAdminStore } from '@/stores/admin'
 import type { Admin, GetAdminsParams } from '@/types'
@@ -257,7 +257,7 @@ import {
   SortAscIcon,
   SortDescIcon,
   SortIcon,
-} from '@/icons'
+} from '@hivespace/shared'
 import { useAuth } from '@hivespace/shared'
 // Local params for server queries
 import { storeToRefs } from 'pinia'

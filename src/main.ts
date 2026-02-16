@@ -36,14 +36,14 @@ const initializeApp = async () => {
 
   // 1. Install Core Plugins
   app.use(pinia)
-  app.use(router)
   // 2. Install UI Plugins
   app.use(vfm)
   app.use(i18n)
   app.use(VueApexCharts)
-
   // 3. Initialize Business Logic (Auth)
   initializeAuth(config.auth.oidc)
+
+  app.use(router)
 
   // 4. Use logic that depends on plugins/auth
   const { isAuthenticated } = useAuth()

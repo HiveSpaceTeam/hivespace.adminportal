@@ -1,5 +1,5 @@
 <template>
-  <AdminLayout>
+  
     <div class="space-y-6">
       <!-- Page Header -->
       <div class="bg-white dark:bg-gray-900 rounded-lg shadow-md p-6">
@@ -51,19 +51,20 @@
         Icon name copied to clipboard!
       </div>
     </div>
-  </AdminLayout>
+  
 </template>
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import AdminLayout from '@/components/layout/AdminLayout.vue'
-import * as Icons from '@/icons'
+
+import * as Icons from '@hivespace/shared'
 
 // Remove the default export if it exists and create icons object
 const icons = computed(() => {
   const iconMap: Record<string, unknown> = {}
   Object.entries(Icons).forEach(([name, component]) => {
-    if (name !== 'default') {
+    // Only include component names that end with 'Icon' to avoid other exports like functions/constants
+    if (name !== 'default' && name.endsWith('Icon')) {
       iconMap[name] = component
     }
   })

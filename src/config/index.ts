@@ -2,11 +2,19 @@
  * Main configuration file for HiveSpace Admin Portal
  * Centralized configuration for API endpoints, authentication, and application settings
  */
+import {
+  type AuthConfig,
+  type Environment,
+  validateUrl,
+  validateEnvironment,
+  parseBoolean,
+  parseNumber,
+  joinUrl,
+} from '@hivespace/shared'
 
-import type { AuthConfig } from '@hivespace/shared'
-
-// Environment type for better type safety
-type Environment = 'development' | 'staging' | 'production'
+const getEnvVar = (key: string, defaultValue?: string): string => {
+  return import.meta.env[key] || defaultValue || ''
+}
 
 // Type definitions for better TypeScript support
 export interface AppConfig {
@@ -35,42 +43,6 @@ export interface AppConfig {
   }
 }
 
-// Configuration validation helpers
-const validateUrl = (url: string, name: string): string => {
-  if (!url) throw new Error(`${name} is required`)
-  try {
-    new URL(url)
-    return url
-  } catch {
-    throw new Error(`${name} must be a valid URL`)
-  }
-}
-
-const validateEnvironment = (env: string): Environment => {
-  const validEnvironments: Environment[] = ['development', 'staging', 'production']
-  if (validEnvironments.includes(env as Environment)) {
-    return env as Environment
-  }
-  console.warn(`Invalid environment "${env}", defaulting to "development"`)
-  return 'development'
-}
-
-const parseBoolean = (value: string | undefined, defaultValue: boolean): boolean => {
-  if (value === undefined) return defaultValue
-  return value.toLowerCase() === 'true'
-}
-
-const parseNumber = (value: string | undefined, defaultValue: number): number => {
-  if (value === undefined) return defaultValue
-  const parsed = Number(value)
-  return isNaN(parsed) ? defaultValue : parsed
-}
-
-// Get environment variables with defaults
-const getEnvVar = (key: string, defaultValue?: string): string => {
-  return import.meta.env[key] || defaultValue || ''
-}
-
 // Main configuration object with validation and caching
 let configCache: AppConfig | null = null
 
@@ -78,9 +50,9 @@ const createConfig = (): AppConfig => {
   // Base API URL with validation
   const apiBaseUrl = validateUrl(
     getEnvVar('VITE_GATEWAY_BASE_URL') ||
-      getEnvVar('VITE_API_BASE_URL') ||
-      getEnvVar('VITE_API_URL') ||
-      'https://localhost:7001/api',
+    getEnvVar('VITE_API_BASE_URL') ||
+    getEnvVar('VITE_API_URL') ||
+    'https://localhost:7001/api',
     'API Base URL',
   )
 
@@ -106,11 +78,11 @@ const createConfig = (): AppConfig => {
       oidc: {
         clientId: getEnvVar('VITE_APP_CLIENT_ID'),
         redirectUri: validateUrl(
-          getEnvVar('VITE_APP_REDIRECT_URI', 'http://localhost:5173/auth/callback'),
+          getEnvVar('VITE_APP_REDIRECT_URI', 'http://localhost:5173/callback/login'),
           'Redirect URI',
         ),
         postLogoutRedirectUri: validateUrl(
-          getEnvVar('VITE_APP_POST_LOGOUT_REDIRECT_URI', 'http://localhost:5173'),
+          getEnvVar('VITE_APP_POST_LOGOUT_REDIRECT_URI', 'http://localhost:5173/callback/logout'),
           'Post Logout Redirect URI',
         ),
         responseType: getEnvVar('VITE_APP_RESPONSE_TYPE', 'code'),
@@ -121,8 +93,8 @@ const createConfig = (): AppConfig => {
         scope: getEnvVar('VITE_APP_SCOPE', 'openid profile email'),
         authority: validateUrl(
           getEnvVar('VITE_AUTH_AUTHORITY_URL') ||
-            getEnvVar('VITE_IDENTITY_SERVER_URL') ||
-            `${apiBaseUrl}/identity`,
+          getEnvVar('VITE_IDENTITY_SERVER_URL') ||
+          `${apiBaseUrl}/identity`,
           'Authority URL',
         ),
       },
@@ -162,13 +134,6 @@ export const config: AppConfig = configCache || (configCache = createConfig())
 export const isDevelopment = (): boolean => config.app.environment === 'development'
 export const isProduction = (): boolean => config.app.environment === 'production'
 export const isStaging = (): boolean => config.app.environment === 'staging'
-
-// URL utility functions
-const joinUrl = (base: string, path: string): string => {
-  const prefix = base.endsWith('/') ? base.slice(0, -1) : base
-  const suffix = path.startsWith('/') ? path.slice(1) : path
-  return `${prefix}/${suffix}`
-}
 
 /**
  * Build API URL through the API gateway
