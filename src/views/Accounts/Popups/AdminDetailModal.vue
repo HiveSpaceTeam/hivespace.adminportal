@@ -89,7 +89,7 @@
 <script setup lang="ts">
 import { computed, reactive, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { ShowPasswordIcon, HidePasswordIcon } from '@hivespace/shared'
+import { ShowPasswordIcon, HidePasswordIcon } from '@/icons'
 import type { CreateAdminRequest } from '@/types'
 import { useAppStore } from '@hivespace/shared'
 import { useAdminStore } from '@/stores/admin'

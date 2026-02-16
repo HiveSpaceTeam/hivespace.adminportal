@@ -215,7 +215,7 @@
           <div class="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400">
             <span>{{
               $t('admins.showingResults', { count: filteredAdminsCount, total: admins.length })
-              }}</span>
+            }}</span>
             <span>{{ $t('admins.lastUpdated') }} {{ lastUpdated }}</span>
           </div>
         </div>
@@ -257,7 +257,7 @@ import {
   SortAscIcon,
   SortDescIcon,
   SortIcon,
-} from '@hivespace/shared'
+} from '@/icons'
 import { useAuth } from '@hivespace/shared'
 // Local params for server queries
 import { storeToRefs } from 'pinia'

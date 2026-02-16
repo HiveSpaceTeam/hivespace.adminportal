@@ -231,7 +231,7 @@ import {
   SortAscIcon,
   SortDescIcon,
   SortIcon,
-} from '@hivespace/shared'
+} from '@/icons'
 import { useConfirmModal, useFormatDate, useDebounce } from '@hivespace/shared'
 import { useAppStore } from '@hivespace/shared'
 import { useUserStore } from '@/stores/user'
