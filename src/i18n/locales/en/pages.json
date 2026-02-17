@@ -19,7 +19,7 @@
     "backHome": "Back to Home Page"
   },
   "default": {
-    "welcome": "Welcome to HiveSpace Admin Portal. This is the home page placeholder.",
+    "welcome": "Welcome to HiveSpace Admin Portal.",
     "signIn": "Sign in",
     "signUp": "Sign up"
   }

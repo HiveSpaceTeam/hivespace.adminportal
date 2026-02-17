@@ -1,7 +1,7 @@
 {
   "showingResults": "Showing {count} of {total} results",
   "lastUpdated": "Last updated:",
-  "addNewAdmin": "Add New Admin",
+  "addNewAdmin": "Add new",
   "email": "Email",
   "password": "Password",
   "confirmPassword": "Confirm Password",

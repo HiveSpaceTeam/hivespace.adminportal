@@ -91,7 +91,7 @@ import { computed, reactive, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { ShowPasswordIcon, HidePasswordIcon } from '@/icons'
 import type { CreateAdminRequest } from '@/types'
-import { useAppStore } from '@/stores/app'
+import { useAppStore } from '@hivespace/shared'
 import { useAdminStore } from '@/stores/admin'
 import { useFieldValidation, Input, Button, Checkbox, type ErrorResponse } from '@hivespace/shared'
 

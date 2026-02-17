@@ -19,7 +19,7 @@
     "backHome": "Quay lại trang chủ"
   },
   "default": {
-    "welcome": "Chào mừng đến HiveSpace Admin Portal. Đây là trang chủ tạm thời.",
+    "welcome": "Chào mừng đến HiveSpace Admin Portal.",
     "signIn": "Đăng nhập",
     "signUp": "Đăng ký"
   }

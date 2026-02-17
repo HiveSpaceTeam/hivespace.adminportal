@@ -215,7 +215,7 @@
           <div class="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400">
             <span>{{
               $t('admins.showingResults', { count: filteredAdminsCount, total: admins.length })
-              }}</span>
+            }}</span>
             <span>{{ $t('admins.lastUpdated') }} {{ lastUpdated }}</span>
           </div>
         </div>
@@ -241,7 +241,7 @@ import {
   type AppUser,
 } from '@hivespace/shared'
 import { useModal, useConfirmModal, useFormatDate, useDebounce } from '@hivespace/shared'
-import { useAppStore } from '@/stores/app'
+import { useAppStore } from '@hivespace/shared'
 import AdminDetailModal from './Popups/AdminDetailModal.vue'
 import { useAdminStore } from '@/stores/admin'
 import type { Admin, GetAdminsParams } from '@/types'
