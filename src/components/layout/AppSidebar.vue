@@ -50,7 +50,7 @@
                   </span>
                   <span v-if="isExpanded || isHovered || isMobileOpen" class="menu-item-text">{{
                     item.name
-                    }}</span>
+                  }}</span>
                   <ChevronDownIcon v-if="isExpanded || isHovered || isMobileOpen" :class="[
                     'ml-auto w-5 h-5 transition-transform duration-200',
                     {
@@ -72,7 +72,7 @@
                   </span>
                   <span v-if="isExpanded || isHovered || isMobileOpen" class="menu-item-text">{{
                     item.name
-                    }}</span>
+                  }}</span>
                 </router-link>
                 <transition @enter="startTransition" @after-enter="endTransition" @before-leave="startTransition"
                   @after-leave="endTransition">
@@ -138,7 +138,7 @@ const { isExpanded, isMobileOpen, isHovered, openSubmenu } = useSidebar()
 const menuGroups = computed<MenuGroup[]>(() => {
   const mainMenuItems: MenuItem[] = [
     {
-      name: t('common.sidebar.accounts'),
+      name: t('pages.accounts'),
       icon: TableIcon,
       subItems: [
         { name: t('pages.userManagement'), path: '/account/user-management', pro: false },
