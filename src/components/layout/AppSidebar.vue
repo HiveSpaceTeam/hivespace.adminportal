@@ -138,7 +138,7 @@ const { isExpanded, isMobileOpen, isHovered, openSubmenu } = useSidebar()
 const menuGroups = computed<MenuGroup[]>(() => {
   const mainMenuItems: MenuItem[] = [
     {
-      name: t('common.sidebar.accounts'),
+      name: t('pages.accounts'),
       icon: TableIcon,
       subItems: [
         { name: t('pages.userManagement'), path: '/account/user-management', pro: false },
