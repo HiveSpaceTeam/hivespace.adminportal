@@ -192,14 +192,30 @@
 
         <!-- Footer -->
         <div class="mt-4">
-          <div class="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400">
-            <span>{{
-              $t('users.showingResults', {
-                count: filteredUsersCount,
-                total: pagination?.totalItems ?? users.length,
-              })
-            }}</span>
+          <div class="flex justify-end text-sm text-gray-500 dark:text-gray-400 mb-2">
             <span>{{ $t('users.lastUpdated') }} {{ lastUpdated }}</span>
+          </div>
+          
+          <!-- Pagination -->
+          <div class="border-t border-gray-200 pt-4 dark:border-gray-700" v-if="pagination">
+            <Pagination
+              :currentPage="pagination.currentPage"
+              :totalPages="pagination.totalPages"
+              :pageSize="pagination.pageSize"
+              :totalItems="pagination.totalItems"
+              @pageChange="onPageChange"
+            >
+              <template #summary>
+                <div class="text-sm font-medium text-gray-500 dark:text-gray-400">
+                  {{ $t('users.showingResults', { count: filteredUsersCount, total: pagination?.totalItems ?? users.length }) }}
+                </div>
+              </template>
+            </Pagination>
+          </div>
+          <div v-else class="border-t border-gray-200 pt-4 dark:border-gray-700 flex justify-between items-center">
+             <div class="text-sm font-medium text-gray-500 dark:text-gray-400">
+               {{ $t('users.showingResults', { count: filteredUsersCount, total: users.length }) }}
+             </div>
           </div>
         </div>
       </ComponentCard>
@@ -220,6 +236,7 @@ import {
   Button,
   Badge,
   Input,
+  Pagination,
 } from '@hivespace/shared'
 import {
   RefreshIcon,
@@ -409,6 +426,10 @@ const handleSearchInput = (event: Event) => {
   // keep the search term in params and trigger a debounced load
   params.value.searchTerm = searchQuery.value
   debounce('users-search', () => void loadUsers({ page: 1 }), 400)
+}
+
+const onPageChange = (page: number) => {
+  loadUsers({ page })
 }
 
 // Watch filters and reload when they change

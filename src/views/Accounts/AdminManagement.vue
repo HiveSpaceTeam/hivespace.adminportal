@@ -212,11 +212,25 @@
 
         <!-- Footer -->
         <div class="mt-4">
-          <div class="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400">
-            <span>{{
-              $t('admins.showingResults', { count: filteredAdminsCount, total: admins.length })
-            }}</span>
+          <div class="flex justify-end text-sm text-gray-500 dark:text-gray-400 mb-2">
             <span>{{ $t('admins.lastUpdated') }} {{ lastUpdated }}</span>
+          </div>
+          
+          <!-- Pagination -->
+          <div class="border-t border-gray-200 pt-4 dark:border-gray-700" v-if="pagination">
+            <Pagination
+              :currentPage="pagination.currentPage"
+              :totalPages="pagination.totalPages"
+              :pageSize="pagination.pageSize"
+              :totalItems="pagination.totalItems"
+              @pageChange="onPageChange"
+            >
+              <template #summary>
+                <div class="text-sm font-medium text-gray-500 dark:text-gray-400">
+                  {{ $t('admins.showingResults', { count: filteredAdminsCount, total: pagination?.totalItems ?? admins.length }) }}
+                </div>
+              </template>
+            </Pagination>
           </div>
         </div>
       </ComponentCard>
@@ -238,6 +252,7 @@ import {
   DropdownMenu,
   Badge,
   Input,
+  Pagination,
   type AppUser,
 } from '@hivespace/shared'
 import { useModal, useConfirmModal, useFormatDate, useDebounce } from '@hivespace/shared'
@@ -335,7 +350,7 @@ const getSortParam = () => {
 const params = ref<Partial<GetAdminsParams>>({ page: 1, pageSize: 10 })
 
 // Admin list from the store with proper reactivity
-const { admins } = storeToRefs(adminStore)
+const { admins, pagination } = storeToRefs(adminStore)
 
 // Use admins directly in template instead of filteredAdmins
 const filteredAdminsCount = computed(() => admins.value.length)
@@ -373,6 +388,16 @@ const tableHandleSearchInput = (event: Event) => {
   // keep the search term in params and trigger a debounced load
   params.value.searchTerm = searchQuery.value
   debounce('admins-search', () => void loadAdmins({ page: 1 }), 400)
+}
+
+// Pagination Event Handlers
+const onPageChange = (page: number) => {
+  loadAdmins({ page })
+}
+
+const onPageSizeChange = (pageSize: number) => {
+  // when changing page size, reset to page 1
+  loadAdmins({ page: 1, pageSize })
 }
 
 // Watch filters and reload when they change
