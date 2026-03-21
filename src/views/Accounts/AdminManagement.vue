@@ -1,10 +1,10 @@
 <template>
   <AdminLayout>
     <PageBreadcrumb :pageTitle="currentPageTitle" />
-    <div class="space-y-5 sm:space-y-6">
-      <ComponentCard :title="$t('pages.listOfAdmins')">
+    <div class="flex-1 min-h-0 flex flex-col">
+      <ComponentCard :title="$t('pages.listOfAdmins')" fullHeight>
         <!-- Table Content -->
-        <div class="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/3">
+        <div class="flex-1 min-h-0 flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/3">
           <!-- Search and Filter Controls -->
           <div class="p-4 border-b border-gray-200 dark:border-gray-700">
             <div class="flex flex-col sm:flex-row gap-4 items-center justify-between">
@@ -46,58 +46,58 @@
           </div>
 
           <!-- Table -->
-          <div v-else class="max-w-full overflow-x-auto custom-scrollbar" style="min-height: 400px">
-            <table class="min-w-full">
-              <thead>
+          <div v-else class="flex-1 min-h-0 overflow-y-auto custom-scrollbar">
+            <table class="w-full">
+              <thead class="sticky top-0 z-10 bg-white dark:bg-gray-900">
                 <tr class="border-b border-gray-200 dark:border-gray-700">
-                  <th class="px-5 py-3 text-left w-1/8 sm:px-6">
+                  <th class="px-3 py-3 text-left sm:px-4">
                     <button @click="handleSort('email')"
                       class="flex items-center gap-1 font-medium text-gray-500 text-theme-xs dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
                       {{ $t('admins.emailAddress') }}
                       <component :is="getSortIcon('email')" class="w-4 h-4 text-gray-500" />
                     </button>
                   </th>
-                  <th class="px-5 py-3 text-left w-1/8 sm:px-6">
+                  <th class="px-3 py-3 text-left sm:px-4">
                     <button @click="handleSort('fullName')"
                       class="flex items-center gap-1 font-medium text-gray-500 text-theme-xs dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
                       {{ $t('admins.fullName') }}
                       <component :is="getSortIcon('fullName')" class="w-4 h-4 text-gray-500" />
                     </button>
                   </th>
-                  <th class="px-5 py-3 text-left w-1/8 sm:px-6">
+                  <th class="px-3 py-3 text-left sm:px-4">
                     <button @click="handleSort('status')"
                       class="flex items-center gap-1 font-medium text-gray-500 text-theme-xs dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
                       {{ $t('admins.status') }}
                       <component :is="getSortIcon('status')" class="w-4 h-4 text-gray-500" />
                     </button>
                   </th>
-                  <th class="px-5 py-3 text-center w-1/8 sm:px-6" v-if="currentUser?.isSystemAdmin()">
+                  <th class="px-3 py-3 text-center sm:px-4" v-if="currentUser?.isSystemAdmin()">
                     <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
                       {{ $t('admins.isSystemAdmin') }}
                     </p>
                   </th>
-                  <th class="px-5 py-3 text-left w-1/8 sm:px-6">
+                  <th class="px-3 py-3 text-left sm:px-4">
                     <button @click="handleSort('createdAt')"
                       class="flex items-center gap-1 font-medium text-gray-500 text-theme-xs dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
                       {{ $t('admins.createdDate') }}
                       <component :is="getSortIcon('createdAt')" class="w-4 h-4 text-gray-500" />
                     </button>
                   </th>
-                  <th class="px-5 py-3 text-left w-1/8 sm:px-6">
+                  <th class="px-3 py-3 text-left sm:px-4">
                     <button @click="handleSort('lastLoginAt')"
                       class="flex items-center gap-1 font-medium text-gray-500 text-theme-xs dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
                       {{ $t('admins.lastLoginDate') }}
                       <component :is="getSortIcon('lastLoginAt')" class="w-4 h-4 text-gray-500" />
                     </button>
                   </th>
-                  <th class="px-5 py-3 text-left w-1/8 sm:px-6">
+                  <th class="px-3 py-3 text-left sm:px-4">
                     <button @click="handleSort('updatedAt')"
                       class="flex items-center gap-1 font-medium text-gray-500 text-theme-xs dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
                       {{ $t('admins.lastUpdatedDate') }}
                       <component :is="getSortIcon('updatedAt')" class="w-4 h-4 text-gray-500" />
                     </button>
                   </th>
-                  <th class="px-5 py-3 text-center w-1/8 sm:px-6">
+                  <th class="px-3 py-3 text-center sm:px-4">
                     <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
                       {{ $t('admins.actionsColumn') }}
                     </p>
@@ -117,7 +117,7 @@
                 <tr v-for="(admin, index) in admins" :key="admin.id"
                   class="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-white/5">
                   <!-- Email Address -->
-                  <td class="px-5 py-4 sm:px-6">
+                  <td class="px-3 py-3 sm:px-4">
                     <div class="flex items-center">
                       <div class="shrink-0 h-10 w-10">
                         <img class="h-10 w-10 rounded-full object-cover"
@@ -133,12 +133,12 @@
                   </td>
 
                   <!-- Full Name -->
-                  <td class="px-5 py-4 sm:px-6">
+                  <td class="px-3 py-3 sm:px-4">
                     <div class="text-sm text-gray-900 dark:text-white">{{ admin.fullName }}</div>
                   </td>
 
                   <!-- Status -->
-                  <td class="px-5 py-4 sm:px-6">
+                  <td class="px-3 py-3 sm:px-4">
                     <Badge :size="'sm'" :color="isAdminActive(admin) ? 'success' : 'error'">
                       {{
                         isAdminActive(admin)
@@ -149,7 +149,7 @@
                   </td>
 
                   <!-- Is System Admin -->
-                  <td class="px-5 py-4 sm:px-6" v-if="currentUser?.isSystemAdmin()">
+                  <td class="px-3 py-3 sm:px-4" v-if="currentUser?.isSystemAdmin()">
                     <div class="flex items-center justify-center">
                       <svg v-if="admin.isSystemAdmin" class="w-5 h-5 text-green-500" fill="currentColor"
                         viewBox="0 0 20 20">
@@ -161,28 +161,28 @@
                   </td>
 
                   <!-- Created Date (field: createdAt) -->
-                  <td class="px-5 py-4 sm:px-6">
+                  <td class="px-3 py-3 sm:px-4">
                     <div class="text-sm text-gray-900 dark:text-white">
                       {{ formatDate(admin.createdAt) }}
                     </div>
                   </td>
 
                   <!-- Last Login Date (field: lastLoginAt) -->
-                  <td class="px-5 py-4 sm:px-6">
+                  <td class="px-3 py-3 sm:px-4">
                     <div class="text-sm text-gray-900 dark:text-white">
                       {{ formatDate(admin.lastLoginAt) }}
                     </div>
                   </td>
 
                   <!-- Last Updated Date (field: updatedAt) -->
-                  <td class="px-5 py-4 sm:px-6">
+                  <td class="px-3 py-3 sm:px-4">
                     <div class="text-sm text-gray-900 dark:text-white">
                       {{ formatDate(admin.updatedAt) }}
                     </div>
                   </td>
 
                   <!-- Actions -->
-                  <td class="px-5 py-4 sm:px-6 text-center">
+                  <td class="px-3 py-3 sm:px-4 text-center">
                     <DropdownMenu>
                       <template #icon>
                         <HorizontalDots />
@@ -211,7 +211,7 @@
         </div>
 
         <!-- Footer -->
-        <div class="mt-4">
+        <div class="mt-4 shrink-0">
           <div class="flex justify-end text-sm text-gray-500 dark:text-gray-400 mb-2">
             <span>{{ $t('admins.lastUpdated') }} {{ lastUpdated }}</span>
           </div>
@@ -224,6 +224,7 @@
               :pageSize="pagination.pageSize"
               :totalItems="pagination.totalItems"
               @pageChange="onPageChange"
+              @pageSizeChange="onPageSizeChange"
             >
               <template #summary>
                 <div class="text-sm font-medium text-gray-500 dark:text-gray-400">

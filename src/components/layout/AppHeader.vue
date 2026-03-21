@@ -5,7 +5,7 @@
       <div
         class="flex items-center justify-between w-full gap-2 px-3 py-3 border-b border-gray-200 dark:border-gray-800 sm:gap-4 lg:justify-normal lg:border-b-0 lg:px-0 lg:py-4">
         <button v-if="props.showSidebarToggle" @click="handleToggle"
-          :aria-label="isMobileOpen ? $t('sidebar.close') : $t('sidebar.open')" :aria-expanded="isMobileOpen"
+          :aria-label="isMobileOpen ? $t('sidebar.close') : $t('sidebar.open')" :aria-expanded="isMobileOpen ? 'true' : 'false'"
           class="flex items-center justify-center w-10 h-10 text-gray-500 border-gray-200 rounded-lg z-999 dark:border-gray-800 dark:text-gray-400 lg:h-11 lg:w-11 lg:border"
           :class="[
             isMobileOpen

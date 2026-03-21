@@ -1,4 +1,4 @@
-import type { Pagination } from '@hivespace/shared'
+import type { PaginationMetadata } from '@hivespace/shared'
 import { Status } from '@hivespace/shared'
 
 export { Status } from '@hivespace/shared'
@@ -48,5 +48,5 @@ export interface GetAdminsParams {
 // Response shape for GET /admins
 export interface GetAdminsResponse {
   admins: Admin[]
-  pagination: Pagination
+  pagination: PaginationMetadata
 }
