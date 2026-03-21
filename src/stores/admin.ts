@@ -1,5 +1,5 @@
 import type { Admin, CreateAdminRequest, GetAdminsParams } from '@/types'
-import { Status, type Pagination, useAppStore } from '@hivespace/shared'
+import { Status, type PaginationMetadata, useAppStore } from '@hivespace/shared'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { adminService } from '@/services/admin.service'
@@ -9,7 +9,7 @@ export const useAdminStore = defineStore('admin', () => {
   const createdAdmin = ref<Admin | null>(null)
   // List of admins and pagination returned from the API
   const admins = ref<Admin[]>([])
-  const pagination = ref<Pagination | null>(null)
+  const pagination = ref<PaginationMetadata | null>(null)
 
   const setCreatedAdmin = (admin: Admin | null) => {
     createdAdmin.value = admin

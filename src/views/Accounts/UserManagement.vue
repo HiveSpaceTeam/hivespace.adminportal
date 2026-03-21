@@ -1,9 +1,9 @@
 <template>
   <AdminLayout>
     <PageBreadcrumb :pageTitle="currentPageTitle" />
-    <div class="space-y-5 sm:space-y-6">
-      <ComponentCard :title="$t('pages.listOfUsers')">
-        <div class="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/3">
+    <div class="flex-1 min-h-0 flex flex-col">
+      <ComponentCard :title="$t('pages.listOfUsers')" fullHeight>
+        <div class="flex-1 min-h-0 flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/3">
           <!-- Search and Filter Controls -->
           <div class="p-4 border-b border-gray-200 dark:border-gray-700">
             <div class="flex flex-col sm:flex-row gap-4 items-center">
@@ -38,58 +38,58 @@
           </div>
 
           <!-- Table -->
-          <div v-else class="max-w-full overflow-x-auto custom-scrollbar" style="min-height: 400px">
-            <table class="min-w-full">
-              <thead>
+          <div v-else class="flex-1 min-h-0 overflow-y-auto custom-scrollbar">
+            <table class="w-full">
+              <thead class="sticky top-0 z-10 bg-white dark:bg-gray-900">
                 <tr class="border-b border-gray-200 dark:border-gray-700">
-                  <th class="px-5 py-3 text-left w-1/8 sm:px-6">
+                  <th class="px-3 py-3 text-left sm:px-4">
                     <button @click="handleSort('username')"
                       class="flex items-center gap-1 font-medium text-gray-500 text-theme-xs dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
                       {{ $t('users.username') }}
                       <component :is="getSortIcon('username')" class="w-4 h-4 text-gray-500" />
                     </button>
                   </th>
-                  <th class="px-5 py-3 text-left w-1/8 sm:px-6">
+                  <th class="px-3 py-3 text-left sm:px-4">
                     <button @click="handleSort('fullName')"
                       class="flex items-center gap-1 font-medium text-gray-500 text-theme-xs dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
                       {{ $t('users.fullName') }}
                       <component :is="getSortIcon('fullName')" class="w-4 h-4 text-gray-500" />
                     </button>
                   </th>
-                  <th class="px-5 py-3 text-left w-1/8 sm:px-6">
+                  <th class="px-3 py-3 text-left sm:px-4">
                     <button @click="handleSort('email')"
                       class="flex items-center gap-1 font-medium text-gray-500 text-theme-xs dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
                       {{ $t('users.email') }}
                       <component :is="getSortIcon('email')" class="w-4 h-4 text-gray-500" />
                     </button>
                   </th>
-                  <th class="px-5 py-3 text-left w-1/8 sm:px-6">
+                  <th class="px-3 py-3 text-left sm:px-4">
                     <button @click="handleSort('status')"
                       class="flex items-center gap-1 font-medium text-gray-500 text-theme-xs dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
                       {{ $t('users.status') }}
                       <component :is="getSortIcon('status')" class="w-4 h-4 text-gray-500" />
                     </button>
                   </th>
-                  <th class="px-5 py-3 text-center w-1/8 sm:px-6">
+                  <th class="px-3 py-3 text-center sm:px-4">
                     <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
                       {{ $t('users.seller') }}
                     </p>
                   </th>
-                  <th class="px-5 py-3 text-left w-1/8 sm:px-6">
+                  <th class="px-3 py-3 text-left sm:px-4">
                     <button @click="handleSort('createdAt')"
                       class="flex items-center gap-1 font-medium text-gray-500 text-theme-xs dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
                       {{ $t('users.createdDate') }}
                       <component :is="getSortIcon('createdAt')" class="w-4 h-4 text-gray-500" />
                     </button>
                   </th>
-                  <th class="px-5 py-3 text-left w-1/8 sm:px-6">
+                  <th class="px-3 py-3 text-left sm:px-4">
                     <button @click="handleSort('lastLoginAt')"
                       class="flex items-center gap-1 font-medium text-gray-500 text-theme-xs dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
                       {{ $t('users.lastLoginDate') }}
                       <component :is="getSortIcon('lastLoginAt')" class="w-4 h-4 text-gray-500" />
                     </button>
                   </th>
-                  <th class="px-5 py-3 text-center w-1/8 sm:px-6">
+                  <th class="px-3 py-3 text-center sm:px-4">
                     <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
                       {{ $t('users.actionsColumn') }}
                     </p>
@@ -109,7 +109,7 @@
                 <tr v-for="(user, index) in filteredUsers" :key="user.id"
                   class="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-white/5">
                   <!-- Username -->
-                  <td class="px-5 py-4 sm:px-6">
+                  <td class="px-3 py-3 sm:px-4">
                     <div class="flex items-center">
                       <div class="shrink-0 h-10 w-10">
                         <img class="h-10 w-10 rounded-full object-cover"
@@ -125,44 +125,44 @@
                   </td>
 
                   <!-- Full Name -->
-                  <td class="px-5 py-4 sm:px-6">
+                  <td class="px-3 py-3 sm:px-4">
                     <div class="text-sm text-gray-900 dark:text-white">{{ user.fullName }}</div>
                   </td>
 
                   <!-- Email -->
-                  <td class="px-5 py-4 sm:px-6">
+                  <td class="px-3 py-3 sm:px-4">
                     <div class="text-sm text-gray-500 dark:text-gray-400">{{ user.email }}</div>
                   </td>
 
                   <!-- Status -->
-                  <td class="px-5 py-4 sm:px-6">
+                  <td class="px-3 py-3 sm:px-4">
                     <Badge :size="'sm'" :color="isUserActive(user) ? 'success' : 'error'">
                       {{ user.displayStatus }}
                     </Badge>
                   </td>
 
                   <!-- Is Seller -->
-                  <td class="px-5 py-4 sm:px-6">
+                  <td class="px-3 py-3 sm:px-4">
                     <div class="flex items-center justify-center">
                       <CheckGreenIcon v-if="user.hasSeller" />
                     </div>
                   </td>
 
                   <!-- Created Date (field: createdAt) -->
-                  <td class="px-5 py-4 sm:px-6">
+                  <td class="px-3 py-3 sm:px-4">
                     <div class="text-sm text-gray-900 dark:text-white">
                       {{ formatDate(user.createdAt) }}
                     </div>
                   </td>
 
                   <!-- Last Login Date (field: lastLoginAt) -->
-                  <td class="px-5 py-4 sm:px-6">
+                  <td class="px-3 py-3 sm:px-4">
                     <div class="text-sm text-gray-900 dark:text-white">
                       {{ formatDate(user.lastLoginAt) }}
                     </div>
                   </td>
                   <!-- Actions -->
-                  <td class="px-5 py-4 sm:px-6 text-center">
+                  <td class="px-3 py-3 sm:px-4 text-center">
                     <DropdownMenu>
                       <template #icon>
                         <HorizontalDots />
@@ -191,15 +191,32 @@
         </div>
 
         <!-- Footer -->
-        <div class="mt-4">
-          <div class="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400">
-            <span>{{
-              $t('users.showingResults', {
-                count: filteredUsersCount,
-                total: pagination?.totalItems ?? users.length,
-              })
-            }}</span>
+        <div class="mt-4 shrink-0">
+          <div class="flex justify-end text-sm text-gray-500 dark:text-gray-400 mb-2">
             <span>{{ $t('users.lastUpdated') }} {{ lastUpdated }}</span>
+          </div>
+          
+          <!-- Pagination -->
+          <div class="border-t border-gray-200 pt-4 dark:border-gray-700" v-if="pagination">
+            <Pagination
+              :currentPage="pagination.currentPage"
+              :totalPages="pagination.totalPages"
+              :pageSize="pagination.pageSize"
+              :totalItems="pagination.totalItems"
+              @pageChange="onPageChange"
+              @pageSizeChange="onPageSizeChange"
+            >
+              <template #summary>
+                <div class="text-sm font-medium text-gray-500 dark:text-gray-400">
+                  {{ $t('users.showingResults', { count: filteredUsersCount, total: pagination?.totalItems ?? users.length }) }}
+                </div>
+              </template>
+            </Pagination>
+          </div>
+          <div v-else class="border-t border-gray-200 pt-4 dark:border-gray-700 flex justify-between items-center">
+             <div class="text-sm font-medium text-gray-500 dark:text-gray-400">
+               {{ $t('users.showingResults', { count: filteredUsersCount, total: users.length }) }}
+             </div>
           </div>
         </div>
       </ComponentCard>
@@ -220,6 +237,7 @@ import {
   Button,
   Badge,
   Input,
+  Pagination,
 } from '@hivespace/shared'
 import {
   RefreshIcon,
@@ -409,6 +427,14 @@ const handleSearchInput = (event: Event) => {
   // keep the search term in params and trigger a debounced load
   params.value.searchTerm = searchQuery.value
   debounce('users-search', () => void loadUsers({ page: 1 }), 400)
+}
+
+const onPageChange = (page: number) => {
+  loadUsers({ page })
+}
+
+const onPageSizeChange = (pageSize: number) => {
+  loadUsers({ page: 1, pageSize })
 }
 
 // Watch filters and reload when they change

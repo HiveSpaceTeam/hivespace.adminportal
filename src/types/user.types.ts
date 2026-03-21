@@ -1,4 +1,4 @@
-import type { Pagination } from '@hivespace/shared'
+import type { PaginationMetadata } from '@hivespace/shared'
 export { RoleFilter, StatusFilter } from '@hivespace/shared'
 
 export interface User {
@@ -27,5 +27,5 @@ export interface GetUsersParams {
 // Response shape for GET /admins/users
 export interface GetUsersResponse {
   users: User[]
-  pagination: Pagination
+  pagination: PaginationMetadata
 }

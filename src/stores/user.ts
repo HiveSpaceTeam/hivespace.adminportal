@@ -1,5 +1,5 @@
 import {
-  type Pagination,
+  type PaginationMetadata,
   type UserSettings,
   type CultureText,
   type ThemeText,
@@ -17,7 +17,7 @@ import { type GetUsersParams, type User } from '@/types'
 export const useUserStore = defineStore('user', () => {
   // State
   const users = ref<User[]>([])
-  const pagination = ref<Pagination | null>(null)
+  const pagination = ref<PaginationMetadata | null>(null)
 
   // User settings state
   const userSettings = ref<UserSettings>(DEFAULT_USER_SETTINGS)
