@@ -41,7 +41,7 @@
 
           <!-- Loading State -->
           <div v-if="appStore.isLoading" class="p-8 text-center">
-            <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+            <Spinner />
             <p class="mt-2 text-gray-600 dark:text-gray-400">{{ $t('admins.loading') }}</p>
           </div>
 
@@ -254,6 +254,7 @@ import {
   Badge,
   Input,
   Pagination,
+  Spinner,
   type AppUser,
 } from '@hivespace/shared'
 import { useModal, useConfirmModal, useFormatDate, useDebounce } from '@hivespace/shared'
